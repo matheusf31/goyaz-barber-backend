@@ -9,4 +9,6 @@
 - Nodemon: para manter nosso server rodando mesmo depois de fazer alterações;
 - Sucrase: para utilizar a sintaxe import/export dentro do node;
 
+---
+
 - Docker: instanciei o banco de dados da aplicação em um container do Docker na minha máquina Linux
