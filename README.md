@@ -2,7 +2,7 @@
 
 ## Backend
 
-#### Funcionalidades utilizadas e para que foram utilizadas
+### Funcionalidades utilizadas
 
 - Arquitetura MVC: padrão de arquitetura de software utilizado para separar responsabilidades;
 - Express: para criação de rotas e serviços da aplicação;
