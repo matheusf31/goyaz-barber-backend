@@ -14,3 +14,8 @@
 ---
 
 - Docker: instanciei o banco de dados da aplicação em um container do Docker na minha máquina Linux
+- Postgres
+
+---
+
+- Bcryptjs: utilizei para criar um hash do password do usuário
