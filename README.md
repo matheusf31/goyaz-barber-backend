@@ -19,3 +19,5 @@
 ---
 
 - Bcryptjs: utilizei para criar um hash do password do usuário
+- JWT: forma de fazer autenticação em API REST
+	- jsonwebtoken: gera o token JWT
