@@ -7,6 +7,7 @@
 import jwt from 'jsonwebtoken';
 
 import User from '../models/User';
+import authConfig from '../../config/auth';
 
 class SessionController {
   async store(req, res) {
@@ -38,9 +39,9 @@ class SessionController {
         {
           id, // payload
         },
-        '874fcb86d1fe21f3a9fcf16376515e45', // gerar texto no md5 online
+        authConfig.secret, // gerar texto no md5 online
         {
-          expiresIn: '7d',
+          expiresIn: authConfig.expiresIn,
         } // data de expiração
       ),
     });
