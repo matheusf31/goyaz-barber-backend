@@ -12,7 +12,7 @@ export default async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.send(401).json({ error: 'Token not provided' });
+    return res.status(401).json({ error: 'Token not provided' });
   }
 
   // retorna um array com duas posições e o segundo elemento é o que interessa
