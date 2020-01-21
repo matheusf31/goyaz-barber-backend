@@ -1,7 +1,7 @@
 /*
   Novo controler pois estamos criando uma sessão
   Pensar sempre na entidade que estamos tratando no momento
-  Só podemos ter 1 dos 5 métodos (index, store, show, delete, update )
+  Só podemos ter 1 dos 5 métodos (index, store, show, delete, update)
 */
 
 import jwt from 'jsonwebtoken';
@@ -19,18 +19,15 @@ class SessionController {
       password: Yup.string().required(),
     });
 
-    // se retornar false é pq o body não está valido e entra no if
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    // para se autenticar precisa do email e senha
     const { email, password } = req.body;
 
-    // existe user com esse email?
+    // busca usuário com o email inserido
     const user = await User.findOne({ where: { email } });
 
-    // se não houver usuário com o email inserido entra no if
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }

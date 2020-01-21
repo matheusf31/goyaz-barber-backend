@@ -13,7 +13,7 @@ class UserController {
         .min(6),
     });
 
-    // se retornar false é pq o body não está valido e entra no if
+    // Se retornar false é pq o body não está valido e entra no if
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
@@ -24,7 +24,7 @@ class UserController {
       },
     });
 
-    // interrompe o fluxo se já existir um usuário
+    // Interrompe o fluxo se já existir um usuário
     if (userExists) {
       return res.status(400).json({ error: 'User already exists.' });
     }
@@ -34,7 +34,7 @@ class UserController {
     return res.json({ id, name, email, provider });
   }
 
-  // usuário tem que estar logado
+  // Usuário tem que estar logado
   async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
@@ -50,17 +50,18 @@ class UserController {
       ),
     });
 
-    // se retornar false é pq o body não está valido e entra no if
+    // Se retornar false é pq o body não está valido e entra no if
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
     const { email, oldPassword } = req.body;
 
+    // colocamos o id do user no middleware de auth para que possamos extrair ele a partir do req
     const user = await User.findByPk(req.userId);
 
-    // verifica se o email que está sendo alterado é diferente do email antigo
-    if (email !== user.email) {
+    // Verifica se o email que está sendo alterado é diferente do email antigo
+    if (email && email !== user.email) {
       const userExists = await User.findOne({ where: { email } });
 
       if (userExists) {

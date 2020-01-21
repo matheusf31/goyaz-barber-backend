@@ -5,10 +5,7 @@
 import Sequelize, { Model } from 'sequelize';
 import bcrypt from 'bcryptjs';
 
-/*
-  Os campos dentro do model não precisam ser um reflexo
-  dos campos dentro da base de dados
-*/
+// Os campos dentro do model não precisam ser um reflexo dos campos dentro da base de dados
 class User extends Model {
   static init(sequelize) {
     super.init(
@@ -27,6 +24,8 @@ class User extends Model {
     /* 
       beforeSave: antes de qualquer usuário ser salvo na DB esse trecho
       de código será executado de forma automática
+
+      Criptográfa a senha
     */
     this.addHook('beforeSave', async user => {
       if (user.password) {
@@ -38,7 +37,6 @@ class User extends Model {
     return this;
   }
 
-  // como não é uma regra de negócio podemos colocar aqui
   checkPassword(password) {
     return bcrypt.compare(password, this.password_hash);
   }
