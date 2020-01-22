@@ -15,6 +15,7 @@ class User extends Model {
         password: Sequelize.VIRTUAL, // VIRTUAL -> um campo que nunca vai existir na base de dados
         password_hash: Sequelize.STRING,
         provider: Sequelize.BOOLEAN,
+        phone: Sequelize.STRING,
       },
       {
         sequelize,

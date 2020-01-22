@@ -3,6 +3,8 @@ import User from '../models/User';
 
 class UserController {
   async store(req, res) {
+    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       email: Yup.string()
@@ -11,6 +13,9 @@ class UserController {
       password: Yup.string()
         .required()
         .min(6),
+      phone: Yup.string()
+        .required()
+        .matches(phoneRegExp, 'Phone number is not valid'),
     });
 
     // Se retornar false é pq o body não está valido e entra no if
@@ -29,16 +34,19 @@ class UserController {
       return res.status(400).json({ error: 'User already exists.' });
     }
 
-    const { id, name, email, provider } = await User.create(req.body);
+    const { id, name, email, provider, phone } = await User.create(req.body);
 
-    return res.json({ id, name, email, provider });
+    return res.json({ id, name, email, provider, phone });
   }
 
   // Usuário tem que estar logado
   async update(req, res) {
+    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
+      phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
       oldPassword: Yup.string().min(6),
       password: Yup.string()
         .min(6)
@@ -73,9 +81,9 @@ class UserController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const { id, name, provider } = await user.update(req.body);
+    const { id, name, provider, phone } = await user.update(req.body);
 
-    return res.json({ id, name, email, provider });
+    return res.json({ id, name, email, provider, phone });
   }
 }
 
