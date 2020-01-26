@@ -6,6 +6,10 @@ import User from '../models/User';
 
 class AppointmentController {
   async index(req, res) {
+    /**
+     * Enviar o tipo do corte (só corte ou corte e barba)
+     */
+
     const appointments = await Appointment.findAll({
       where: { user_id: req.userId, canceled_at: null },
       order: ['date'],
@@ -30,6 +34,12 @@ class AppointmentController {
   }
 
   async store(req, res) {
+    /**
+     * colocar se o corte é apenas corte ou é corte e barba
+     * fazer a verificação se nenhum foi marcado (invalido)
+     * fazer a verificação se os dois foram marcados (invalido)
+     */
+
     const schema = Yup.object().shape({
       provider_id: Yup.number().required(),
       date: Yup.date().required(),
