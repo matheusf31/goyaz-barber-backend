@@ -7,7 +7,7 @@ import User from '../models/User';
 class AppointmentController {
   async index(req, res) {
     /**
-     * Enviar o tipo do corte (só corte ou corte e barba)
+     * enviar o tipo do corte (só corte ou corte e barba)
      */
 
     const appointments = await Appointment.findAll({
