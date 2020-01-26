@@ -6,6 +6,11 @@
 
 ### Funcionalidades utilizadas
 
+- Prettier: padronização e organização do código
+- Eslint: padronização e organização do código
+
+---
+
 - Arquitetura MVC: padrão de arquitetura de software utilizado para separar responsabilidades;
 - Express: para criação de rotas e serviços da aplicação;
 - Nodemon: para manter o server rodando mesmo depois de fazer alterações no código;
@@ -13,8 +18,9 @@
 
 ---
 
-- Docker: utilizado para criar uma instância do banco de dados da aplicação em um container do Docker na máquina com Linux, com uma imagem do postgres;
+- Docker: utilizado para criar uma instância da data base da aplicação em um container com uma imagem do postgres;
 - Postgres: banco de dados utilizado na aplicação;
+- Sequelize: ORM para fazer as querys na data base;
 
 ---
 
@@ -26,4 +32,4 @@
 ---
 
 - Multer: para uploads de arquivos (diferente do formato JSON)
-
+- Date-fns: para lidar com datas dentro do node
