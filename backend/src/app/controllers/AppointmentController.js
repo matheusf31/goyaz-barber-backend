@@ -1,10 +1,34 @@
 import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore } from 'date-fns';
-import { check } from 'prettier';
 import Appointment from '../models/Appointment';
+import File from '../models/File';
 import User from '../models/User';
 
 class AppointmentController {
+  async index(req, res) {
+    const appointments = await Appointment.findAll({
+      where: { user_id: req.userId, canceled_at: null },
+      order: ['date'],
+      attributes: ['id', 'date'],
+      include: [
+        {
+          model: User, // para retornar os dados do relacionamento
+          as: 'provider', // qual dos relacionamentos
+          attributes: ['id', 'name'], // quais atributos que quero buscar
+          include: [
+            {
+              model: File, // para retornar o avatar do provedor
+              as: 'avatar',
+              attributes: ['id', 'path', 'url'],
+            },
+          ],
+        },
+      ],
+    });
+
+    return res.json(appointments);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       provider_id: Yup.number().required(),
@@ -31,7 +55,9 @@ class AppointmentController {
     /* 
       parseISO vai transformar a string passada no req.body em um objeto DATE
       startOfHower vai pegar apenas o início da hora
-      OBSERVAÇÃO: PROVAVELMENTE TEREI QUE ALTERAR ESSA LINHA PARA SE ENCAIXAR COM OS HORÁRIOS DO THIADO
+      OBSERVAÇÃO: PROVAVELMENTE TEREI QUE ALTERAR ESSA LINHA PARA SE ENCAIXAR COM OS HORÁRIOS DO THIAGO
+      aqui no caso ele faz uma verificação do tipo: se eu tenho um horário pras 18 e estou tentando marcar
+      pra 18:30 eu não poderei marcar;
     */
 
     // Checando se a data/hora escolhida está ANTES da data/hora atual
