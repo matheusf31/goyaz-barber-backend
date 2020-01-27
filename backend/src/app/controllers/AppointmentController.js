@@ -7,6 +7,7 @@ import User from '../models/User';
 class AppointmentController {
   async index(req, res) {
     /**
+     * essa listagem é para o usuário comum
      * enviar o tipo do corte (só corte ou corte e barba)
      */
 
