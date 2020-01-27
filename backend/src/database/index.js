@@ -3,6 +3,7 @@
 */
 
 import Sequelize from 'sequelize';
+import mongoose from 'mongoose';
 
 import User from '../app/models/User';
 import File from '../app/models/File';
@@ -15,6 +16,7 @@ const models = [User, File, Appoitment];
 class Database {
   constructor() {
     this.init();
+    this.mongo();
   }
 
   // carreagar os models e fazer a conexão com a DB
@@ -25,6 +27,17 @@ class Database {
     models
       .map(model => model.init(this.connection))
       .map(model => model.associate && model.associate(this.connection.models));
+  }
+
+  mongo() {
+    this.mongoConnection = mongoose.connect(
+      'mongodb://localhost:27017/goyazbarber',
+      {
+        useNewUrlParser: true,
+        useFindAndModify: true,
+        useUnifiedTopology: true,
+      }
+    );
   }
 }
 

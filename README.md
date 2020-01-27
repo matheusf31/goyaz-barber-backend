@@ -18,9 +18,11 @@
 
 ---
 
+- Sequelize: ORM para fazer as querys na data base postgres;
+- Mogoose: ORM para o mongoDB;
 - Docker: utilizado para criar uma instância da data base da aplicação em um container com uma imagem do postgres;
 - Postgres: banco de dados utilizado na aplicação;
-- Sequelize: ORM para fazer as querys na data base;
+- MongoDB: banco não relacional utilizado para dados que não são estruturados e são performáticos;
 
 ---
 
