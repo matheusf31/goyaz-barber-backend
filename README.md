@@ -26,6 +26,11 @@
 
 ---
 
+- Postbird: visualizar os dados que estão no banco de dados postgres;
+- MongoDB Compass: visualizar os dados que estão no banco de dados mongo;
+
+---
+
 - Bcryptjs: utilizado para criar um hash do password do usuário
 - JWT: forma de fazer autenticação em API REST
 	- jsonwebtoken: gera o token JWT
@@ -35,3 +40,6 @@
 
 - Multer: para uploads de arquivos (diferente do formato JSON)
 - Date-fns: para lidar com datas dentro do node
+
+---
+
