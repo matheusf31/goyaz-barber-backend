@@ -60,14 +60,21 @@ class AppointmentController {
     const { provider_id, date } = req.body;
 
     // Checando se provider_id é um provedor
-    const isProvider = await User.findOne({
+    const checkIsProvider = await User.findOne({
       where: { id: provider_id, provider: true },
     });
 
-    if (!isProvider) {
+    if (!checkIsProvider) {
       return res
-        .status(400)
+        .status(401)
         .json({ error: 'You can only appointment with providers ' });
+    }
+
+    // checando se o provider não é o mesmo usuário
+    if (provider_id === req.userId) {
+      return res
+        .status(401)
+        .json({ error: 'Você não pode marcar com você mesmo' });
     }
 
     /* 
