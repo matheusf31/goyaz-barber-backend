@@ -21,7 +21,7 @@ class AppointmentController {
       order: ['date'],
       limit: 20,
       offset: (page - 1) * 20, // pular (ou não) 20 registros para listar apenas 20
-      attributes: ['id', 'date'],
+      attributes: ['id', 'date', 'cut_type'],
       include: [
         {
           model: User, // para retornar os dados do relacionamento
@@ -51,13 +51,14 @@ class AppointmentController {
     const schema = Yup.object().shape({
       provider_id: Yup.number().required(),
       date: Yup.date().required(),
+      cut_type: Yup.string().matches(/(corte|corte e barba)/),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { provider_id, date } = req.body;
+    const { provider_id, date, cut_type } = req.body;
 
     // Checando se provider_id é um provedor
     const checkIsProvider = await User.findOne({
@@ -108,6 +109,7 @@ class AppointmentController {
       user_id: req.userId,
       provider_id,
       date: hourStart,
+      cut_type,
     });
 
     /**
