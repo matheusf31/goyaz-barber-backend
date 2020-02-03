@@ -25,6 +25,10 @@ module.exports = {
         onDelete: 'SET NULL',
         allowNull: true,
       },
+      cut_type: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       canceled_at: {
         type: Sequelize.DATE,
       },

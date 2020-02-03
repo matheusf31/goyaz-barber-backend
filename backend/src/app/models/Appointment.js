@@ -6,8 +6,7 @@ class Appointment extends Model {
       {
         date: Sequelize.DATE,
         canceled_at: Sequelize.DATE,
-        cut: Sequelize.BOOLEAN,
-        cut_and_beard: Sequelize.BOOLEAN,
+        cut_type: Sequelize.STRING,
       },
       {
         sequelize,
