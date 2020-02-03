@@ -13,7 +13,7 @@ class NotificationController {
     if (!checkIsProvider) {
       return res
         .status(401)
-        .json({ error: 'You can only appointment with providers ' });
+        .json({ error: 'Only provider can load notifications' });
     }
 
     const notifications = await Notification.find({
@@ -26,17 +26,15 @@ class NotificationController {
   }
 
   async update(req, res) {
-    // pegamos a notificação no banco de dados
-    // const notification = await Notification.findById(req.params.id);
+    const notification = await Notification.findById(req.params.id);
 
-    // buscar a notificação e atualizar dados na data base
-    const notification = await Notification.findByIdAndUpdate(
-      req.params.id,
-      { read: true }, // o que vamos atualizar
-      { new: true } // depois de atualizar vai retornar a nova notific atualizada
-    );
+    if (!notification) {
+      return res.status(400).json({ error: 'Notification not found' });
+    }
 
-    return res.json(notification);
+    const check = await notification.updateOne({ read: true });
+
+    return res.json(check);
   }
 }
 

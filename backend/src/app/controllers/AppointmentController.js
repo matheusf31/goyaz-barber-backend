@@ -51,7 +51,7 @@ class AppointmentController {
     const schema = Yup.object().shape({
       provider_id: Yup.number().required(),
       date: Yup.date().required(),
-      cut_type: Yup.string().matches(/(corte|corte e barba)/),
+      cut_type: Yup.string().matches(/(corte$|corte e barba$)/i),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -68,14 +68,19 @@ class AppointmentController {
     if (!checkIsProvider) {
       return res
         .status(401)
-        .json({ error: 'You can only appointment with providers ' });
+        .json({ error: 'You can only appointment with providers' });
     }
 
-    // checando se o provider não é o mesmo usuário
+    // Checando se o provider não é o mesmo usuário
     if (provider_id === req.userId) {
       return res
         .status(401)
         .json({ error: 'Você não pode marcar com você mesmo' });
+    }
+
+    // Checando se o cut type foi inserido
+    if (!cut_type) {
+      return res.status(400).json({ error: 'Insert the cut type' });
     }
 
     /* 
