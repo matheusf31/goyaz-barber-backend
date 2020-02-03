@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import User from '../models/User';
+import File from '../models/File';
 
 class UserController {
   async store(req, res) {
@@ -63,7 +64,7 @@ class UserController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { email, oldPassword } = req.body;
+    const { email, oldPassword, avatar_id } = req.body;
 
     // colocamos o id do user no middleware de auth para que possamos extrair ele a partir do req
     const user = await User.findByPk(req.userId);
@@ -77,8 +78,18 @@ class UserController {
       }
     }
 
+    // Verifica a senha antiga
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
       return res.status(401).json({ error: 'Password does not match' });
+    }
+
+    const checkAvatar = await File.findOne({
+      where: { id: avatar_id },
+    });
+
+    // Verifica o avatar escolhido
+    if (!(await checkAvatar)) {
+      return res.status(400).json({ error: 'Avatar not found' });
     }
 
     const { id, name, provider, phone } = await user.update(req.body);
