@@ -6,15 +6,15 @@
 
 ### Funcionalidades utilizadas
 
-- Prettier: padronização e organização do código
-- Eslint: padronização e organização do código
+- Prettier: padronização e organização do código;
+- Eslint: padronização e organização do código.
 
 ---
 
 - Arquitetura MVC: padrão de arquitetura de software utilizado para separar responsabilidades;
 - Express: para criação de rotas e serviços da aplicação;
 - Nodemon: para manter o server rodando mesmo depois de fazer alterações no código;
-- Sucrase: para utilizar a sintaxe import/export dentro do node;
+- Sucrase: para utilizar a sintaxe import/export dentro do node.
 
 ---
 
@@ -22,24 +22,29 @@
 - Mogoose: ORM para o mongoDB;
 - Docker: utilizado para criar uma instância da data base da aplicação em um container com uma imagem do postgres;
 - Postgres: banco de dados utilizado na aplicação;
-- MongoDB: banco não relacional utilizado para dados que não são estruturados e são performáticos;
+- MongoDB: banco não relacional utilizado para dados que não são estruturados e são performáticos.
 
 ---
 
 - Postbird: visualizar os dados que estão no banco de dados postgres;
-- MongoDB Compass: visualizar os dados que estão no banco de dados mongo;
+- MongoDB Compass: visualizar os dados que estão no banco de dados mongo.
 
 ---
 
-- Bcryptjs: utilizado para criar um hash do password do usuário
-- JWT: forma de fazer autenticação em API REST
-	- jsonwebtoken: gera o token JWT
-- Yup: biblioteca de validação de dados de entrada
+- Bcryptjs: utilizado para criar um hash do password do usuário;
+- JWT: forma de fazer autenticação em API REST;
+	- jsonwebtoken: gera o token JWT.
+- Yup: biblioteca de validação de dados de entrada.
 
 ---
 
-- Multer: para uploads de arquivos (diferente do formato JSON)
-- Date-fns: para lidar com datas dentro do node
+- Multer: para uploads de arquivos (diferente do formato JSON);
+- Date-fns: para lidar com datas dentro do node.
 
 ---
+
+- Nodemailer: utilizado para envio de emails;
+- Mailtrap: uma caixa de entrada online e gratuita para testar o envio de email em ambiente de desenvolvimento;
+- TemplateEngine: arquivos html que podem receber variáveis do node (alem de outras);
+	- Handlebars: templateengine utilizado.
 
