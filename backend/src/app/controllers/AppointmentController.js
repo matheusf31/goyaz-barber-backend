@@ -25,7 +25,7 @@ class AppointmentController {
       order: ['date'],
       limit: 20,
       offset: (page - 1) * 20, // pular (ou não) 20 registros para listar apenas 20
-      attributes: ['id', 'date', 'cut_type'],
+      attributes: ['id', 'date', 'cut_type', 'past', 'cancelable'],
       include: [
         {
           model: User, // para retornar os dados do relacionamento
