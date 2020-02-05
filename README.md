@@ -18,17 +18,14 @@
 
 ---
 
-- Sequelize: ORM para fazer as querys na data base postgres;
-- Mogoose: ORM para o mongoDB;
 - Docker: utilizado para criar uma instância da data base da aplicação em um container com uma imagem do postgres;
 - Postgres: banco de dados utilizado na aplicação;
-- MongoDB: banco não relacional utilizado para dados que não são estruturados e são performáticos.
-
----
-
+- MongoDB: banco não relacional utilizado para dados que não são estruturados e são performáticos;
+- Sequelize: ORM para fazer as querys na data base postgres;
+- Mogoose: ORM para o mongoDB;
 - Postbird: visualizar os dados que estão no banco de dados postgres;
-- MongoDB Compass: visualizar os dados que estão no banco de dados mongo.
-
+- MongoDB Compass: visualizar os dados que estão no banco de dados mongo;
+- Redis: banco de dados não relacional que salva apenas chave e valor, utilizado para tarefas em segundo plano.
 ---
 
 - Bcryptjs: utilizado para criar um hash do password do usuário;
@@ -48,3 +45,7 @@
 - TemplateEngine: arquivos html que podem receber variáveis do node (alem de outras);
 	- Handlebars: templateengine utilizado.
 
+---
+
+- Sentry: ferramenta de monitaramento de erros.
+- Youch: tratar as mensagens de erro.
