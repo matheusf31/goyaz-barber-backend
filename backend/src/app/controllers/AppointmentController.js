@@ -1,5 +1,13 @@
 import * as Yup from 'yup';
-import { startOfHour, parseISO, isBefore, format, subHours } from 'date-fns';
+import {
+  startOfHour,
+  parseISO,
+  isBefore,
+  format,
+  subHours,
+  addMinutes,
+  compareAsc,
+} from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
 import Appointment from '../models/Appointment';
@@ -46,12 +54,6 @@ class AppointmentController {
   }
 
   async store(req, res) {
-    /**
-     * colocar se o corte é apenas corte ou é corte e barba
-     * fazer a verificação se nenhum foi marcado (invalido)
-     * fazer a verificação se os dois foram marcados (invalido)
-     */
-
     const schema = Yup.object().shape({
       provider_id: Yup.number().required(),
       date: Yup.date().required(),
@@ -87,24 +89,30 @@ class AppointmentController {
       return res.status(400).json({ error: 'Insert the cut type' });
     }
 
-    /* 
-      parseISO vai transformar a string passada no req.body em um objeto DATE
-      startOfHower vai pegar apenas o início da hora
-      OBSERVAÇÃO: PROVAVELMENTE TEREI QUE ALTERAR ESSA LINHA PARA SE ENCAIXAR COM OS HORÁRIOS DO THIAGO
-      aqui no caso ele faz uma verificação do tipo: se eu tenho um horário pras 18 e estou tentando marcar
-      pra 18:30 eu não poderei marcar;
-    */
-
     // Checando se a data/hora escolhida está ANTES da data/hora atual
     const hourStart = startOfHour(parseISO(date));
+    const halfHour = addMinutes(hourStart, 30);
 
-    if (isBefore(hourStart, new Date())) {
-      return res.status(400).json({ error: 'Past dates are not permited' });
+    /**
+     * PROVAVELMENTE VOU TIRAR ESSA PARTE PQ VOU CHECAR DIRETO NA TABELA DE HORARIOS DISPONIVEIS
+     * SE EU MARCAR UM CORTE EU TENHO QUE IR NA TABELA E MARCAR LÁ COMO DISPONÍVEL
+     * SE EU MARCAR CORTE E BARBA TENHO QUE IR NA TABELA E MARCAR LÁ E MARCAR A PRÓXIMA MEIA HORA
+     */
+    if (compareAsc(parseISO(date), hourStart) === 0) {
+      if (isBefore(hourStart, new Date())) {
+        return res.status(400).json({ error: 'Past dates are not permited' });
+      }
+    }
+
+    if (compareAsc(parseISO(date), halfHour) === 0) {
+      if (isBefore(halfHour, new Date())) {
+        return res.status(400).json({ error: 'Past dates are not permited' });
+      }
     }
 
     // Checando se o provedor já não tem um agendamento marcado pro mesmo horário
     const checkAvailability = await Appointment.findOne({
-      where: { provider_id, canceled_at: null, date: hourStart },
+      where: { provider_id, canceled_at: null, date: parseISO(date) },
     });
 
     if (checkAvailability) {
@@ -113,18 +121,28 @@ class AppointmentController {
         .json({ error: 'Appointment date is not available' });
     }
 
-    // Como passou todas as verificações vou criar o agendamento na DB
     const appointment = await Appointment.create({
       user_id: req.userId,
       provider_id,
-      date: hourStart,
+      date: parseISO(date),
       cut_type,
     });
 
     /**
+     * REMOVER ESSA PARTE QUANDO EU IMPLEMENTAR A OUTRA TABELA
+     */
+    if (cut_type === 'corte e barba') {
+      await Appointment.create({
+        user_id: req.userId,
+        provider_id,
+        date: addMinutes(parseISO(date), 30),
+        cut_type,
+      });
+    }
+
+    /**
      * Notify appointment provider
      */
-
     const user = await User.findByPk(req.userId);
     const formatedDate = format(hourStart, "'dia' dd 'de' MMMM', às' H:mm'h'", {
       locale: pt,
@@ -171,6 +189,15 @@ class AppointmentController {
     }
 
     appointment.canceled_at = new Date();
+
+    if (appointment.cut_type === 'corte e barba') {
+      const nextId = Number(req.params.id) + 1;
+      const tmp = await Appointment.findByPk(nextId);
+
+      tmp.canceled_at = new Date();
+
+      await tmp.save();
+    }
 
     await appointment.save();
 

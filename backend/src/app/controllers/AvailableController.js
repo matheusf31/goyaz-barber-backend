@@ -34,20 +34,26 @@ class AvailableController {
     /** todos os horários disponíveis do prestador */
     /** podemos colocar os horários em uma tabela pro prestador escolher (fazer isso na aplicação) */
     const schedule = [
-      '8:00', // exemplo 2018-06-23 08:00:00
-      '8:30',
-      '9:00',
+      '9:00', // exemplo 2018-06-23 08:00:00
+      '9:30',
       '10:00',
+      '10:30',
       '11:00',
+      '11:30',
       '12:00',
-      '13:00',
+      '12:30',
       '14:00',
+      '14:30',
       '15:00',
+      '15:30',
       '16:00',
+      '16:30',
       '17:00',
+      '17:30',
       '18:00',
+      '18:30',
       '19:00',
-      '20:00',
+      '19:30',
     ];
 
     const available = schedule.map(time => {
