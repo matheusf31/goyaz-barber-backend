@@ -47,5 +47,9 @@
 
 ---
 
-- Sentry: ferramenta de monitaramento de erros.
+- Sentry: ferramenta de monitaramento de erros;
 - Youch: tratar as mensagens de erro.
+
+---
+
+- Dotenv: configurar as variáveis ambiente da aplicação.
