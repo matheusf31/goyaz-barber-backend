@@ -20,5 +20,6 @@ module.exports = {
     camelcase: 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: 'next' }],
     'no-underscore-dangle': 'off',
+    'no-plusplus': 'off',
   },
 };

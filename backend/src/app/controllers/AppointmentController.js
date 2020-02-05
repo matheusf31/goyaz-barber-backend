@@ -7,6 +7,7 @@ import {
   subHours,
   addMinutes,
   compareAsc,
+  subMinutes,
 } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
@@ -93,11 +94,6 @@ class AppointmentController {
     const hourStart = startOfHour(parseISO(date));
     const halfHour = addMinutes(hourStart, 30);
 
-    /**
-     * PROVAVELMENTE VOU TIRAR ESSA PARTE PQ VOU CHECAR DIRETO NA TABELA DE HORARIOS DISPONIVEIS
-     * SE EU MARCAR UM CORTE EU TENHO QUE IR NA TABELA E MARCAR LÁ COMO DISPONÍVEL
-     * SE EU MARCAR CORTE E BARBA TENHO QUE IR NA TABELA E MARCAR LÁ E MARCAR A PRÓXIMA MEIA HORA
-     */
     if (compareAsc(parseISO(date), hourStart) === 0) {
       if (isBefore(hourStart, new Date())) {
         return res.status(400).json({ error: 'Past dates are not permited' });
@@ -111,8 +107,24 @@ class AppointmentController {
     }
 
     // Checando se o provedor já não tem um agendamento marcado pro mesmo horário
-    const checkAvailability = await Appointment.findOne({
+    let checkAvailability = await Appointment.findOne({
       where: { provider_id, canceled_at: null, date: parseISO(date) },
+    });
+
+    if (checkAvailability) {
+      return res
+        .status(400)
+        .json({ error: 'Appointment date is not available' });
+    }
+
+    // Checar se o provedor não tem um 'corte e barba' 30 minutos antes desse horário
+    checkAvailability = await Appointment.findOne({
+      where: {
+        provider_id,
+        canceled_at: null,
+        date: subMinutes(parseISO(date), 30),
+        cut_type: 'corte e barba',
+      },
     });
 
     if (checkAvailability) {
@@ -127,18 +139,6 @@ class AppointmentController {
       date: parseISO(date),
       cut_type,
     });
-
-    /**
-     * REMOVER ESSA PARTE QUANDO EU IMPLEMENTAR A OUTRA TABELA
-     */
-    if (cut_type === 'corte e barba') {
-      await Appointment.create({
-        user_id: req.userId,
-        provider_id,
-        date: addMinutes(parseISO(date), 30),
-        cut_type,
-      });
-    }
 
     /**
      * Notify appointment provider

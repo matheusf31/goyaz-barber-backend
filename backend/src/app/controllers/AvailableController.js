@@ -6,6 +6,9 @@ import {
   setSeconds,
   format,
   isAfter,
+  isSaturday,
+  isSunday,
+  parseISO,
 } from 'date-fns';
 import { Op } from 'sequelize';
 import Appointment from '../models/Appointment';
@@ -31,40 +34,76 @@ class AvailableController {
       },
     });
 
-    /** todos os horários disponíveis do prestador */
-    /** podemos colocar os horários em uma tabela pro prestador escolher (fazer isso na aplicação) */
-    const schedule = [
-      '9:00', // exemplo 2018-06-23 08:00:00
-      '9:30',
-      '10:00',
-      '10:30',
-      '11:00',
-      '11:30',
-      '12:00',
-      '12:30',
-      '14:00',
-      '14:30',
-      '15:00',
-      '15:30',
-      '16:00',
-      '16:30',
-      '17:00',
-      '17:30',
-      '18:00',
-      '18:30',
-      '19:00',
-      '19:30',
-    ];
+    const cutType = await Appointment.findAll({
+      where: {
+        provider_id: req.params.providerId,
+        canceled_at: null,
+        date: {
+          [Op.between]: [startOfDay(searchDate), endOfDay(searchDate)],
+        },
+      },
+      attributes: ['date', 'cut_type'],
+    });
 
-    const available = schedule.map(time => {
-      /** 2 verificações: ja não passou ou se não está ocupado */
+    /** todos os horários disponíveis do prestador */
+    const schedule = [];
+
+    if (isSaturday(parseISO(date)) || isSunday(parseISO(date))) {
+      schedule.push(
+        '9:00',
+        '10:00',
+        '10:30',
+        '11:00',
+        '11:30',
+        '13:30',
+        '14:00',
+        '14:30',
+        '15:00',
+        '15:30',
+        '16:00',
+        '16:30',
+        '17:00'
+      );
+    } else {
+      schedule.push(
+        '9:00',
+        '9:30',
+        '10:00',
+        '10:30',
+        '11:00',
+        '11:30',
+        '13:30',
+        '14:00',
+        '14:30',
+        '15:00',
+        '15:30',
+        '16:00',
+        '16:30',
+        '17:00',
+        '17:30',
+        '18:00',
+        '18:30',
+        '19:00'
+      );
+    }
+
+    /**
+     * Verificando se o horário não passou ou se está ocupado
+     */
+    const scheduleAvailable = schedule.map(time => {
       const [hour, minute] = time.split(':');
 
-      /** setMinutes(poderia ser 30) */
       const value = setSeconds(
         setMinutes(setHours(searchDate, hour), minute),
         0
       );
+
+      let cut_type;
+      const findCutType = cutType.find(a => format(a.date, 'HH:mm') === time);
+
+      if (findCutType) {
+        cut_type = findCutType.cut_type;
+      }
 
       /** available será um vetor com vários objetos */
       return {
@@ -73,10 +112,18 @@ class AvailableController {
         available:
           isAfter(value, new Date()) &&
           !appointments.find(a => format(a.date, 'HH:mm') === time),
+        cut_type,
       };
     });
 
-    return res.json(available);
+    // percorrer available procurando o cut_type === 'corte e barba' e setando o próximo horário como available = false
+    for (let i = 0; i < scheduleAvailable.length; i++) {
+      if (scheduleAvailable[i].cut_type === 'corte e barba') {
+        scheduleAvailable[i + 1].available = false;
+      }
+    }
+
+    return res.json(scheduleAvailable);
   }
 }
 
