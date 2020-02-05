@@ -48,7 +48,11 @@ class AvailableController {
     /** todos os horários disponíveis do prestador */
     const schedule = [];
 
-    if (isSaturday(parseISO(date)) || isSunday(parseISO(date))) {
+    if (isSunday(parseISO(date))) {
+      return res.status(400).json({ error: 'Invalid date' });
+    }
+
+    if (isSaturday(parseISO(date))) {
       schedule.push(
         '9:00',
         '10:00',
