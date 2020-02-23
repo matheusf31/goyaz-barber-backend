@@ -92,9 +92,19 @@ class UserController {
       return res.status(400).json({ error: 'Avatar not found' });
     }
 
-    const { id, name, provider, phone } = await user.update(req.body);
+    await user.update(req.body);
 
-    return res.json({ id, name, email, provider, phone });
+    const { id, name, avatar, phone } = await user.findByPk(req.userId, {
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
+
+    return res.json({ id, name, email, avatar, phone });
   }
 }
 
