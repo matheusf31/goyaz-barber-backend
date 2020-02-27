@@ -1,5 +1,5 @@
 {
-  "name": "mobile",
+  "name": "goyazbarbermobile",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -24,7 +24,7 @@
     "styled-components": "^5.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.4",
+    "@babel/core": "^7.8.6",
     "@babel/runtime": "^7.8.4",
     "@react-native-community/eslint-config": "^0.0.7",
     "babel-eslint": "^10.1.0",

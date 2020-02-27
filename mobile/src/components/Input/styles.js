@@ -5,6 +5,8 @@ export const Container = styled.View`
   height: 46px;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 4px;
+  border-bottom-width: 1px;
+  border-bottom-color: #fff;
 
   flex-direction: row;
   align-items: center;
