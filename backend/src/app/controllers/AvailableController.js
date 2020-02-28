@@ -8,7 +8,6 @@ import {
   isAfter,
   isSaturday,
   isSunday,
-  parseISO,
 } from 'date-fns';
 import { Op } from 'sequelize';
 import Appointment from '../models/Appointment';

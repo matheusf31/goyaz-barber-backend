@@ -21,11 +21,6 @@ import Queue from '../../lib/Queue';
 
 class AppointmentController {
   async index(req, res) {
-    /**
-     * essa listagem é para o usuário comum
-     * a fazer: enviar o tipo do corte (só corte ou corte e barba)
-     */
-
     const { page = 1 } = req.query;
 
     // Usuário que fez o agendamento
