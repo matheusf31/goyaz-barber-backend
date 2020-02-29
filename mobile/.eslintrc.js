@@ -34,6 +34,7 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'warn',
     'react/jsx-props-no-spreading': 'off',
     'react/forbid-prop-types': 'off',
+    'prefer-object-spread': 'off',
   },
   settings: {
     'import/resolver': {
