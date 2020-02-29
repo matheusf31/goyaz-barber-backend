@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Image } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { signInRequest } from '~/store/modules/auth/actions';
 
 import Background from '~/components/Background';
@@ -23,6 +23,8 @@ export default function SingIn({ navigation }) {
 
   const [email, setEmail] = useState('');
   const [password, setpassword] = useState('');
+
+  const loading = useSelector(state => state.auth.loading);
 
   function handleSubmit() {
     dispatch(signInRequest(email, password));
@@ -64,7 +66,9 @@ export default function SingIn({ navigation }) {
             onChangeText={setpassword}
           />
 
-          <SubmitButton onPress={handleSubmit}>Acessar</SubmitButton>
+          <SubmitButton loading={loading} onPress={handleSubmit}>
+            Acessar
+          </SubmitButton>
         </Form>
 
         <SignLink
