@@ -83,18 +83,20 @@ class UserController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const checkAvatar = await File.findOne({
-      where: { id: avatar_id },
-    });
+    if (avatar_id) {
+      const checkAvatar = await File.findOne({
+        where: { id: avatar_id },
+      });
 
-    // Verifica o avatar escolhido
-    if (!(await checkAvatar)) {
-      return res.status(400).json({ error: 'Avatar not found' });
+      // Verifica o avatar escolhido
+      if (!(await checkAvatar)) {
+        return res.status(400).json({ error: 'Avatar not found' });
+      }
     }
 
     await user.update(req.body);
 
-    const { id, name, avatar, phone } = await user.findByPk(req.userId, {
+    const { id, name, avatar, phone } = await User.findByPk(req.userId, {
       include: [
         {
           model: File,
