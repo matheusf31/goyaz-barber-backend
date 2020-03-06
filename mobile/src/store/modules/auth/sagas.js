@@ -41,6 +41,7 @@ export function* signUp({ payload }) {
     });
 
     RootNavigation.navigate('SignIn');
+    Alert.alert('Conta criada com sucesso!', 'Faça seu login por gentileza.');
   } catch (err) {
     Alert.alert('Falha no cadastro, verifique seus dados!');
     yield put(signFailure());
@@ -57,14 +58,8 @@ export function setToken({ payload }) {
   }
 }
 
-export function signOut() {
-  // deslogar usuário
-  console.tron.log('Deslogar');
-}
-
 export default all([
   takeLatest('persist/REHYDRATE', setToken),
   takeLatest('@auth/SIGN_IN_REQUEST', signIn),
   takeLatest('@auth/SIGN_UP_REQUEST', signUp),
-  takeLatest('@auth/SIGN_OUT', signOut),
 ]);

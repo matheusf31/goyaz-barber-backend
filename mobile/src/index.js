@@ -14,7 +14,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <StatusBar barStyle="light-content" backgroundColor="#070707" />
+        <StatusBar barStyle="light-content" backgroundColor="#000" />
         <Routes />
       </PersistGate>
     </Provider>
