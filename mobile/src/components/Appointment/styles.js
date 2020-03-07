@@ -57,3 +57,11 @@ export const Cancel = styled.TouchableOpacity``;
 export const Contact = styled.TouchableOpacity`
   margin-right: 5px;
 `;
+
+export const CancelCancelation = styled.TouchableOpacity`
+  margin-right: 2px;
+`;
+
+export const ConfirmCancelation = styled.TouchableOpacity`
+  margin-right: 5px;
+`;
