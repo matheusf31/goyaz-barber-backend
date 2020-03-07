@@ -186,15 +186,15 @@ class AppointmentController {
     appointment.canceled_at = new Date();
 
     // caso o corte seja corte e barba tenho que deixar o próximo livre também
-    if (appointment.cut_type === 'corte e barba') {
-      const nextId = Number(req.params.id) + 1;
-      const tmp = await Appointment.findByPk(nextId);
+    // if (appointment.cut_type === 'corte e barba') {
+    //   const nextId = Number(req.params.id) + 1;
+    //   const tmp = await Appointment.findByPk(nextId);
 
-      if (tmp) {
-        tmp.canceled_at = new Date();
-        await tmp.save();
-      }
-    }
+    //   if (tmp) {
+    //     tmp.canceled_at = new Date();
+    //     await tmp.save();
+    //   }
+    // }
 
     await appointment.save();
 

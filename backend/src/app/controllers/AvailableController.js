@@ -102,7 +102,7 @@ class AvailableController {
       );
 
       let cut_type;
-      const findCutType = cutType.find(a => format(a.date, 'HH:mm') === time);
+      const findCutType = cutType.find(e => format(e.date, 'HH:mm') === time);
 
       if (findCutType) {
         cut_type = findCutType.cut_type;
