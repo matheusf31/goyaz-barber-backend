@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { withNavigationFocus } from '@react-navigation/compat';
 
 import api from '~/services/api';
 
@@ -7,10 +8,9 @@ import Appointment from '~/components/Appointment';
 
 import { Container, Title, List } from './styles';
 
-export default function Dashboard() {
+function Dashboard({ isFocused }) {
   const [appointments, setAppointments] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [confirm, setConfirm] = useState(false);
 
   async function loadAppointments() {
     const response = await api.get('appointments');
@@ -18,8 +18,22 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
+    if (isFocused) {
+      loadAppointments();
+    }
+  }, [isFocused]);
+
+  async function handleAppointmentsRefresh(Fetching) {
+    if (Fetching) {
+      setIsFetching(true);
+    }
+
     loadAppointments();
-  }, []);
+
+    if (Fetching) {
+      setIsFetching(false);
+    }
+  }
 
   async function handleCancel(id) {
     const response = await api.delete(`appointments/${id}`);
@@ -34,12 +48,8 @@ export default function Dashboard() {
           : appointment
       )
     );
-  }
 
-  async function handleRefresh() {
-    setIsFetching(true);
-    loadAppointments();
-    setIsFetching(false);
+    handleAppointmentsRefresh(false);
   }
 
   return (
@@ -49,7 +59,7 @@ export default function Dashboard() {
 
         <List
           data={appointments}
-          onRefresh={() => handleRefresh()}
+          onRefresh={() => handleAppointmentsRefresh(true)}
           refreshing={isFetching}
           keyExtractor={item => String(item.id)}
           renderItem={({ item }) => (
@@ -60,3 +70,5 @@ export default function Dashboard() {
     </Background>
   );
 }
+
+export default withNavigationFocus(Dashboard);

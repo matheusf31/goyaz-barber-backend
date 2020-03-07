@@ -12,6 +12,7 @@ import Profile from './pages/Profile';
 
 import SelectProvider from './pages/New/SelectProvider';
 import SelectDateTime from './pages/New/SelectDateTime';
+import SelectCutType from './pages/New/SelectCutType';
 import Confirm from './pages/New/Confirm';
 
 import {
@@ -22,7 +23,9 @@ import {
   stackNewOptions,
   stackSelectDateOptions,
   stackSelectProviderOptions,
-} from '~/services/routesOptions';
+  stackConfirmOptions,
+  stackSelectCutTypeOptions,
+} from '~/util/routesOptions';
 
 import { navigationRef } from './services/RootNavigation';
 
@@ -42,7 +45,16 @@ function New() {
         component={SelectDateTime}
         options={stackSelectDateOptions}
       />
-      <Stack.Screen name="Confirm" component={Confirm} />
+      <Stack.Screen
+        name="SelectCutType"
+        component={SelectCutType}
+        options={stackSelectCutTypeOptions}
+      />
+      <Stack.Screen
+        name="Confirm"
+        component={Confirm}
+        options={stackConfirmOptions}
+      />
     </Stack.Navigator>
   );
 }

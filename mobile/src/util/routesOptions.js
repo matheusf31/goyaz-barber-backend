@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import * as RootNavigation from './RootNavigation';
+import * as RootNavigation from '~/services/RootNavigation';
 
 export const tabBarOptions = {
   keyboardHidesTabBar: true,
@@ -21,6 +21,7 @@ export const tabDashboardOptions = {
 };
 
 export const tabNewOptions = {
+  unmountOnBlur: true,
   tabBarVisible: false,
   tabBarLabel: 'Agendar',
   tabBarIcon: () => <Icon name="add" size={20} color="rgba(255,255,255,0.6)" />,
@@ -60,6 +61,34 @@ export const stackSelectDateOptions = {
     <TouchableOpacity
       onPress={() => {
         RootNavigation.navigate('SelectProvider');
+      }}
+    >
+      <Icon name="chevron-left" size={20} color="#fff" />
+    </TouchableOpacity>
+  ),
+};
+
+export const stackSelectCutTypeOptions = {
+  title: 'Selecione o tipo de corte',
+  headerTitleAlign: 'center',
+  headerLeft: () => (
+    <TouchableOpacity
+      onPress={() => {
+        RootNavigation.navigate('SelectDateTime');
+      }}
+    >
+      <Icon name="chevron-left" size={20} color="#fff" />
+    </TouchableOpacity>
+  ),
+};
+
+export const stackConfirmOptions = {
+  title: 'Confirmar agendamento',
+  headerTitleAlign: 'center',
+  headerLeft: () => (
+    <TouchableOpacity
+      onPress={() => {
+        RootNavigation.navigate('SelectCutType');
       }}
     >
       <Icon name="chevron-left" size={20} color="#fff" />

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { ActivityIndicator } from 'react-native';
 import { parseISO, formatRelative } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
@@ -65,7 +66,7 @@ export default function Appointment({ data, onCancel }) {
             </CancelCancelation>
           )}
 
-          {data.cancelable && (
+          {data.cancelable && !data.canceled_at && (
             <ConfirmCancelation onPress={onCancel}>
               <WppIcon name="check" size={25} color="#54F64C" />
             </ConfirmCancelation>
@@ -73,7 +74,7 @@ export default function Appointment({ data, onCancel }) {
         </Buttons>
       ) : (
         <Buttons>
-          {data.cancelable && (
+          {!data.canceled_at && !data.past && (
             <Contact onPress={() => {}}>
               <WppIcon name="whatsapp" size={25} color="#54F64C" />
             </Contact>
@@ -89,3 +90,19 @@ export default function Appointment({ data, onCancel }) {
     </Container>
   );
 }
+
+// { loading ? (
+//   <ActivityIndicator size="small" color="#FFF" />
+// ) : (
+//   {data.cancelable && !data.canceled_at && (
+//     <CancelCancelation onPress={handleClear}>
+//       <Icon name="clear" size={25} color="#f64c75" />
+//     </CancelCancelation>
+//   )}
+
+//   {data.cancelable && (
+//     <ConfirmCancelation onPress={onCancel}>
+//       <WppIcon name="check" size={25} color="#54F64C" />
+//     </ConfirmCancelation>
+//   )}
+// )}
