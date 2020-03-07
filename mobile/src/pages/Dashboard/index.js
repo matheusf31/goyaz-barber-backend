@@ -10,6 +10,7 @@ import { Container, Title, List } from './styles';
 export default function Dashboard() {
   const [appointments, setAppointments] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
+  const [confirm, setConfirm] = useState(false);
 
   async function loadAppointments() {
     const response = await api.get('appointments');
