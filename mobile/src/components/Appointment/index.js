@@ -1,7 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Linking } from 'react-native';
-import { parseISO, formatRelative } from 'date-fns';
-import ptBR from 'date-fns/locale/pt-BR';
+import {
+  parseISO,
+  formatRelative,
+  differenceInCalendarDays,
+  format,
+} from 'date-fns';
+import pt from 'date-fns/locale/pt';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import WppIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -27,7 +32,7 @@ export default function Appointment({ data, onCancel }) {
 
   const dateParsed = useMemo(() => {
     return formatRelative(parseISO(data.date), new Date(), {
-      locale: ptBR,
+      locale: pt,
     });
   }, [data.date]);
 
@@ -77,7 +82,15 @@ export default function Appointment({ data, onCancel }) {
 
             <Info>
               <Name>{data.provider.name}</Name>
-              <Time>{dateParsed}</Time>
+              {differenceInCalendarDays(parseISO(data.date), new Date()) > 7 ? (
+                <Time>
+                  {dateParsed} -{' '}
+                  {format(parseISO(data.date), 'cccc', { locale: pt })},
+                  {format(parseISO(data.date), 'HH:mm', { locale: pt })}
+                </Time>
+              ) : (
+                <Time>{dateParsed}</Time>
+              )}
             </Info>
 
             <Buttons>

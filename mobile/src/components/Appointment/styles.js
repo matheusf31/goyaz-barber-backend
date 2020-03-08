@@ -46,7 +46,6 @@ export const Time = styled.Text`
   color: #666;
   font-size: 13px;
   margin-top: 4px;
-  margin-right: 15px;
 `;
 
 export const Buttons = styled.View`

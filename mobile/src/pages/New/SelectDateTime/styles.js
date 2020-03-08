@@ -23,6 +23,14 @@ export const Hour = styled(RectButton)`
   margin: 0 10px 20px;
 `;
 
+export const DateWeekday = styled.Text`
+  margin: -20px 0 20px;
+  align-self: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+`;
+
 export const Title = styled.Text`
   font-size: 14px;
   font-weight: bold;
