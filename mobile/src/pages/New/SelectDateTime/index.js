@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Alert } from 'react-native';
+
+import { isSunday, addDays } from 'date-fns';
 
 import api from '~/services/api';
 
@@ -12,6 +14,11 @@ export default function SelectDateTime({ navigation, route }) {
   const [hours, setHours] = useState([]);
 
   const { provider } = route.params;
+  const prevDate = usePrevious(date);
+
+  if (isSunday(date) && !prevDate) {
+    setDate(addDays(date, 1));
+  }
 
   useEffect(() => {
     async function loadAvailable() {
@@ -24,22 +31,29 @@ export default function SelectDateTime({ navigation, route }) {
 
         setHours(response.data);
       } catch (err) {
+        if (prevDate) {
+          setDate(prevDate);
+        }
+
         Alert.alert(
           'Data invalida',
-          'O barbeiro não está disponível nesta data'
+          'O barbeiro não está disponível nesta data.'
         );
       }
     }
 
     loadAvailable();
-  }, [date, provider.id]);
+  }, [date, provider.id, prevDate]);
 
-  // function handleSelectHour(time) {
-  //   navigation.navigate('Confirm', {
-  //     provider,
-  //     time,
-  //   });
-  // }
+  function usePrevious(value) {
+    const ref = useRef();
+
+    useEffect(() => {
+      ref.current = value;
+    }, [value]);
+
+    return ref.current;
+  }
 
   function handleSelectHour(time) {
     navigation.navigate('SelectCutType', {
@@ -63,7 +77,7 @@ export default function SelectDateTime({ navigation, route }) {
               }}
               enabled={item.available}
             >
-              <Title>{item.time}</Title>
+              <Title enabled={item.available}>{item.time}</Title>
             </Hour>
           )}
         />

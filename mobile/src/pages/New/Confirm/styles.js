@@ -26,7 +26,7 @@ export const Name = styled.Text`
 export const Time = styled.Text`
   margin-top: 10px;
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.9);
 `;
 
 export const SubmitButton = styled(Button)`

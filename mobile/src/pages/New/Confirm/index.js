@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { formatRelative, parseISO } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import ptBR from 'date-fns/locale/pt-BR';
 
 import api from '~/services/api';
 
@@ -15,7 +15,10 @@ export default function Confirm({ navigation, route }) {
   const { cut_type } = route.params;
 
   const dateFormatted = useMemo(
-    () => formatRelative(parseISO(time), new Date(), { locale: pt }),
+    () =>
+      formatRelative(parseISO(time), new Date(), {
+        locale: ptBR,
+      }),
     [time]
   );
 
@@ -44,7 +47,7 @@ export default function Confirm({ navigation, route }) {
         />
 
         <Name>{provider.name}</Name>
-
+        <Time>{cut_type}</Time>
         <Time>{dateFormatted}</Time>
 
         <SubmitButton onPress={handleAddAppointments}>

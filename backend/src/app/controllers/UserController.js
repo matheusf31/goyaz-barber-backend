@@ -46,7 +46,9 @@ class UserController {
 
     const schema = Yup.object().shape({
       name: Yup.string(),
-      email: Yup.string().email(),
+      email: Yup.string()
+        .email()
+        .required(),
       phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
       oldPassword: Yup.string().min(6),
       password: Yup.string()

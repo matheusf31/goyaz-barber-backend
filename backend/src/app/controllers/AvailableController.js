@@ -53,7 +53,8 @@ class AvailableController {
 
     if (isSaturday(searchDate)) {
       schedule.push(
-        '9:00',
+        '09:00',
+        '09:30',
         '10:00',
         '10:30',
         '11:00',
@@ -69,8 +70,8 @@ class AvailableController {
       );
     } else {
       schedule.push(
-        '9:00',
-        '9:30',
+        '09:00',
+        '09:30',
         '10:00',
         '10:30',
         '11:00',
@@ -102,7 +103,7 @@ class AvailableController {
       );
 
       let cut_type;
-      const findCutType = cutType.find(e => format(e.date, 'HH:mm') === time);
+      const findCutType = cutType.find(a => format(a.date, 'HH:mm') === time);
 
       if (findCutType) {
         cut_type = findCutType.cut_type;

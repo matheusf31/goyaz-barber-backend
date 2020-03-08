@@ -24,7 +24,7 @@ export default function SelectCutType({ navigation, route }) {
         <CutTypeList
           data={cuts}
           keyExtractor={(item, index) => item[index]}
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             <Cut
               onPress={() => {
                 handleSelectCutType(item);

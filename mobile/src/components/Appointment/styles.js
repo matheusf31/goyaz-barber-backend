@@ -14,7 +14,7 @@ export const Container = styled.View`
   opacity: ${props => (props.past ? 0.6 : 1)};
 `;
 
-export const Left = styled.View`
+export const Box = styled.View`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -29,7 +29,11 @@ export const Avatar = styled.Image`
 export const Info = styled.View`
   flex: 1;
   margin-left: 15px;
-  max-width: 66%;
+  max-width: 65%;
+`;
+
+export const InfoCancelation = styled.View`
+  flex: 1;
 `;
 
 export const Name = styled.Text`
@@ -49,7 +53,13 @@ export const Buttons = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-left: -20px;
+`;
+
+export const TextCancelation = styled.Text`
+  align-self: center;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
 `;
 
 export const Cancel = styled.TouchableOpacity``;
