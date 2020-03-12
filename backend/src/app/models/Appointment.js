@@ -8,6 +8,8 @@ class Appointment extends Model {
         date: Sequelize.DATE,
         canceled_at: Sequelize.DATE,
         cut_type: Sequelize.STRING,
+        concluded: Sequelize.BOOLEAN,
+        cost: Sequelize.STRING,
         past: {
           type: Sequelize.VIRTUAL,
           get() {

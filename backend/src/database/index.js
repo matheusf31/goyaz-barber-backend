@@ -8,10 +8,11 @@ import mongoose from 'mongoose';
 import User from '../app/models/User';
 import File from '../app/models/File';
 import Appoitment from '../app/models/Appointment';
+import Concluded from '../app/models/Concluded';
 
 import databaseConfig from '../config/database';
 
-const models = [User, File, Appoitment];
+const models = [User, File, Appoitment, Concluded];
 
 class Database {
   constructor() {

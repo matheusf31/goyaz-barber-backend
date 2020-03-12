@@ -25,6 +25,11 @@ module.exports = {
         defaultValue: false,
         allowNull: false,
       },
+      banned: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
       phone: {
         type: Sequelize.STRING,
         allowNull: false,

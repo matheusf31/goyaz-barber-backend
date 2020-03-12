@@ -29,7 +29,7 @@ class AppointmentController {
       order: ['date'],
       limit: 20,
       offset: (page - 1) * 20, // pular (ou não) 20 registros para listar apenas 20
-      attributes: ['id', 'date', 'cut_type', 'past', 'cancelable'],
+      attributes: ['id', 'date', 'cut_type', 'past', 'cancelable', 'cost'],
       include: [
         {
           model: User, // para retornar os dados do relacionamento
@@ -128,11 +128,15 @@ class AppointmentController {
         .json({ error: 'Appointment date is not available' });
     }
 
+    // extrair o custo do serviço
+    const cost = cut_type === 'corte' ? '25,00' : '35:00';
+
     const appointment = await Appointment.create({
       user_id: req.userId,
       provider_id,
       date: parseISO(date),
       cut_type,
+      cost,
     });
 
     /**

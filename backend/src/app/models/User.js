@@ -16,6 +16,7 @@ class User extends Model {
         password_hash: Sequelize.STRING,
         provider: Sequelize.BOOLEAN,
         phone: Sequelize.STRING,
+        banned: Sequelize.BOOLEAN,
       },
       {
         sequelize,
