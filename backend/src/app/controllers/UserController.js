@@ -1,8 +1,31 @@
 import * as Yup from 'yup';
 import User from '../models/User';
+import Concluded from '../models/Concluded';
 import File from '../models/File';
 
 class UserController {
+  async index(req, res) {
+    const users = await User.findAll({
+      where: {
+        provider: false,
+      },
+      attributes: ['id', 'name', 'email', 'phone', 'concluded_appointments'],
+    });
+
+    // https://medium.com/@oieduardorabelo/javascript-armadilhas-do-asyn-await-em-loops-1cdad44db7f0
+    const promises = users.map(async user => {
+      const total = await Concluded.findAll({ where: { user_id: user.id } });
+
+      if (total) {
+        user.concluded_appointments = total.length;
+      }
+    });
+
+    await Promise.all(promises);
+
+    return res.json(users);
+  }
+
   async store(req, res) {
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -40,7 +63,6 @@ class UserController {
     return res.json({ id, name, email, provider, phone });
   }
 
-  // Usuário tem que estar logado
   async update(req, res) {
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -109,6 +131,10 @@ class UserController {
     });
 
     return res.json({ id, name, email, avatar, phone });
+  }
+
+  async delete(req, res) {
+    return res.json({ ok: true });
   }
 }
 

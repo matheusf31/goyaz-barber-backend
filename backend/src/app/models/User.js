@@ -12,11 +12,12 @@ class User extends Model {
       {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
-        password: Sequelize.VIRTUAL, // VIRTUAL -> um campo que nunca vai existir na base de dados
+        password: Sequelize.VIRTUAL,
         password_hash: Sequelize.STRING,
         provider: Sequelize.BOOLEAN,
         phone: Sequelize.STRING,
         banned: Sequelize.BOOLEAN,
+        concluded_appointments: Sequelize.INTEGER,
       },
       {
         sequelize,

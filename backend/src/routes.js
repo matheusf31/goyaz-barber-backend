@@ -22,7 +22,9 @@ routes.post('/sessions', SessionController.store);
 
 routes.use(authMiddleware);
 
+routes.get('/users', UserController.index);
 routes.put('/users', UserController.update);
+routes.delete('/users/:id', UserController.delete);
 
 routes.get('/providers', ProviderController.index);
 routes.get('/providers/:providerId/available', AvailableController.index);
@@ -38,6 +40,7 @@ routes.put('/notifications/:id', NotificationController.update);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
+routes.get('/concluded', ConcludedController.index);
 routes.post('/concluded', ConcludedController.store);
 
 export default routes;

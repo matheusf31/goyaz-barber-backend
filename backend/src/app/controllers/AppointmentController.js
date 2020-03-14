@@ -60,6 +60,10 @@ class AppointmentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
+    /**
+     * checar se o usuário tem um agendamento na mesma semana (não faz sentido ele marcar dois horários pra mesma semana)
+     */
+
     const { provider_id, date, cut_type } = req.body;
 
     // Checando se provider_id é um provedor

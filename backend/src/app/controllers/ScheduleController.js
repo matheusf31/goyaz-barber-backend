@@ -2,7 +2,7 @@
  * Listar os agendamentos para o provedor (específico para ele)
  */
 
-import { startOfDay, endOfDay, parseISO } from 'date-fns';
+import { startOfMonth, endOfMonth, parseISO } from 'date-fns';
 import { Op } from 'sequelize';
 
 import Appointment from '../models/Appointment';
@@ -10,7 +10,7 @@ import User from '../models/User';
 
 class ScheduleController {
   /**
-   * Listar agendamentos do dia que ele quer listar
+   * Listar agendamentos do mês
    */
   async index(req, res) {
     const checkUserProvider = await User.findOne({
@@ -24,7 +24,6 @@ class ScheduleController {
       return res.status(401).json({ error: 'User is not a provider' });
     }
 
-    // Olhar o campo query no insomnia
     const { date } = req.query;
 
     // Pegar apenas o dia do date
@@ -35,14 +34,14 @@ class ScheduleController {
         provider_id: req.userId,
         canceled_at: null,
         date: {
-          [Op.between]: [startOfDay(parsedDate), endOfDay(parsedDate)],
+          [Op.between]: [startOfMonth(parsedDate), endOfMonth(parsedDate)],
         },
       },
       include: [
         {
           model: User,
           as: 'user',
-          attributes: ['name'],
+          attributes: ['name', 'email', 'phone'],
         },
       ],
       order: ['date'],

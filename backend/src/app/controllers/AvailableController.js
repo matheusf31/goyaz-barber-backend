@@ -20,7 +20,6 @@ class AvailableController {
       return res.status(400).json({ error: 'Invalid date' });
     }
 
-    // exemplo 2018-06-23 17:59:33
     const searchDate = Number(date);
 
     const appointments = await Appointment.findAll({
