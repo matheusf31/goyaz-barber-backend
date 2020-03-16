@@ -82,7 +82,7 @@ export default function Appointment({ data, onCancel }) {
 
             <Info>
               <Name>{data.provider.name}</Name>
-              {differenceInCalendarDays(parseISO(data.date), new Date()) > 7 ? (
+              {differenceInCalendarDays(parseISO(data.date), new Date()) > 6 ? (
                 <Time>
                   {dateParsed} -{' '}
                   {format(parseISO(data.date), 'cccc', { locale: pt })},
@@ -91,13 +91,16 @@ export default function Appointment({ data, onCancel }) {
               ) : (
                 <Time>{dateParsed}</Time>
               )}
+              <Time>Contato: {data.provider.phone}</Time>
             </Info>
 
             <Buttons>
               {!data.canceled_at && !data.past && (
                 <Contact
                   onPress={() => {
-                    Linking.openURL('whatsapp://send?phone=5562993961282');
+                    Linking.openURL(
+                      `whatsapp://send?phone=55${data.provider.phone}`
+                    );
                   }}
                 >
                   <WppIcon name="whatsapp" size={25} color="#54F64C" />

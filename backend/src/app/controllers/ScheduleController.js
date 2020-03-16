@@ -49,6 +49,13 @@ class ScheduleController {
 
     return res.json(appointment);
   }
+
+  /**
+   * Provedor fazer agendamento manual
+   */
+  async store(req, res) {
+    return res.json({ ok: true });
+  }
 }
 
 export default new ScheduleController();

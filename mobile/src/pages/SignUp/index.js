@@ -27,7 +27,7 @@ export default function SingUp({ navigation }) {
   const phoneRef = useRef();
 
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState('62');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -65,7 +65,7 @@ export default function SingUp({ navigation }) {
             icon="call"
             autoCorrect={false}
             autoCapitalize="none"
-            placeholder="telefone"
+            placeholder="62 + seu número"
             keyboardType="numeric"
             ref={phoneRef}
             returnKeyType="next"

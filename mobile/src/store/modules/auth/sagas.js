@@ -16,13 +16,13 @@ export function* signIn({ payload }) {
 
     if (user.provider) {
       Alert.alert('Usuário é um prestador de serviço');
-      return;
+      yield put(signFailure());
+    } else {
+      // settar informações que serão utilizadas em todas as requisições
+      api.defaults.headers.Authorization = `Bearer ${token}`;
+
+      yield put(signInSuccess(token, user));
     }
-
-    // settar informações que serão utilizadas em todas as requisições
-    api.defaults.headers.Authorization = `Bearer ${token}`;
-
-    yield put(signInSuccess(token, user));
   } catch (err) {
     Alert.alert('Falha na autenticação, verifique seus dados');
     yield put(signFailure());
