@@ -34,7 +34,7 @@ class AppointmentController {
         {
           model: User, // para retornar os dados do relacionamento
           as: 'provider', // qual dos relacionamentos
-          attributes: ['id', 'name'], // quais atributos que quero buscar
+          attributes: ['id', 'name', 'phone'], // quais atributos que quero buscar
           include: [
             {
               model: File, // para retornar o avatar do provedor
