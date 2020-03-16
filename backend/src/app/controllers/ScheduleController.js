@@ -21,7 +21,7 @@ class ScheduleController {
     });
 
     if (!checkUserProvider) {
-      return res.status(401).json({ error: 'User is not a provider' });
+      return res.status(401).json({ error: 'Usuário não é um provedor' });
     }
 
     const { date } = req.query;

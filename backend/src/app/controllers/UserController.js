@@ -39,12 +39,14 @@ class UserController {
         .min(6),
       phone: Yup.string()
         .required()
-        .matches(phoneRegExp, 'Phone number is not valid'),
+        .matches(phoneRegExp, 'Número de telefone inválido'),
     });
 
     // Se retornar false é pq o body não está valido e entra no if
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res
+        .status(400)
+        .json({ error: 'Erro de validação. Verifique seus dados.' });
     }
 
     const userExists = await User.findOne({
@@ -55,7 +57,7 @@ class UserController {
 
     // Interrompe o fluxo se já existir um usuário
     if (userExists) {
-      return res.status(400).json({ error: 'User already exists.' });
+      return res.status(400).json({ error: 'Usuário já existe.' });
     }
 
     const { id, name, email, provider, phone } = await User.create(req.body);
@@ -134,7 +136,23 @@ class UserController {
   }
 
   async delete(req, res) {
-    return res.json({ ok: true });
+    const { id } = req.params;
+
+    if (Number(id) === req.userId) {
+      return res.status(400).json({ error: 'Você não pode se banir!' });
+    }
+
+    const user = await User.findByPk(req.params.id);
+
+    if (!user) {
+      return res.status(401).json({ error: 'Usuário não foi encontrado' });
+    }
+
+    user.banned = true;
+
+    user.save();
+
+    return res.json(user);
   }
 }
 

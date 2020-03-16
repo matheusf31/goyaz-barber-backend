@@ -13,20 +13,23 @@ import AvailableController from './app/controllers/AvailableController';
 import ConcludedController from './app/controllers/ConcludedController';
 
 import authMiddleware from './app/middlewares/auth';
+import bannedMiddleware from './app/middlewares/banned';
 
 const routes = new Router();
 const upload = multer(multerConfig);
 
 routes.post('/users', UserController.store);
-routes.post('/sessions', SessionController.store);
+routes.post('/sessions', bannedMiddleware, SessionController.store);
 
 routes.use(authMiddleware);
+routes.use(bannedMiddleware);
 
 routes.get('/users', UserController.index);
 routes.put('/users', UserController.update);
 routes.delete('/users/:id', UserController.delete);
 
 routes.get('/providers', ProviderController.index);
+routes.post('/providers', ProviderController.store);
 routes.get('/providers/:providerId/available', AvailableController.index);
 
 routes.get('/appointments', AppointmentController.index);

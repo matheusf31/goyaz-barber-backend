@@ -178,7 +178,7 @@ class AppointmentController {
     // Se ele não é o dono do agendamento ele não pode cancelar
     if (appointment.user_id !== req.userId) {
       return res.status(401).json({
-        error: "You don't have permission to cancel this appointment.",
+        error: 'Você não tem permissão para cancelar este agendamento.',
       });
     }
 
@@ -187,7 +187,8 @@ class AppointmentController {
 
     if (isBefore(dateWithSub, new Date())) {
       return res.status(401).json({
-        error: 'You can only cancel appointments 2 hour in advance.',
+        error:
+          'Você só pode cancelar agendamentos que estão há 2 horas do horário atual.',
       });
     }
 
