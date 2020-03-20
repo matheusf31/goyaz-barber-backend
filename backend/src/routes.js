@@ -27,7 +27,6 @@ routes.use(bannedMiddleware);
 
 routes.get('/users', UserController.index);
 routes.put('/users', UserController.update);
-routes.delete('/users/:id', UserController.delete);
 
 routes.get('/providers', ProviderController.index);
 routes.post('/providers', ProviderController.store);
@@ -45,7 +44,7 @@ routes.put('/notifications/:id', NotificationController.update);
 routes.post('/files', upload.single('file'), FileController.store);
 
 routes.get('/concluded', ConcludedController.index);
-routes.post('/concluded', ConcludedController.store);
+routes.post('/concluded/:id', ConcludedController.store);
 
 routes.delete('/ban/:id', BanController.delete);
 

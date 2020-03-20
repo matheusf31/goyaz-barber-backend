@@ -36,14 +36,6 @@ export default function Appointment({ data, onCancel }) {
     });
   }, [data.date]);
 
-  function handleCancel() {
-    setConfirm(true);
-  }
-
-  function handleClear() {
-    setConfirm(false);
-  }
-
   return (
     <Container past={data.past}>
       <Box>
@@ -55,14 +47,14 @@ export default function Appointment({ data, onCancel }) {
 
             <Buttons>
               {data.cancelable && !data.canceled_at && (
-                <CancelCancelation onPress={handleClear}>
+                <CancelCancelation onPress={() => setConfirm(false)}>
                   <Icon name="clear" size={25} color="#f64c75" />
                 </CancelCancelation>
               )}
 
               {data.cancelable && !data.canceled_at && (
                 <ConfirmCancelation onPress={onCancel}>
-                  <WppIcon name="check" size={25} color="#54F64C" />
+                  <Icon name="check" size={25} color="#54F64C" />
                 </ConfirmCancelation>
               )}
             </Buttons>
@@ -108,7 +100,7 @@ export default function Appointment({ data, onCancel }) {
               )}
 
               {data.cancelable && !data.canceled_at && (
-                <Cancel onPress={handleCancel}>
+                <Cancel onPress={() => setConfirm(true)}>
                   <Icon name="event-busy" size={25} color="#f64c75" />
                 </Cancel>
               )}

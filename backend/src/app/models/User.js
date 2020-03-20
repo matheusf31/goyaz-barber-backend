@@ -17,7 +17,8 @@ class User extends Model {
         provider: Sequelize.BOOLEAN,
         phone: Sequelize.STRING,
         banned: Sequelize.BOOLEAN,
-        concluded_appointments: Sequelize.INTEGER,
+        concluded_appointments: Sequelize.VIRTUAL,
+        admin: Sequelize.BOOLEAN,
       },
       {
         sequelize,

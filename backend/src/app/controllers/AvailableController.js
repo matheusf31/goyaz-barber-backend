@@ -11,6 +11,8 @@ import {
 } from 'date-fns';
 import { Op } from 'sequelize';
 import Appointment from '../models/Appointment';
+import User from '../models/User';
+import File from '../models/File';
 
 class AvailableController {
   async index(req, res) {
@@ -30,6 +32,29 @@ class AvailableController {
           [Op.between]: [startOfDay(searchDate), endOfDay(searchDate)],
         },
       },
+      attributes: [
+        'id',
+        'date',
+        'cut_type',
+        'cost',
+        'past',
+        'cancelable',
+        'concluded',
+      ],
+      include: [
+        {
+          model: User, // para retornar os dados do relacionamento
+          as: 'user', // qual dos relacionamentos
+          attributes: ['name', 'phone'], // quais atributos que quero buscar
+          include: [
+            {
+              model: File, // para retornar o avatar do provedor
+              as: 'avatar',
+              attributes: ['id', 'path', 'url'],
+            },
+          ],
+        },
+      ],
     });
 
     const cutType = await Appointment.findAll({
@@ -116,6 +141,7 @@ class AvailableController {
           isAfter(value, new Date()) &&
           !appointments.find(a => format(a.date, 'HH:mm') === time),
         cut_type,
+        appointment: appointments.find(a => format(a.date, 'HH:mm') === time),
       };
     });
 

@@ -134,26 +134,6 @@ class UserController {
 
     return res.json({ id, name, email, avatar, phone });
   }
-
-  async delete(req, res) {
-    // const { id } = req.params;
-
-    // if (Number(id) === req.userId) {
-    //   return res.status(400).json({ error: 'Você não pode se banir!' });
-    // }
-
-    // const user = await User.findByPk(id);
-
-    // if (!user) {
-    //   return res.status(401).json({ error: 'Usuário não foi encontrado' });
-    // }
-
-    // user.banned = true;
-
-    // user.save();
-
-    return res.json({ ok: true });
-  }
 }
 
 export default new UserController();

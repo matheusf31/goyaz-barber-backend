@@ -74,14 +74,14 @@ class AppointmentController {
     if (!checkIsProvider) {
       return res
         .status(401)
-        .json({ error: 'You can only appointment with providers' });
+        .json({ error: 'Você só pode marcar com provedores' });
     }
 
     // Checando se o provider não é o mesmo usuário
     if (provider_id === req.userId) {
-      return res
-        .status(401)
-        .json({ error: 'Você não pode marcar com você mesmo' });
+      return res.status(401).json({
+        error: 'Você não pode marcar com você mesmo',
+      });
     }
 
     // Checando se o cut type foi inserido
@@ -176,19 +176,19 @@ class AppointmentController {
     });
 
     // Se ele não é o dono do agendamento ele não pode cancelar
-    if (appointment.user_id !== req.userId) {
-      return res.status(401).json({
-        error: 'Você não tem permissão para cancelar este agendamento.',
-      });
-    }
+    // if (appointment.user_id !== req.userId) {
+    //   return res.status(401).json({
+    //     error: 'Você não tem permissão para cancelar este agendamento.',
+    //   });
+    // }
 
     // Agendamentos só poderão ser cancelados com no máximo 2 horas de antecedência
-    const dateWithSub = subHours(appointment.date, 2);
+    const dateWithSub = subHours(appointment.date, 1);
 
     if (isBefore(dateWithSub, new Date())) {
       return res.status(401).json({
         error:
-          'Você só pode cancelar agendamentos que estão há 2 horas do horário atual.',
+          'Você só pode cancelar agendamentos que estão a mais de 1 hora do horário atual.',
       });
     }
 

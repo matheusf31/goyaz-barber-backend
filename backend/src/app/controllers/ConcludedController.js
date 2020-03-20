@@ -24,15 +24,16 @@ class ConcludedController {
           [Op.between]: [startOfMonth(searchDate), endOfMonth(searchDate)],
         },
       },
+      attributes: ['id', 'date', 'cut_type', 'cost', 'user_id', 'provider_id'],
     });
 
     return res.json(appointments);
   }
 
   async store(req, res) {
-    const { appointment_id } = req.body;
+    const { id } = req.params;
 
-    const appointment = await Appointment.findByPk(appointment_id);
+    const appointment = await Appointment.findByPk(id);
 
     if (!appointment) {
       return res.status(401).json({ error: 'Appointment not found' });
@@ -43,7 +44,7 @@ class ConcludedController {
     appointment.save();
 
     const concluded = await Concluded.create({
-      appointment_id,
+      appointment_id: id,
       user_id: appointment.user_id,
       provider_id: appointment.provider_id,
       date: appointment.date,

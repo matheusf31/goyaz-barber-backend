@@ -18,6 +18,10 @@ class BanController {
       return res.status(400).json({ error: 'Usuário já foi banido' });
     }
 
+    if (user.admin) {
+      return res.status(400).json({ error: 'Usuário não pode ser banido' });
+    }
+
     user.banned = true;
 
     user.save();
