@@ -10,6 +10,7 @@ class Appointment extends Model {
         cut_type: Sequelize.STRING,
         concluded: Sequelize.BOOLEAN,
         cost: Sequelize.STRING,
+        client_name: Sequelize.STRING,
         past: {
           type: Sequelize.VIRTUAL,
           get() {

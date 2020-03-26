@@ -28,7 +28,7 @@ function Dashboard({ isFocused }) {
       setIsFetching(true);
     }
 
-    loadAppointments();
+    await loadAppointments();
 
     if (Fetching) {
       setIsFetching(false);

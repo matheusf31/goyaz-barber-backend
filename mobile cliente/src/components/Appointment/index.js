@@ -83,7 +83,7 @@ export default function Appointment({ data, onCancel }) {
               ) : (
                 <Time>{dateParsed}</Time>
               )}
-              <Time>Contato: {data.provider.phone}</Time>
+              <Time>contato: {data.provider.phone}</Time>
             </Info>
 
             <Buttons>

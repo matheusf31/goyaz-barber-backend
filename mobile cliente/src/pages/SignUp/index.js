@@ -53,8 +53,8 @@ export default function SingUp({ navigation }) {
           <FormInput
             icon="person-outline"
             autoCorrect={false}
-            autoCapitalize="none"
-            placeholder="Nome completo"
+            autoCapitalize="words"
+            placeholder="Nome"
             returnKeyType="next"
             onSubmitEditing={() => phoneRef.current.focus()}
             value={name}

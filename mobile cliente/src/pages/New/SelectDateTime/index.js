@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Alert } from 'react-native';
 
-import { isSunday, addDays, format } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import { isSunday, addDays } from 'date-fns';
 
 import api from '~/services/api';
 
 import Background from '~/components/Background';
 import DateInput from '~/components/DateInput';
-import { Container, HourList, Hour, Title, DateWeekday } from './styles';
+import { Container, HourList, Hour, Title } from './styles';
 
 export default function SelectDateTime({ navigation, route }) {
   const [date, setDate] = useState(new Date());
@@ -67,8 +66,6 @@ export default function SelectDateTime({ navigation, route }) {
     <Background>
       <Container>
         <DateInput date={date} onChange={setDate} />
-
-        <DateWeekday>{format(date, 'cccc', { locale: pt })}</DateWeekday>
 
         <HourList
           data={hours}

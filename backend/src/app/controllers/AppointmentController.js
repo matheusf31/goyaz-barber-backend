@@ -165,7 +165,7 @@ class AppointmentController {
         {
           model: User,
           as: 'provider',
-          attributes: ['name', 'email'],
+          attributes: ['id', 'name', 'email'],
         },
         {
           model: User,
@@ -175,17 +175,13 @@ class AppointmentController {
       ],
     });
 
-    // Se ele não é o dono do agendamento ele não pode cancelar
-    // if (appointment.user_id !== req.userId) {
-    //   return res.status(401).json({
-    //     error: 'Você não tem permissão para cancelar este agendamento.',
-    //   });
-    // }
-
     // Agendamentos só poderão ser cancelados com no máximo 2 horas de antecedência
     const dateWithSub = subHours(appointment.date, 1);
 
-    if (isBefore(dateWithSub, new Date())) {
+    if (
+      isBefore(dateWithSub, new Date()) &&
+      req.userId !== appointment.provider.id
+    ) {
       return res.status(401).json({
         error:
           'Você só pode cancelar agendamentos que estão a mais de 1 hora do horário atual.',

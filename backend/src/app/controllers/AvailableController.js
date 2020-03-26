@@ -40,6 +40,7 @@ class AvailableController {
         'past',
         'cancelable',
         'concluded',
+        'client_name',
       ],
       include: [
         {

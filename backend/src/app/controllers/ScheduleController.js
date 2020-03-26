@@ -2,7 +2,7 @@
  * Listar os agendamentos para o provedor (específico para ele)
  */
 
-import { startOfMonth, endOfMonth, parseISO } from 'date-fns';
+import { startOfMonth, endOfMonth, parseISO, addMinutes } from 'date-fns';
 import { Op } from 'sequelize';
 
 import Appointment from '../models/Appointment';
@@ -54,7 +54,54 @@ class ScheduleController {
    * Provedor fazer agendamento manual
    */
   async store(req, res) {
-    return res.json({ ok: true });
+    const { date, cut_type, email } = req.body;
+    let { client_name } = req.body;
+    const provider_id = req.userId;
+
+    let user_id = null;
+
+    if (email) {
+      const user = await User.findOne({ where: { email } });
+
+      if (user) {
+        user_id = user.id;
+        client_name = user.name;
+      } else {
+        return res.status(400).json({ error: 'Usuário não encontrado' });
+      }
+    } else if (!client_name) {
+      return res.status(400).json({ error: 'Insira um nome' });
+    }
+
+    // Checando se o cut type foi inserido
+    if (!cut_type) {
+      return res.status(400).json({ error: 'Insira o tipo de corte' });
+    }
+
+    const checkAvailable = await Appointment.findOne({
+      where: {
+        provider_id: req.userId,
+        canceled_at: null,
+        date: addMinutes(parseISO(date), 30),
+      },
+    });
+
+    if (checkAvailable) {
+      return res.status(400).json({ error: 'Erro ao marcar corte e barba' });
+    }
+
+    const cost = cut_type === 'corte' ? '25,00' : '35:00';
+
+    const appointment = await Appointment.create({
+      user_id,
+      provider_id,
+      date: parseISO(date),
+      cut_type,
+      cost,
+      client_name,
+    });
+
+    return res.json(appointment);
   }
 }
 
