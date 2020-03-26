@@ -33,6 +33,7 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'prefer-object-spread': 'off',
+    'react/prop-types': 'off',
   },
   settings: {
     'import/resolver': {

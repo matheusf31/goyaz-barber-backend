@@ -65,7 +65,7 @@ export default function Profile() {
           <FormInput
             icon="person-outline"
             autoCorrect={false}
-            autoCapitalize="none"
+            autoCapitalize="words"
             placeholder="Nome completo"
             returnKeyType="next"
             onSubmitEditing={() => phoneRef.current.focus()}

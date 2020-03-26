@@ -8,55 +8,19 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SignIn from './pages/SignIn';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
-
-import SelectProvider from './pages/New/SelectProvider';
-import SelectDateTime from './pages/New/SelectDateTime';
-import SelectCutType from './pages/New/SelectCutType';
-import Confirm from './pages/New/Confirm';
+import Graphic from './pages/Graphic';
 
 import {
   tabBarOptions,
   tabDashboardOptions,
-  tabNewOptions,
   tabProfileOptions,
-  stackNewOptions,
-  stackSelectDateOptions,
-  stackSelectProviderOptions,
-  stackConfirmOptions,
-  stackSelectCutTypeOptions,
+  tabGraphicOptions,
 } from '~/util/routesOptions';
 
 import { navigationRef } from './services/RootNavigation';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-function New() {
-  return (
-    <Stack.Navigator screenOptions={stackNewOptions}>
-      <Stack.Screen
-        name="SelectProvider"
-        component={SelectProvider}
-        options={stackSelectProviderOptions}
-      />
-      <Stack.Screen
-        name="SelectDateTime"
-        component={SelectDateTime}
-        options={stackSelectDateOptions}
-      />
-      <Stack.Screen
-        name="SelectCutType"
-        component={SelectCutType}
-        options={stackSelectCutTypeOptions}
-      />
-      <Stack.Screen
-        name="Confirm"
-        component={Confirm}
-        options={stackConfirmOptions}
-      />
-    </Stack.Navigator>
-  );
-}
 
 function App() {
   return (
@@ -66,7 +30,11 @@ function App() {
         component={Dashboard}
         options={tabDashboardOptions}
       />
-      <Tab.Screen name="New" component={New} options={tabNewOptions} />
+      <Tab.Screen
+        name="Graphic"
+        component={Graphic}
+        options={tabGraphicOptions}
+      />
       <Tab.Screen
         name="Profile"
         component={Profile}

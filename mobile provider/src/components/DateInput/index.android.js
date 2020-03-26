@@ -12,7 +12,7 @@ export default function DateInput({ date, onChange }) {
   const [opened, setOpened] = useState(false);
 
   const dateFormatted = useMemo(
-    () => format(date, "dd 'de' MMM 'de' yyyy", { locale: pt }),
+    () => format(date, "dd 'de' MMM 'de' yyyy',' cccc", { locale: pt }),
     [date]
   );
 
@@ -36,7 +36,7 @@ export default function DateInput({ date, onChange }) {
         <DateTimePicker
           value={date}
           onChange={handleChange}
-          minimumDate={new Date()}
+          minimumDate={new Date(2020, 0, 1)}
           minuteInterval={30}
           locale="pt-BR"
           mode="date"

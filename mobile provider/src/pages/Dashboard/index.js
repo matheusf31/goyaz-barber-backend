@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Alert } from 'react-native';
-import { isSunday, addDays, format } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import { isSunday, addDays } from 'date-fns';
 
 import { useSelector } from 'react-redux';
 
@@ -11,11 +10,12 @@ import Background from '~/components/Background';
 import DateInput from '~/components/DateInput';
 import Appointments from '~/components/Appointments';
 
-import { Container, HourList, Title, DateWeekday } from './styles';
+import { Container, HourList, Title } from './styles';
 
 export default function Dashboard() {
   const [date, setDate] = useState(new Date());
   const [hours, setHours] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
 
   const provider = useSelector(state => state.user.profile);
   const prevDate = usePrevious(date);
@@ -59,6 +59,18 @@ export default function Dashboard() {
     return ref.current;
   }
 
+  function handleHoursRefresh(Fetching) {
+    if (Fetching) {
+      setIsFetching(true);
+    }
+
+    loadAvailable();
+
+    if (Fetching) {
+      setIsFetching(false);
+    }
+  }
+
   return (
     <Background>
       <Container>
@@ -66,10 +78,10 @@ export default function Dashboard() {
 
         <DateInput date={date} onChange={setDate} />
 
-        <DateWeekday>{format(date, 'cccc', { locale: pt })}</DateWeekday>
-
         <HourList
           data={hours}
+          onRefresh={() => handleHoursRefresh(true)}
+          refreshing={isFetching}
           keyExtractor={item => item.time}
           renderItem={({ item }) => (
             <Appointments data={item} reload={loadAvailable} />
