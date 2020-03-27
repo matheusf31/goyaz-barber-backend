@@ -73,7 +73,7 @@ class AvailableController {
     const schedule = [];
 
     if (isSunday(searchDate)) {
-      return res.status(400).json({ error: 'Invalid date' });
+      return res.status(400).json({ error: 'Data indisponível.' });
     }
 
     if (isSaturday(searchDate)) {

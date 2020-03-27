@@ -46,17 +46,21 @@ function App() {
 
 export default function Routes() {
   const signed = useSelector(state => state.auth.signed);
+  const banned = useSelector(state => state.user.profile.banned);
 
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {signed ? (
+        {(!signed || banned) && (
+          <Stack.Screen name="SignIn" component={SignIn} />
+        )}
+        {signed && !banned && <Stack.Screen name="App" component={App} />}
+
+        {/* {signed ? (
           <Stack.Screen name="App" component={App} />
         ) : (
-          <>
-            <Stack.Screen name="SignIn" component={SignIn} />
-          </>
-        )}
+          <Stack.Screen name="SignIn" component={SignIn} />
+        )} */}
       </Stack.Navigator>
     </NavigationContainer>
   );

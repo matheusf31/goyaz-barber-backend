@@ -44,9 +44,7 @@ class UserController {
 
     // Se retornar false é pq o body não está valido e entra no if
     if (!(await schema.isValid(req.body))) {
-      return res
-        .status(400)
-        .json({ error: 'Erro de validação. Verifique seus dados.' });
+      return res.status(400).json({ error: 'Verifique seus dados.' });
     }
 
     const userExists = await User.findOne({
@@ -73,7 +71,7 @@ class UserController {
       email: Yup.string()
         .email()
         .required(),
-      phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
+      phone: Yup.string().matches(phoneRegExp, 'Número de telefone inválido.'),
       oldPassword: Yup.string().min(6),
       password: Yup.string()
         .min(6)
@@ -87,7 +85,7 @@ class UserController {
 
     // Se retornar false é pq o body não está valido e entra no if
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Erro no formato dos dados.' });
     }
 
     const { email, oldPassword, avatar_id } = req.body;
@@ -100,13 +98,13 @@ class UserController {
       const userExists = await User.findOne({ where: { email } });
 
       if (userExists) {
-        return res.status(400).json({ error: 'User already exists.' });
+        return res.status(400).json({ error: 'Usuário já existe.' });
       }
     }
 
     // Verifica a senha antiga
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      return res.status(401).json({ error: 'Password does not match' });
+      return res.status(401).json({ error: 'Senha antiga incorreta.' });
     }
 
     if (avatar_id) {
@@ -116,7 +114,7 @@ class UserController {
 
       // Verifica o avatar escolhido
       if (!(await checkAvatar)) {
-        return res.status(400).json({ error: 'Avatar not found' });
+        return res.status(400).json({ error: 'Avatar não encontrado!' });
       }
     }
 

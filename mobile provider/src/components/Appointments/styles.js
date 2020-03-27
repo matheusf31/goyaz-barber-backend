@@ -7,7 +7,7 @@ export const Container = styled(RectButton)`
   border-radius: 4px;
   background: ${props => {
     if (props.hasAppointment) {
-      return '#A9FF9C';
+      return '#8FD684';
     }
 
     if (props.enabled) {

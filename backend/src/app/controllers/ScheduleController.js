@@ -55,10 +55,14 @@ class ScheduleController {
    */
   async store(req, res) {
     const { date, cut_type, email } = req.body;
-    let { client_name } = req.body;
     const provider_id = req.userId;
+    let { client_name } = req.body;
 
     let user_id = null;
+
+    if (!client_name && !email) {
+      return res.status(400).json({ error: 'Insira um nome ou um email.' });
+    }
 
     if (email) {
       const user = await User.findOne({ where: { email } });
@@ -67,15 +71,18 @@ class ScheduleController {
         user_id = user.id;
         client_name = user.name;
       } else {
-        return res.status(400).json({ error: 'Usuário não encontrado' });
+        return res.status(400).json({
+          error:
+            'Usuário não encontrado, insira outro email ou apenas um nome.',
+        });
       }
     } else if (!client_name) {
-      return res.status(400).json({ error: 'Insira um nome' });
+      return res.status(400).json({ error: 'Insira um nome ou um email' });
     }
 
     // Checando se o cut type foi inserido
     if (!cut_type) {
-      return res.status(400).json({ error: 'Insira o tipo de corte' });
+      return res.status(400).json({ error: 'Insira o tipo de corte.' });
     }
 
     const checkAvailable = await Appointment.findOne({
@@ -87,7 +94,9 @@ class ScheduleController {
     });
 
     if (checkAvailable) {
-      return res.status(400).json({ error: 'Erro ao marcar corte e barba' });
+      return res
+        .status(400)
+        .json({ error: 'Horário indisponível para corte e barba.' });
     }
 
     const cost = cut_type === 'corte' ? '25,00' : '35:00';
@@ -100,6 +109,12 @@ class ScheduleController {
       cost,
       client_name,
     });
+
+    if (!appointment) {
+      return res
+        .status(500)
+        .json({ error: 'Ocorreu algum erro. Avise o programador.' });
+    }
 
     return res.json(appointment);
   }

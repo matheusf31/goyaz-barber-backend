@@ -38,10 +38,7 @@ export default function Dashboard() {
         setDate(prevDate);
       }
 
-      Alert.alert(
-        'Data invalida',
-        'O barbeiro não está disponível nesta data.'
-      );
+      Alert.alert('Erro', err.response.data.error);
     }
   }
 

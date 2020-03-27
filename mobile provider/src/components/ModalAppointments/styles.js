@@ -12,7 +12,7 @@ export const ModalViewBox = styled.View`
   align-self: center;
   width: 80%;
   height: 400px;
-  margin-top: 40%;
+  margin-top: 30%;
 
   border-radius: 10px;
 `;
@@ -52,6 +52,8 @@ export const ModalInputContainer = styled.View`
 
   flex-direction: row;
   align-items: center;
+
+  opacity: ${props => (props.editable ? 1 : 0.1)};
 `;
 
 export const ModalInput = styled.TextInput`
@@ -73,9 +75,9 @@ export const ModalButton = styled.TouchableOpacity`
 
   border-radius: 5px;
   border-width: 2px;
-  border-color: #4ec04d;
+  border-color: #8fd684;
 
-  background: ${props => (props.active ? '#4ec04d' : '#fff')};
+  background: ${props => (props.active ? '#8FD684' : '#fff')};
 
   align-items: center;
   justify-content: center;

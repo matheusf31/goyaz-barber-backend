@@ -15,7 +15,7 @@ export function* signIn({ payload }) {
     const { token, user } = response.data;
 
     if (!user.provider) {
-      Alert.alert('Usuário não é um prestador de serviço');
+      Alert.alert('Usuário não é um prestador de serviço!');
       yield put(signFailure());
     } else {
       // settar informações que serão utilizadas em todas as requisições
@@ -24,7 +24,7 @@ export function* signIn({ payload }) {
       yield put(signInSuccess(token, user));
     }
   } catch (err) {
-    Alert.alert('Falha na autenticação, verifique seus dados');
+    Alert.alert('Erro no login!', err.response.data.error);
     yield put(signFailure());
   }
 }
@@ -43,7 +43,7 @@ export function* signUp({ payload }) {
     RootNavigation.navigate('SignIn');
     Alert.alert('Conta criada com sucesso!', 'Faça seu login por gentileza.');
   } catch (err) {
-    Alert.alert('Falha no cadastro, verifique seus dados!');
+    Alert.alert('Falha no cadastro!', err.response.data.error);
     yield put(signFailure());
   }
 }

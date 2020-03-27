@@ -133,7 +133,7 @@ class AppointmentController {
     }
 
     // extrair o custo do serviço
-    const cost = cut_type === 'corte' ? '25,00' : '35:00';
+    const cost = cut_type === 'corte' ? '25.00' : '35.00';
 
     const appointment = await Appointment.create({
       user_id: req.userId,

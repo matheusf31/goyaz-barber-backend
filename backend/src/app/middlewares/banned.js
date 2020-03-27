@@ -4,6 +4,10 @@ export default async (req, res, next) => {
   if (!req.userId) {
     const { email } = req.body;
 
+    // if (!email) {
+    //   return res.status(400).json({ error: 'Insira um email.' });
+    // }
+
     const user = await User.findOne({
       where: {
         email,

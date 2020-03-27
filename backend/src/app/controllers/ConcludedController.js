@@ -15,11 +15,9 @@ class ConcludedController {
     // Filtrando por mês
     const searchDate = Number(date);
 
-    const appointments = await Appointment.findAll({
+    const appointments = await Concluded.findAll({
       where: {
         provider_id: req.userId,
-        canceled_at: null,
-        concluded: true,
         date: {
           [Op.between]: [startOfMonth(searchDate), endOfMonth(searchDate)],
         },
@@ -36,7 +34,7 @@ class ConcludedController {
     const appointment = await Appointment.findByPk(id);
 
     if (!appointment) {
-      return res.status(401).json({ error: 'Appointment not found' });
+      return res.status(401).json({ error: 'Agendamento não encontrado' });
     }
 
     appointment.concluded = true;
@@ -51,6 +49,12 @@ class ConcludedController {
       cut_type: appointment.cut_type,
       cost: appointment.cost,
     });
+
+    if (!concluded) {
+      return res
+        .status(500)
+        .json({ error: 'Erro inesperado, contate o desenvolvedor' });
+    }
 
     return res.json(concluded);
   }

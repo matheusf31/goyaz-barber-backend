@@ -37,7 +37,7 @@ export const Title = styled.Text`
 
 export const HourList = styled.FlatList.attrs({
   showsVerticalScrollIndicator: false,
-  contentContainerStyle: { paddingBottom: 30 },
+  contentContainerStyle: { paddingBottom: 40 },
 })`
   flex: 1;
   padding: 20px;

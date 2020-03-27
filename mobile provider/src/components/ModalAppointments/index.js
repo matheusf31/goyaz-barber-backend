@@ -39,18 +39,22 @@ export default function ModalAppointments({
   }
 
   async function handleSubmit() {
+    if (name) {
+      setName(name[0].toUpperCase() + name.slice(1));
+    }
+
     try {
       await api.post('schedule', {
         date: data.value,
         cut_type: cutType,
         email,
-        client_name: name[0].toUpperCase() + name.slice(1),
+        client_name: name,
       });
 
       onModalChange(!modalVisible);
       reload();
     } catch (err) {
-      Alert.alert('Ocorreu um erro, verifique os dados');
+      Alert.alert('Erro!', `${err.response ? err.response.data.error : err}`);
     }
   }
 
@@ -78,9 +82,10 @@ export default function ModalAppointments({
           </ModalHeader>
 
           <ModalForm>
-            <ModalInputContainer>
+            <ModalInputContainer editable={!name}>
               <Icon name="mail-outline" size={20} color="#000" />
               <ModalInput
+                editable={!name}
                 keyboardType="email-address"
                 autoCorrect={false}
                 autoCapitalize="none"
@@ -95,9 +100,10 @@ export default function ModalAppointments({
               />
             </ModalInputContainer>
 
-            <ModalInputContainer>
+            <ModalInputContainer editable={!email}>
               <Icon name="person" size={20} color="#000" />
               <ModalInput
+                editable={!email}
                 autoCorrect={false}
                 autoCapitalize="words"
                 autoCompleteType="name"
@@ -138,7 +144,7 @@ export default function ModalAppointments({
                 width: 200,
                 borderWidth: 0,
                 marginTop: 20,
-                backgroundColor: '#4EC04D',
+                backgroundColor: '#8FD684',
               }}
               onPress={handleSubmit}
             >

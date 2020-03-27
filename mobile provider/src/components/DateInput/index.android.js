@@ -8,12 +8,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { Container, DateButton, DateText } from './styles';
 
-export default function DateInput({ date, onChange }) {
+export default function DateInput({ date, onChange, graphic }) {
   const [opened, setOpened] = useState(false);
 
   const dateFormatted = useMemo(
-    () => format(date, "dd 'de' MMM 'de' yyyy',' cccc", { locale: pt }),
-    [date]
+    () =>
+      graphic
+        ? format(date, "MMM '-' yyyy", { locale: pt })
+        : format(date, "dd 'de' MMM 'de' yyyy',' cccc", { locale: pt }),
+    [date, graphic]
   );
 
   const handleChange = (event, selectedDate) => {
@@ -40,6 +43,7 @@ export default function DateInput({ date, onChange }) {
           minuteInterval={30}
           locale="pt-BR"
           mode="date"
+          display={graphic ? 'spinner' : 'calendar'}
         />
       )}
     </Container>
