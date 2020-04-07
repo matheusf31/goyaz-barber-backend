@@ -12,6 +12,8 @@ import NotificationController from './app/controllers/NotificationController';
 import AvailableController from './app/controllers/AvailableController';
 import ConcludedController from './app/controllers/ConcludedController';
 import BanController from './app/controllers/BanController';
+import UnavailableController from './app/controllers/UnavailableController';
+import DayUnavailableController from './app/controllers/DayUnavailableController';
 
 import authMiddleware from './app/middlewares/auth';
 import bannedMiddleware from './app/middlewares/banned';
@@ -47,6 +49,13 @@ routes.post('/files', upload.single('file'), FileController.store);
 routes.get('/concluded', ConcludedController.index);
 routes.post('/concluded/:id', ConcludedController.store);
 
+routes.post('/ban/:id', BanController.store);
 routes.delete('/ban/:id', BanController.delete);
+
+routes.post('/unavailable', UnavailableController.store);
+routes.delete('/unavailable', UnavailableController.delete);
+
+routes.post('/daybusy', DayUnavailableController.store);
+routes.delete('/daybusy', DayUnavailableController.delete);
 
 export default routes;

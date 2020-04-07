@@ -9,7 +9,14 @@ class UserController {
       where: {
         provider: false,
       },
-      attributes: ['id', 'name', 'email', 'phone', 'concluded_appointments'],
+      attributes: [
+        'id',
+        'name',
+        'email',
+        'phone',
+        'concluded_appointments',
+        'banned',
+      ],
     });
 
     // https://medium.com/@oieduardorabelo/javascript-armadilhas-do-asyn-await-em-loops-1cdad44db7f0

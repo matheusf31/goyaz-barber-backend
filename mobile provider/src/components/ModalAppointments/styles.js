@@ -1,10 +1,7 @@
 import styled from 'styled-components/native';
-import { RectButton } from 'react-native-gesture-handler';
 
 export const ModalView = styled.ScrollView`
-  height: 100%;
-  width: 100%;
-  background: #000000bb;
+  /* background: #000000bb; */
 `;
 
 export const ModalViewBox = styled.View`
@@ -12,13 +9,12 @@ export const ModalViewBox = styled.View`
   align-self: center;
   width: 80%;
   height: 400px;
-  margin-top: 30%;
+  margin-top: -30%;
 
   border-radius: 10px;
 `;
 
 export const ModalHeader = styled.View`
-  flex-direction: row;
   align-items: center;
   justify-content: center;
 `;
@@ -33,8 +29,7 @@ export const ModalText = styled.Text`
   font-size: 23px;
   font-weight: bold;
   color: #000;
-
-  margin-top: -30px;
+  margin-top: 20px;
 `;
 
 export const ModalForm = styled.View`

@@ -9,10 +9,11 @@ import User from '../app/models/User';
 import File from '../app/models/File';
 import Appoitment from '../app/models/Appointment';
 import Concluded from '../app/models/Concluded';
+import Available from '../app/models/Available';
 
 import databaseConfig from '../config/database';
 
-const models = [User, File, Appoitment, Concluded];
+const models = [User, File, Appoitment, Concluded, Available];
 
 class Database {
   constructor() {

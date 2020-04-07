@@ -9,20 +9,35 @@ import {
   isSaturday,
   isSunday,
 } from 'date-fns';
+
 import { Op } from 'sequelize';
+
 import Appointment from '../models/Appointment';
 import User from '../models/User';
 import File from '../models/File';
+import Available from '../models/Available';
 
 class AvailableController {
   async index(req, res) {
     const { date } = req.query;
 
     if (!date) {
-      return res.status(400).json({ error: 'Invalid date' });
+      return res.status(400).json({ error: 'Data inválida' });
     }
 
     const searchDate = Number(date);
+
+    const availables = await Available.findAll({
+      where: {
+        provider_id: req.params.providerId,
+        date: {
+          [Op.between]: [startOfDay(searchDate), endOfDay(searchDate)],
+        },
+      },
+      attributes: ['id', 'date', 'unavailable', 'day_busy'],
+    });
+
+    const dayBusy = availables.find(e => e.day_busy === true) && true;
 
     const appointments = await Appointment.findAll({
       where: {
@@ -56,17 +71,6 @@ class AvailableController {
           ],
         },
       ],
-    });
-
-    const cutType = await Appointment.findAll({
-      where: {
-        provider_id: req.params.providerId,
-        canceled_at: null,
-        date: {
-          [Op.between]: [startOfDay(searchDate), endOfDay(searchDate)],
-        },
-      },
-      attributes: ['date', 'cut_type'],
     });
 
     /** todos os horários disponíveis do prestador */
@@ -127,12 +131,11 @@ class AvailableController {
         0
       );
 
-      let cut_type;
-      const findCutType = cutType.find(a => format(a.date, 'HH:mm') === time);
+      const availableHour = availables.find(
+        e => format(e.date, 'HH:mm') === time
+      );
 
-      if (findCutType) {
-        cut_type = findCutType.cut_type;
-      }
+      const providerBusy = availableHour ? availableHour.unavailable : dayBusy;
 
       /** available será um vetor com vários objetos */
       return {
@@ -140,18 +143,23 @@ class AvailableController {
         value: format(value, "yyyy-MM-dd'T'HH:mm:ssxxx"),
         available:
           isAfter(value, new Date()) &&
-          !appointments.find(a => format(a.date, 'HH:mm') === time),
-        cut_type,
+          !appointments.find(e => format(e.date, 'HH:mm') === time) &&
+          !providerBusy,
+        providerBusy,
+        past: !isAfter(value, new Date()),
         appointment: appointments.find(a => format(a.date, 'HH:mm') === time),
       };
     });
 
-    // percorrer available procurando o cut_type === 'corte e barba' e setando o próximo horário como available = false
-    for (let i = 0; i < scheduleAvailable.length; i++) {
-      if (scheduleAvailable[i].cut_type === 'corte e barba') {
-        scheduleAvailable[i + 1].available = false;
+    scheduleAvailable.forEach((e, i, array) => {
+      if (
+        e.appointment &&
+        e.appointment.cut_type === 'corte e barba' &&
+        i + 1 < array.length
+      ) {
+        array[i + 1].available = false;
       }
-    }
+    });
 
     return res.json(scheduleAvailable);
   }

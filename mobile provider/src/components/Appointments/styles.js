@@ -1,23 +1,39 @@
 import styled from 'styled-components/native';
-import { RectButton } from 'react-native-gesture-handler';
+import { TouchableHighlight, Dimensions } from 'react-native';
 
-export const Container = styled(RectButton)`
-  margin-bottom: 15px;
+export const Container = styled(TouchableHighlight)`
   padding: 15px;
+  margin-bottom: 15px;
   border-radius: 4px;
-  background: ${props => {
+
+  background: ${(props) => {
     if (props.hasAppointment) {
       return '#8FD684';
     }
 
-    if (props.enabled) {
+    if (props.active) {
       return '#fff';
     }
 
-    return '#FF8883';
+    return '#ADADAD';
   }};
 
   align-items: center;
+  justify-content: center;
+
+  opacity: ${(props) => {
+    if (props.appointmentConcluded) {
+      return '0.8';
+    }
+
+    if (props.active || props.hasAppointment) {
+      return '1';
+    }
+
+    return '0.8';
+  }};
+
+  height: 75px;
 `;
 
 export const Box = styled.View`
@@ -25,7 +41,7 @@ export const Box = styled.View`
 
   flex-direction: row;
   align-items: center;
-  justify-content: ${props => (props.concluded ? 'center' : 'space-around')};
+  justify-content: ${(props) => (props.concluded ? 'center' : 'space-around')};
 `;
 
 export const Avatar = styled.Image`
@@ -50,9 +66,9 @@ export const Time = styled.Text`
   padding: 5px;
 `;
 
-export const Text = styled.Text`
+export const InfoText = styled.Text`
   margin-left: 20px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   color: #111;
 `;
@@ -76,4 +92,15 @@ export const DenyCancel = styled.TouchableOpacity`
 
 export const ConfirmCancel = styled.TouchableOpacity`
   margin-right: -20px;
+`;
+
+export const BoxView = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const BoxIcon = styled.View`
+  right: ${-Dimensions.get('window').width / 2.6}px;
+  bottom: 0;
+  position: absolute;
 `;

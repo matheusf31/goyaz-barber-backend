@@ -24,6 +24,11 @@ export const tabProfileOptions = {
 };
 
 export const tabGraphicOptions = {
-  tabBarLabel: 'Graphic',
+  tabBarLabel: 'Gráficos',
   tabBarIcon: () => <Icon name="timeline" size={20} color="#FFF" />,
+};
+
+export const tabUserOptions = {
+  tabBarLabel: 'Clientes',
+  tabBarIcon: () => <Icon name="group" size={20} color="#FFF" />,
 };

@@ -1,7 +1,3 @@
-/**
- * Listar os agendamentos para o provedor (específico para ele)
- */
-
 import { startOfMonth, endOfMonth, parseISO, addMinutes } from 'date-fns';
 import { Op } from 'sequelize';
 
@@ -10,7 +6,7 @@ import User from '../models/User';
 
 class ScheduleController {
   /**
-   * Listar agendamentos do mês
+   * Listar TODOS os agendamentos feitos no mês
    */
   async index(req, res) {
     const checkUserProvider = await User.findOne({
@@ -21,7 +17,7 @@ class ScheduleController {
     });
 
     if (!checkUserProvider) {
-      return res.status(401).json({ error: 'Usuário não é um provedor' });
+      return res.status(401).json({ error: 'Usuário não é um provedor.' });
     }
 
     const { date } = req.query;
@@ -32,7 +28,7 @@ class ScheduleController {
     const appointment = await Appointment.findAll({
       where: {
         provider_id: req.userId,
-        canceled_at: null,
+
         date: {
           [Op.between]: [startOfMonth(parsedDate), endOfMonth(parsedDate)],
         },
@@ -85,21 +81,23 @@ class ScheduleController {
       return res.status(400).json({ error: 'Insira o tipo de corte.' });
     }
 
-    const checkAvailable = await Appointment.findOne({
-      where: {
-        provider_id: req.userId,
-        canceled_at: null,
-        date: addMinutes(parseISO(date), 30),
-      },
-    });
+    if (cut_type === 'corte e barba') {
+      const checkAvailable = await Appointment.findOne({
+        where: {
+          provider_id: req.userId,
+          canceled_at: null,
+          date: addMinutes(parseISO(date), 30),
+        },
+      });
 
-    if (checkAvailable) {
-      return res
-        .status(400)
-        .json({ error: 'Horário indisponível para corte e barba.' });
+      if (checkAvailable) {
+        return res
+          .status(400)
+          .json({ error: 'Horário indisponível para corte e barba.' });
+      }
     }
 
-    const cost = cut_type === 'corte' ? '25,00' : '35:00';
+    const cost = cut_type === 'corte' ? '25.00' : '35.00';
 
     const appointment = await Appointment.create({
       user_id,

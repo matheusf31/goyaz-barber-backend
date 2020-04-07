@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -10,16 +10,18 @@ import {
   Container,
   Time,
   Info,
-  Text,
+  InfoText,
   Box,
   Cancel,
   BoxCancel,
   DenyCancel,
   ConfirmCancel,
   Done,
+  BoxIcon,
+  BoxView,
 } from './styles';
 
-export default function Appointments({ data, reload }) {
+const Appointmets = forwardRef(({ data, reload, past }, ref) => {
   const [confirm, setConfirm] = useState(false);
   const [doneConfirm, setDoneConfirm] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -48,23 +50,29 @@ export default function Appointments({ data, reload }) {
     <>
       <Container
         onPress={() => setModalVisible(true)}
-        enabled={data.available}
+        active={data.available}
+        disabled={hasAppointment}
         hasAppointment={hasAppointment}
-        hasPast={hasPast}
+        appointmentConcluded={
+          data.appointment ? data.appointment.concluded : false
+        }
+        past={past}
+        providerBusy={data.providerBusy}
+        underlayColor="#AAA"
       >
         {data.appointment ? (
           <Box concluded={data.appointment.concluded}>
             <Time>{data.time}</Time>
 
             <Info>
-              <Text>
-                cliente:{' '}
+              <InfoText>
+                Cliente:{' '}
                 {data.appointment.user
                   ? data.appointment.user.name
                   : data.appointment.client_name}
-              </Text>
-              <Text>serviço: {data.cut_type}</Text>
-              <Text>valor: {data.appointment.cost}</Text>
+              </InfoText>
+              <InfoText>Serviço: {data.appointment.cut_type}</InfoText>
+              <InfoText>Valor: R$ {data.appointment.cost}</InfoText>
             </Info>
 
             {!hasPast &&
@@ -109,7 +117,18 @@ export default function Appointments({ data, reload }) {
             )}
           </Box>
         ) : (
-          <Time>{data.time}</Time>
+          <>
+            {past ? (
+              <Time>{data.time}</Time>
+            ) : (
+              <BoxView>
+                <Time>{data.time}</Time>
+                <BoxIcon>
+                  <Icon name="chevron-left" size={25} color="#111" />
+                </BoxIcon>
+              </BoxView>
+            )}
+          </>
         )}
       </Container>
 
@@ -121,4 +140,6 @@ export default function Appointments({ data, reload }) {
       />
     </>
   );
-}
+});
+
+export default Appointmets;

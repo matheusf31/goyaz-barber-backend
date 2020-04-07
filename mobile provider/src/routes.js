@@ -9,12 +9,14 @@ import SignIn from './pages/SignIn';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Graphic from './pages/Graphic';
+import User from './pages/User';
 
 import {
   tabBarOptions,
   tabDashboardOptions,
   tabProfileOptions,
   tabGraphicOptions,
+  tabUserOptions,
 } from '~/util/routesOptions';
 
 import { navigationRef } from './services/RootNavigation';
@@ -35,6 +37,7 @@ function App() {
         component={Graphic}
         options={tabGraphicOptions}
       />
+      <Tab.Screen name="User" component={User} options={tabUserOptions} />
       <Tab.Screen
         name="Profile"
         component={Profile}
@@ -46,7 +49,9 @@ function App() {
 
 export default function Routes() {
   const signed = useSelector(state => state.auth.signed);
-  const banned = useSelector(state => state.user.profile.banned);
+  const banned = useSelector(state =>
+    state.user.profile ? state.user.profile.banned : false
+  );
 
   return (
     <NavigationContainer ref={navigationRef}>
@@ -55,12 +60,6 @@ export default function Routes() {
           <Stack.Screen name="SignIn" component={SignIn} />
         )}
         {signed && !banned && <Stack.Screen name="App" component={App} />}
-
-        {/* {signed ? (
-          <Stack.Screen name="App" component={App} />
-        ) : (
-          <Stack.Screen name="SignIn" component={SignIn} />
-        )} */}
       </Stack.Navigator>
     </NavigationContainer>
   );

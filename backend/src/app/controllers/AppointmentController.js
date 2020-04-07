@@ -74,7 +74,7 @@ class AppointmentController {
     if (!checkIsProvider) {
       return res
         .status(401)
-        .json({ error: 'Você só pode marcar com provedores' });
+        .json({ error: 'Você só pode marcar com provedores.' });
     }
 
     // Checando se o provider não é o mesmo usuário

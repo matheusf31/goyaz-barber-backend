@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Modal, Alert } from 'react-native';
+import { Alert } from 'react-native';
+import Modal from 'react-native-modal';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -60,99 +61,86 @@ export default function ModalAppointments({
 
   return (
     <Modal
-      animationType="fade"
-      transparent
-      visible={modalVisible}
-      onRequestClose={() => {
-        onModalChange(!modalVisible);
-      }}
+      isVisible={modalVisible}
+      onBackdropPress={() => onModalChange(false)}
+      backdropTransitionOutTiming={0}
     >
-      <ModalView>
-        <ModalViewBox>
-          <ModalClose
-            onPress={() => {
-              onModalChange(!modalVisible);
-            }}
-          >
-            <Icon name="clear" size={25} color="#111" />
-          </ModalClose>
+      <ModalViewBox>
+        <ModalHeader>
+          <ModalText>Fazer Agendamento </ModalText>
+        </ModalHeader>
 
-          <ModalHeader>
-            <ModalText>Fazer Agendamento </ModalText>
-          </ModalHeader>
-
-          <ModalForm>
-            <ModalInputContainer editable={!name}>
-              <Icon name="mail-outline" size={20} color="#000" />
-              <ModalInput
-                editable={!name}
-                keyboardType="email-address"
-                autoCorrect={false}
-                autoCapitalize="none"
-                autoCompleteType="email"
-                placeholder="E-mail"
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  nameRef.current.focus();
-                }}
-                value={email}
-                onChangeText={setEmail}
-              />
-            </ModalInputContainer>
-
-            <ModalInputContainer editable={!email}>
-              <Icon name="person" size={20} color="#000" />
-              <ModalInput
-                editable={!email}
-                autoCorrect={false}
-                autoCapitalize="words"
-                autoCompleteType="name"
-                placeholder="Nome"
-                returnKeyType="next"
-                value={name}
-                onChangeText={setName}
-                ref={nameRef}
-              />
-            </ModalInputContainer>
-
-            <ModalButtonContainer>
-              <ModalButton
-                active={active}
-                disabled={active}
-                onPress={() => handleButtonPress('corte')}
-              >
-                <ModalButtonText>corte</ModalButtonText>
-              </ModalButton>
-              <ModalButton
-                active={!active}
-                disabled={!active}
-                onPress={() => handleButtonPress('corte e barba')}
-              >
-                <ModalButtonText>corte e barba</ModalButtonText>
-              </ModalButton>
-            </ModalButtonContainer>
-
-            <ModalText
-              style={{ alignSelf: 'center', marginTop: -10, fontSize: 20 }}
-            >
-              Horário: {data.time}
-            </ModalText>
-
-            <ModalButton
-              style={{
-                alignSelf: 'center',
-                width: 200,
-                borderWidth: 0,
-                marginTop: 20,
-                backgroundColor: '#8FD684',
+        <ModalForm>
+          <ModalInputContainer editable={!name}>
+            <Icon name="mail-outline" size={20} color="#000" />
+            <ModalInput
+              editable={!name}
+              keyboardType="email-address"
+              autoCorrect={false}
+              autoCapitalize="none"
+              autoCompleteType="email"
+              placeholder="E-mail"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                nameRef.current.focus();
               }}
-              onPress={handleSubmit}
+              value={email}
+              onChangeText={setEmail}
+            />
+          </ModalInputContainer>
+
+          <ModalInputContainer editable={!email}>
+            <Icon name="person" size={20} color="#000" />
+            <ModalInput
+              editable={!email}
+              autoCorrect={false}
+              autoCapitalize="words"
+              autoCompleteType="name"
+              placeholder="Nome"
+              returnKeyType="next"
+              value={name}
+              onChangeText={setName}
+              ref={nameRef}
+            />
+          </ModalInputContainer>
+
+          <ModalButtonContainer>
+            <ModalButton
+              active={active}
+              disabled={active}
+              onPress={() => handleButtonPress('corte')}
             >
-              <ModalButtonText>Confirmar</ModalButtonText>
+              <ModalButtonText>corte</ModalButtonText>
             </ModalButton>
-          </ModalForm>
-        </ModalViewBox>
-      </ModalView>
+            <ModalButton
+              active={!active}
+              disabled={!active}
+              onPress={() => handleButtonPress('corte e barba')}
+            >
+              <ModalButtonText>corte e barba</ModalButtonText>
+            </ModalButton>
+          </ModalButtonContainer>
+
+          <ModalText
+            style={{ alignSelf: 'center', marginTop: -10, fontSize: 20 }}
+          >
+            Horário: {data.time}
+          </ModalText>
+
+          <ModalButton
+            style={{
+              alignSelf: 'center',
+              width: 200,
+              borderWidth: 0,
+              marginTop: 20,
+              backgroundColor: '#8FD684',
+            }}
+            onPress={handleSubmit}
+          >
+            <ModalButtonText>Confirmar</ModalButtonText>
+          </ModalButton>
+        </ModalForm>
+      </ModalViewBox>
     </Modal>
   );
 }
