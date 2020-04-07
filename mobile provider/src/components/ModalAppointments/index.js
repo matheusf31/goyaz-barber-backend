@@ -7,10 +7,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import api from '~/services/api';
 
 import {
-  ModalView,
   ModalViewBox,
   ModalHeader,
-  ModalClose,
   ModalText,
   ModalForm,
   ModalInputContainer,
