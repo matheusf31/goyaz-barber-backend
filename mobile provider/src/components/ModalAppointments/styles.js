@@ -9,7 +9,6 @@ export const ModalViewBox = styled.View`
   align-self: center;
   width: 80%;
   height: 400px;
-  margin-top: -30%;
 
   border-radius: 10px;
 `;
