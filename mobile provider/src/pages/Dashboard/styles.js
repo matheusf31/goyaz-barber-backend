@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { TouchableHighlight } from 'react-native';
+import { TouchableHighlight, Dimensions } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Button from '~/components/Button';
 
@@ -19,7 +19,7 @@ export const Title = styled.Text`
 
 export const HourList = styled(SwipeListView).attrs({
   showsVerticalScrollIndicator: false,
-  contentContainerStyle: { paddingBottom: 50 },
+  contentContainerStyle: { paddingBottom: Dimensions.get('window').width / 7 },
 })`
   flex: 1;
   padding: 20px;

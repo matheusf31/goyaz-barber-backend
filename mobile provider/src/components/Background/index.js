@@ -8,11 +8,9 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default styled.ImageBackground.attrs(props => ({
   source: background,
-  blurRadius: props.blurRadius || 5,
+  blurRadius: props.blurRadius || 0,
 }))`
   position: absolute;
   height: ${screenHeight}px;
   width: ${screenWidth + 1}px;
-
-  background-color: rgba(0, 0, 0, 0.45);
 `;
