@@ -24,10 +24,10 @@ function Dashboard({ isFocused }) {
   const [data, setData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
 
-  const provider = useSelector((state) => state.user.profile);
+  const provider = useSelector(state => state.user.profile);
   const prevDate = usePrevious(date);
 
-  const dayBusy = useMemo(() => !data.find((e) => e.available && true), [data]);
+  const dayBusy = useMemo(() => !data.find(e => e.available && true), [data]);
 
   const lastHasPast = useMemo(() => {
     if (data.length) {
@@ -61,7 +61,7 @@ function Dashboard({ isFocused }) {
     if (isFocused) {
       loadAvailable();
     }
-  }, [date, prevDate, isFocused]);
+  }, [date, isFocused]);
 
   function usePrevious(value) {
     const ref = useRef();
@@ -92,7 +92,7 @@ function Dashboard({ isFocused }) {
   };
 
   async function handleSwipeBusy(item, rowMap) {
-    const newItem = data.find((e) => e.time === item);
+    const newItem = data.find(e => e.time === item);
 
     if (newItem.providerBusy) {
       await api.delete('unavailable', {
@@ -110,8 +110,8 @@ function Dashboard({ isFocused }) {
     closeRow(rowMap, newItem.time);
   }
 
-  async function handleDayAvailable(dayBusy) {
-    if (dayBusy) {
+  async function handleDayAvailable(isDayBusy) {
+    if (isDayBusy) {
       await api.delete('/daybusy', {
         params: {
           date: date.getTime(),
@@ -164,7 +164,7 @@ function Dashboard({ isFocused }) {
         <HourList
           onRefresh={() => handleHoursRefresh(true)}
           refreshing={isFetching}
-          keyExtractor={(item) => item.time}
+          keyExtractor={item => item.time}
           data={data}
           disableRightSwipe
           renderItem={({ item }) => (

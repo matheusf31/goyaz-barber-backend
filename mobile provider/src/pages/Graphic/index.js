@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import React, { useState, useEffect, useMemo } from 'react';
 import { Dimensions } from 'react-native';
 import { LineChart, PieChart } from 'react-native-chart-kit';
