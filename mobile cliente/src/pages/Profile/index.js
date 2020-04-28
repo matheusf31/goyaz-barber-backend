@@ -27,7 +27,7 @@ export default function Profile() {
   const confirmPasswordRef = useRef();
 
   const [name, setName] = useState(profile.name);
-  const [phone, setPhone] = useState(profile.phone);
+  const [phone, setPhone] = useState(profile.phone.slice(2));
   const [email, setEmail] = useState(profile.email);
   const [oldPassword, setOldPassword] = useState('');
   const [password, setPassword] = useState('');
@@ -77,7 +77,7 @@ export default function Profile() {
             icon="call"
             autoCorrect={false}
             autoCapitalize="none"
-            placeholder="(62) telefone"
+            placeholder="telefone"
             keyboardType="numeric"
             ref={phoneRef}
             returnKeyType="next"

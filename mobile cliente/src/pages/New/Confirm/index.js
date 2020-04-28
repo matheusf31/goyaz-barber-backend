@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
 import { Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 import { formatRelative, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
@@ -11,9 +10,8 @@ import Background from '~/components/Background';
 
 import { Container, Avatar, Name, Time, SubmitButton } from './styles';
 
-export default function Confirm({ route }) {
+export default function Confirm({ navigation, route }) {
   const { provider, time, cut_type } = route.params;
-  const navigation = useNavigation();
 
   const dateFormatted = useMemo(
     () =>

@@ -21,6 +21,7 @@ export const tabDashboardOptions = {
 };
 
 export const tabNewOptions = {
+  unmountOnBlur: true,
   tabBarVisible: false,
   tabBarLabel: 'Agendar',
   tabBarIcon: () => <Icon name="add" size={20} color="rgba(255,255,255,0.6)" />,
@@ -40,7 +41,7 @@ export const stackNewOptions = {
   cardStyle: {
     backgroundColor: 'black',
   },
-  // animationEnabled: false,
+  animationEnabled: false,
 };
 
 export const stackSelectProviderOptions = {

@@ -75,7 +75,10 @@ function Dashboard({ isFocused }) {
         refreshing={isFetching}
         keyExtractor={item => String(item.id)}
         renderItem={({ item }) => (
-          <Appointment data={item} onCancel={() => handleCancel(item.id)} />
+          <Appointment
+            appointment={item}
+            onCancel={() => handleCancel(item.id)}
+          />
         )}
       />
     </Container>

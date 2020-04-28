@@ -1,6 +1,16 @@
 import styled from 'styled-components/native';
 import { RectButton } from 'react-native-gesture-handler';
 
+export const Box = styled.View`
+  width: 200px;
+  height: 200px;
+  background: red;
+
+  align-self: center;
+
+  margin-top: 200px;
+`;
+
 export const Container = styled.SafeAreaView`
   flex: 1;
 `;

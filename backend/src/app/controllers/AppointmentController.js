@@ -1,13 +1,11 @@
 import {
-  startOfHour,
   parseISO,
-  isBefore,
   format,
+  isBefore,
   subHours,
-  addMinutes,
-  compareAsc,
   subMinutes,
-  subWeeks,
+  subDays,
+  addDays,
 } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import { Op } from 'sequelize';
@@ -27,7 +25,7 @@ class AppointmentController {
     // Usuário que fez o agendamento
     const appointments = await Appointment.findAll({
       where: { user_id: req.userId, canceled_at: null },
-      order: ['date'],
+      order: [['date', 'DESC']],
       limit: 20,
       offset: (page - 1) * 20, // pular (ou não) 20 registros para listar apenas 20
       attributes: ['id', 'date', 'cut_type', 'past', 'cancelable', 'cost'],
@@ -53,21 +51,51 @@ class AppointmentController {
   async store(req, res) {
     const { provider_id, date, cut_type } = req.body;
 
-    const twoWeeksBack = subWeeks(parseISO(date), 2);
-
-    const hasAppointment = await Appointment.findOne({
+    // Checando se existe um agendamento em menos de 6 dias do dia de hoje
+    let hasAppointment = await Appointment.findOne({
       where: {
         user_id: req.userId,
         date: {
-          [Op.between]: [twoWeeksBack, date],
+          [Op.between]: [new Date(), addDays(new Date(), 6)],
         },
         canceled_at: null,
       },
+      include: [
+        {
+          model: User,
+          as: 'provider',
+          attributes: ['name', 'phone'],
+        },
+      ],
     });
 
     if (hasAppointment) {
       return res.status(400).json({
-        error: 'Você possui um agendamento marcado nas últimas duas semanas',
+        error: `Você já possui um agendamento marcado com o provedor ${hasAppointment.provider.name} em menos de 7 dias.`,
+      });
+    }
+
+    // checar se existe um agendamento 6 dias depois da data escolhida
+    hasAppointment = await Appointment.findOne({
+      where: {
+        user_id: req.userId,
+        date: {
+          [Op.between]: [subDays(parseISO(date), 6), parseISO(date)],
+        },
+        canceled_at: null,
+      },
+      include: [
+        {
+          model: User,
+          as: 'provider',
+          attributes: ['name', 'phone'],
+        },
+      ],
+    });
+
+    if (hasAppointment) {
+      return res.status(400).json({
+        error: `Você já possui um agendamento marcado com o provedor ${hasAppointment.provider.name} em menos de 7 dias.`,
       });
     }
 
@@ -95,23 +123,10 @@ class AppointmentController {
     }
 
     // Checando se a data/hora escolhida está ANTES da data/hora atual
-    const hourStart = startOfHour(parseISO(date));
-    const halfHour = addMinutes(hourStart, 30);
-
-    if (compareAsc(parseISO(date), hourStart) === 0) {
-      if (isBefore(hourStart, new Date())) {
-        return res
-          .status(400)
-          .json({ error: 'Horários que já passaram não são permitidos.' });
-      }
-    }
-
-    if (compareAsc(parseISO(date), halfHour) === 0) {
-      if (isBefore(halfHour, new Date())) {
-        return res
-          .status(400)
-          .json({ error: 'Horários que já passaram não são permitidos.' });
-      }
+    if (isBefore(parseISO(date), new Date())) {
+      return res
+        .status(400)
+        .json({ error: 'Horários que já passaram não são permitidos.' });
     }
 
     // Checando se o provedor já não tem um agendamento marcado pro mesmo horário
@@ -156,9 +171,13 @@ class AppointmentController {
      * Notify appointment provider
      */
     const user = await User.findByPk(req.userId);
-    const formatedDate = format(hourStart, "'dia' dd 'de' MMMM', às' H:mm'h'", {
-      locale: pt,
-    });
+    const formatedDate = format(
+      parseISO(date),
+      "'dia' dd 'de' MMMM', às' H:mm'h'",
+      {
+        locale: pt,
+      }
+    );
 
     await Notification.create({
       content: `Novo agendamento de ${user.name} para ${formatedDate}`,
