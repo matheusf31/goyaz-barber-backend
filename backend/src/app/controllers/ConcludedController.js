@@ -5,6 +5,9 @@ import Concluded from '../models/Concluded';
 import Appointment from '../models/Appointment';
 
 class ConcludedController {
+  /**
+   * Listar os agendamentos concluidos do mês (1587483673888)
+   */
   async index(req, res) {
     const { date } = req.query;
 
@@ -28,6 +31,9 @@ class ConcludedController {
     return res.json(appointments);
   }
 
+  /**
+   * Para o prestador marcar agendamento como concluido
+   */
   async store(req, res) {
     const { id } = req.params;
 

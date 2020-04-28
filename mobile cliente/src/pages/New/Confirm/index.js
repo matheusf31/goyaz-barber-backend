@@ -1,4 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
+import { Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { formatRelative, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
@@ -9,10 +11,9 @@ import Background from '~/components/Background';
 
 import { Container, Avatar, Name, Time, SubmitButton } from './styles';
 
-export default function Confirm({ navigation, route }) {
-  const { provider } = route.params;
-  const { time } = route.params;
-  const { cut_type } = route.params;
+export default function Confirm({ route }) {
+  const { provider, time, cut_type } = route.params;
+  const navigation = useNavigation();
 
   const dateFormatted = useMemo(
     () =>
@@ -22,27 +23,37 @@ export default function Confirm({ navigation, route }) {
     [time]
   );
 
-  async function handleAddAppointments() {
-    await api.post('appointments', {
-      provider_id: provider.id,
-      date: time,
-      cut_type,
-    });
+  const handleAddAppointments = useCallback(async () => {
+    try {
+      await api.post('appointments', {
+        provider_id: provider.id,
+        date: time,
+        cut_type,
+      });
 
-    navigation.navigate('Dashboard');
-  }
+      navigation.navigate('Dashboard');
+    } catch (err) {
+      Alert.alert('Erro', err.response.data.error, [
+        {
+          text: 'Voltar para o Dashboard',
+          onPress: () => navigation.navigate('Dashboard'),
+        },
+        {
+          text: 'Selecionar outro horário',
+          onPress: () => navigation.navigate('SelectDateTime'),
+        },
+      ]);
+    }
+  }, [cut_type, navigation, provider.id, time]);
 
   return (
     <Background>
       <Container>
         <Avatar
-          // source={{
-          //   uri: provider.avatar
-          //     ? provider.avatar.url
-          //     : `https://api.adorable.io/avatar/50/${provider.name}.png`,
-          // }}
           source={{
-            uri: `https://api.adorable.io/avatar/50/${provider.name}.png`,
+            uri: provider.avatar
+              ? provider.avatar.url
+              : `https://api.adorable.io/avatar/50/${provider.name}.png`,
           }}
         />
 

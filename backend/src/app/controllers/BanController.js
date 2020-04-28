@@ -40,8 +40,8 @@ class BanController {
       return res.status(401).json({ error: 'Usuário não foi encontrado' });
     }
 
-    if (user.admin) {
-      return res.status(400).json({ error: 'Usuário não pode ser banido' });
+    if (Number(id) === req.userId) {
+      return res.status(400).json({ error: "Você não pode se 'desbanir'!" });
     }
 
     user.banned = false;

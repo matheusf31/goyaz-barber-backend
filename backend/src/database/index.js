@@ -1,7 +1,3 @@
-/*
-  Realizar a conexão com o banco de dados e carregar os models
-*/
-
 import Sequelize from 'sequelize';
 import mongoose from 'mongoose';
 

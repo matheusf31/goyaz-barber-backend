@@ -35,6 +35,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'react/forbid-prop-types': 'off',
     'prefer-object-spread': 'off',
+    'react/prop-types': 'off',
   },
   settings: {
     'import/resolver': {

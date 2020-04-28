@@ -1,17 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { isSunday, addDays } from 'date-fns';
 
 import api from '~/services/api';
 
 import Background from '~/components/Background';
-import DateInput from '~/components/DateInput';
+import DateInput from '~/components/DateInput/index.ios';
 import { Container, HourList, Hour, Title } from './styles';
 
-export default function SelectDateTime({ navigation, route }) {
+export default function SelectDateTime({ route }) {
   const [date, setDate] = useState(new Date());
   const [hours, setHours] = useState([]);
+  const navigation = useNavigation();
 
   const { provider } = route.params;
   const prevDate = usePrevious(date);
@@ -55,12 +57,15 @@ export default function SelectDateTime({ navigation, route }) {
     return ref.current;
   }
 
-  function handleSelectHour(time) {
-    navigation.navigate('SelectCutType', {
-      provider,
-      time,
-    });
-  }
+  const handleSelectHour = useCallback(
+    time => {
+      navigation.navigate('SelectCutType', {
+        provider,
+        time,
+      });
+    },
+    [navigation, provider]
+  );
 
   return (
     <Background>

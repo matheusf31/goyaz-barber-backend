@@ -21,7 +21,6 @@ export const tabDashboardOptions = {
 };
 
 export const tabNewOptions = {
-  unmountOnBlur: true,
   tabBarVisible: false,
   tabBarLabel: 'Agendar',
   tabBarIcon: () => <Icon name="add" size={20} color="rgba(255,255,255,0.6)" />,
@@ -38,6 +37,10 @@ export const stackNewOptions = {
   headerLeftContainerStyle: {
     marginLeft: 20,
   },
+  cardStyle: {
+    backgroundColor: 'black',
+  },
+  // animationEnabled: false,
 };
 
 export const stackSelectProviderOptions = {
@@ -60,7 +63,7 @@ export const stackSelectDateOptions = {
   headerLeft: () => (
     <TouchableOpacity
       onPress={() => {
-        RootNavigation.navigate('SelectProvider');
+        RootNavigation.goBack();
       }}
     >
       <Icon name="chevron-left" size={20} color="#fff" />
@@ -74,7 +77,7 @@ export const stackSelectCutTypeOptions = {
   headerLeft: () => (
     <TouchableOpacity
       onPress={() => {
-        RootNavigation.navigate('SelectDateTime');
+        RootNavigation.goBack();
       }}
     >
       <Icon name="chevron-left" size={20} color="#fff" />
@@ -88,7 +91,7 @@ export const stackConfirmOptions = {
   headerLeft: () => (
     <TouchableOpacity
       onPress={() => {
-        RootNavigation.navigate('SelectCutType');
+        RootNavigation.goBack();
       }}
     >
       <Icon name="chevron-left" size={20} color="#fff" />

@@ -7,8 +7,9 @@ export const ModalView = styled.ScrollView`
 export const ModalViewBox = styled.View`
   background: #fff;
   align-self: center;
-  width: 80%;
+  width: 90%;
   height: 400px;
+  margin-top: -20%;
 
   border-radius: 10px;
 `;
@@ -63,7 +64,7 @@ export const ModalButtonContainer = styled.View`
 `;
 
 export const ModalButton = styled.TouchableOpacity`
-  width: 100px;
+  width: 110px;
   height: 50px;
   margin: 30px;
 

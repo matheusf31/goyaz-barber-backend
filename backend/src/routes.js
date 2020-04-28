@@ -32,6 +32,7 @@ routes.put('/users', UserController.update);
 
 routes.get('/providers', ProviderController.index);
 routes.post('/providers', ProviderController.store);
+
 routes.get('/providers/:providerId/available', AvailableController.index);
 
 routes.get('/appointments', AppointmentController.index);

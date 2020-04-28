@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import {
   startOfHour,
   parseISO,
@@ -8,8 +7,10 @@ import {
   addMinutes,
   compareAsc,
   subMinutes,
+  subWeeks,
 } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import { Op } from 'sequelize';
 
 import Appointment from '../models/Appointment';
 import File from '../models/File';
@@ -50,21 +51,25 @@ class AppointmentController {
   }
 
   async store(req, res) {
-    const schema = Yup.object().shape({
-      provider_id: Yup.number().required(),
-      date: Yup.date().required(),
-      cut_type: Yup.string().matches(/(corte$|corte e barba$)/i),
+    const { provider_id, date, cut_type } = req.body;
+
+    const twoWeeksBack = subWeeks(parseISO(date), 2);
+
+    const hasAppointment = await Appointment.findOne({
+      where: {
+        user_id: req.userId,
+        date: {
+          [Op.between]: [twoWeeksBack, date],
+        },
+        canceled_at: null,
+      },
     });
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+    if (hasAppointment) {
+      return res.status(400).json({
+        error: 'Você possui um agendamento marcado nas últimas duas semanas',
+      });
     }
-
-    /**
-     * checar se o usuário tem um agendamento na mesma semana (não faz sentido ele marcar dois horários pra mesma semana)
-     */
-
-    const { provider_id, date, cut_type } = req.body;
 
     // Checando se provider_id é um provedor
     const checkIsProvider = await User.findOne({
@@ -80,13 +85,13 @@ class AppointmentController {
     // Checando se o provider não é o mesmo usuário
     if (provider_id === req.userId) {
       return res.status(401).json({
-        error: 'Você não pode marcar com você mesmo',
+        error: 'Você não pode marcar com você mesmo.',
       });
     }
 
     // Checando se o cut type foi inserido
     if (!cut_type) {
-      return res.status(400).json({ error: 'Insert the cut type' });
+      return res.status(400).json({ error: 'Insira o serviço.' });
     }
 
     // Checando se a data/hora escolhida está ANTES da data/hora atual
@@ -95,13 +100,17 @@ class AppointmentController {
 
     if (compareAsc(parseISO(date), hourStart) === 0) {
       if (isBefore(hourStart, new Date())) {
-        return res.status(400).json({ error: 'Past dates are not permited' });
+        return res
+          .status(400)
+          .json({ error: 'Horários que já passaram não são permitidos.' });
       }
     }
 
     if (compareAsc(parseISO(date), halfHour) === 0) {
       if (isBefore(halfHour, new Date())) {
-        return res.status(400).json({ error: 'Past dates are not permited' });
+        return res
+          .status(400)
+          .json({ error: 'Horários que já passaram não são permitidos.' });
       }
     }
 
@@ -113,7 +122,7 @@ class AppointmentController {
     if (checkAvailability) {
       return res
         .status(400)
-        .json({ error: 'Appointment date is not available' });
+        .json({ error: 'Data do agendamento não está disponível.' });
     }
 
     // Checar se o provedor não tem um 'corte e barba' 30 minutos antes desse horário
@@ -129,7 +138,7 @@ class AppointmentController {
     if (checkAvailability) {
       return res
         .status(400)
-        .json({ error: 'Appointment date is not available' });
+        .json({ error: 'Data do agendamento não está disponível.' });
     }
 
     // extrair o custo do serviço
@@ -175,7 +184,7 @@ class AppointmentController {
       ],
     });
 
-    // Agendamentos só poderão ser cancelados com no máximo 2 horas de antecedência
+    // Agendamentos só poderão ser cancelados com no máximo 1 horas de antecedência
     const dateWithSub = subHours(appointment.date, 1);
 
     if (
@@ -189,17 +198,6 @@ class AppointmentController {
     }
 
     appointment.canceled_at = new Date();
-
-    // caso o corte seja corte e barba tenho que deixar o próximo livre também
-    // if (appointment.cut_type === 'corte e barba') {
-    //   const nextId = Number(req.params.id) + 1;
-    //   const tmp = await Appointment.findByPk(nextId);
-
-    //   if (tmp) {
-    //     tmp.canceled_at = new Date();
-    //     await tmp.save();
-    //   }
-    // }
 
     await appointment.save();
 

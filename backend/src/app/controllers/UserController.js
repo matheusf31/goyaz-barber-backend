@@ -19,6 +19,7 @@ class UserController {
       ],
     });
 
+    // para cada usuário eu vejo quantos agendamentos concluidos existem com o ID daquele usuário
     // https://medium.com/@oieduardorabelo/javascript-armadilhas-do-asyn-await-em-loops-1cdad44db7f0
     const promises = users.map(async user => {
       const total = await Concluded.findAll({ where: { user_id: user.id } });

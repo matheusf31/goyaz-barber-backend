@@ -1,12 +1,14 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 import Background from '~/components/Background';
 
 import { Container, CutTypeList, Cut, Title } from './styles';
 
-export default function SelectCutType({ navigation, route }) {
+export default function SelectCutType({ route }) {
   const { provider } = route.params;
   const { time } = route.params;
+  const navigation = useNavigation();
 
   const cuts = ['corte', 'corte e barba'];
 

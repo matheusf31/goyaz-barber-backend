@@ -20,6 +20,9 @@ class DayUnavailableController {
       attributes: ['id', 'date', 'unavailable'],
     });
 
+    /**
+     * PERIGOSO (TENTAR REFATORAR)
+     */
     if (checkUnavailable) {
       checkUnavailable.forEach(async e => {
         if (e.unavailable === false) {

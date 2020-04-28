@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Alert } from 'react-native';
 import { withNavigationFocus } from '@react-navigation/compat';
 
 import api from '~/services/api';
@@ -12,62 +13,72 @@ function Dashboard({ isFocused }) {
   const [appointments, setAppointments] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
 
-  async function loadAppointments() {
-    const response = await api.get('appointments');
-    setAppointments(response.data);
-  }
+  const loadAppointments = useCallback(async () => {
+    try {
+      const response = await api.get('appointments');
+      setAppointments(response.data);
+    } catch (err) {
+      Alert.alert('Erro', err.response.data.error);
+    }
+  }, []);
 
   useEffect(() => {
     if (isFocused) {
       loadAppointments();
     }
-  }, [isFocused]);
+  }, [isFocused, loadAppointments]);
 
-  async function handleAppointmentsRefresh(Fetching) {
-    if (Fetching) {
-      setIsFetching(true);
-    }
+  const handleAppointmentsRefresh = useCallback(
+    async Fetching => {
+      if (Fetching) {
+        setIsFetching(true);
+      }
 
-    await loadAppointments();
+      await loadAppointments();
 
-    if (Fetching) {
-      setIsFetching(false);
-    }
-  }
+      if (Fetching) {
+        setIsFetching(false);
+      }
+    },
+    [loadAppointments]
+  );
 
-  async function handleCancel(id) {
-    const response = await api.delete(`appointments/${id}`);
+  const handleCancel = useCallback(
+    async id => {
+      const response = await api.delete(`appointments/${id}`);
 
-    setAppointments(
-      appointments.map(appointment =>
-        appointment.id === id
-          ? {
-              ...appointment,
-              canceled_at: response.data.canceled_at,
-            }
-          : appointment
-      )
-    );
+      setAppointments(
+        appointments.map(appointment =>
+          appointment.id === id
+            ? {
+                ...appointment,
+                canceled_at: response.data.canceled_at,
+              }
+            : appointment
+        )
+      );
 
-    handleAppointmentsRefresh(false);
-  }
+      handleAppointmentsRefresh(false);
+    },
+    [appointments, handleAppointmentsRefresh]
+  );
 
   return (
-    <Background>
-      <Container>
-        <Title>Agendamentos</Title>
+    <Container>
+      <Background />
 
-        <List
-          data={appointments}
-          onRefresh={() => handleAppointmentsRefresh(true)}
-          refreshing={isFetching}
-          keyExtractor={item => String(item.id)}
-          renderItem={({ item }) => (
-            <Appointment data={item} onCancel={() => handleCancel(item.id)} />
-          )}
-        />
-      </Container>
-    </Background>
+      <Title>Agendamentos</Title>
+
+      <List
+        data={appointments}
+        onRefresh={() => handleAppointmentsRefresh(true)}
+        refreshing={isFetching}
+        keyExtractor={item => String(item.id)}
+        renderItem={({ item }) => (
+          <Appointment data={item} onCancel={() => handleCancel(item.id)} />
+        )}
+      />
+    </Container>
   );
 }
 

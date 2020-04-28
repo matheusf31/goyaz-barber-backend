@@ -35,14 +35,18 @@ class ProviderController {
       phone: Yup.string()
         .required()
         .matches(phoneRegExp, 'Número de telefone inválido'),
+      password: Yup.string()
+        .required()
+        .min(6),
     });
 
-    // Se retornar false é pq o body não está valido e entra no if
     if (!(await schema.isValid(req.body))) {
       return res
         .status(400)
         .json({ error: 'Erro de validação. Verifique seus dados.' });
     }
+
+    const { name, email, password, phone } = req.body;
 
     const userIsProvider = await User.findByPk(req.userId);
 
@@ -52,18 +56,23 @@ class ProviderController {
 
     const userExists = await User.findOne({
       where: {
-        email: req.body.email,
+        email,
       },
     });
 
-    // Interrompe o fluxo se já existir um usuário
     if (userExists) {
       return res.status(400).json({ error: 'Usuário já existe.' });
     }
 
-    const { id, name, email, provider, phone } = await User.create(req.body);
+    const provider = await User.create({
+      name,
+      email,
+      password,
+      provider: true,
+      phone,
+    });
 
-    return res.json({ id, name, email, provider, phone });
+    return res.json(provider);
   }
 }
 

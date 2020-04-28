@@ -15,6 +15,8 @@ import SelectDateTime from './pages/New/SelectDateTime';
 import SelectCutType from './pages/New/SelectCutType';
 import Confirm from './pages/New/Confirm';
 
+import Background from './components/Background';
+
 import {
   tabBarOptions,
   tabDashboardOptions,
