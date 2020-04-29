@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Image, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { Image, ScrollView, KeyboardAvoidingView, View } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/Feather';
@@ -14,7 +14,7 @@ import { signUpRequest } from '~/store/modules/auth/actions';
 
 import {
   Container,
-  Form,
+  Title,
   FormInput,
   SubmitButton,
   SignLink,
@@ -56,71 +56,73 @@ export default function SingUp({ navigation }) {
               }}
             />
 
-            <Form>
-              <FormInput
-                name="name"
-                icon="person-outline"
-                autoCorrect={false}
-                autoCapitalize="words"
-                placeholder="Nome"
-                returnKeyType="next"
-                onSubmitEditing={() => phoneRef.current.focus()}
-                value={name}
-                onChangeText={setName}
-              />
+            <View>
+              <Title>Crie sua conta</Title>
+            </View>
 
-              <FormInput
-                name="phone"
-                icon="call"
-                autoCorrect={false}
-                autoCapitalize="none"
-                placeholder="telefone"
-                keyboardType="numeric"
-                ref={phoneRef}
-                returnKeyType="next"
-                onSubmitEditing={() => emailRef.current.focus()}
-                value={phone}
-                onChangeText={setPhone}
-              />
+            <FormInput
+              name="name"
+              icon="person-outline"
+              autoCorrect={false}
+              autoCapitalize="words"
+              placeholder="Nome"
+              returnKeyType="next"
+              onSubmitEditing={() => phoneRef.current.focus()}
+              value={name}
+              onChangeText={setName}
+            />
 
-              <FormInput
-                name="email"
-                icon="mail-outline"
-                keyboardType="email-address"
-                autoCorrect={false}
-                autoCapitalize="none"
-                placeholder="E-mail"
-                ref={emailRef}
-                returnKeyType="next"
-                onSubmitEditing={() => passwordRef.current.focus()}
-                value={email}
-                onChangeText={setEmail}
-              />
+            <FormInput
+              name="phone"
+              icon="call"
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="telefone"
+              keyboardType="numeric"
+              ref={phoneRef}
+              returnKeyType="next"
+              onSubmitEditing={() => emailRef.current.focus()}
+              value={phone}
+              onChangeText={setPhone}
+            />
 
-              <FormInput
-                name="password"
-                icon="lock-outline"
-                secureTextEntry
-                autoCapitalize="none"
-                placeholder="Senha"
-                ref={passwordRef}
-                returnKeyType="send"
-                onSubmitEditing={handleSubmit}
-                value={password}
-                onChangeText={setPassword}
-              />
+            <FormInput
+              name="email"
+              icon="mail-outline"
+              keyboardType="email-address"
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="E-mail"
+              ref={emailRef}
+              returnKeyType="next"
+              onSubmitEditing={() => passwordRef.current.focus()}
+              value={email}
+              onChangeText={setEmail}
+            />
 
-              <SubmitButton loading={loading} onPress={handleSubmit}>
-                Criar conta
-              </SubmitButton>
-            </Form>
+            <FormInput
+              name="password"
+              icon="lock-outline"
+              secureTextEntry
+              autoCapitalize="none"
+              placeholder="Senha"
+              ref={passwordRef}
+              returnKeyType="send"
+              onSubmitEditing={handleSubmit}
+              value={password}
+              onChangeText={setPassword}
+            />
+
+            <SubmitButton loading={loading} onPress={handleSubmit}>
+              Criar conta
+            </SubmitButton>
 
             <SignLink
               onPress={() => {
                 navigation.goBack();
               }}
             >
-              <Icon name="arrow-left" size={20} color="#FFF" />
+              <Icon name="arrow-left" size={20} color="#FF9000" />
               <SignLinkText>Fazer login</SignLinkText>
             </SignLink>
           </Container>

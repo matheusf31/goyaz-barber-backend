@@ -10,9 +10,11 @@ export const Container = styled.View`
   padding: 0 30px;
 `;
 
-export const Form = styled.View`
-  align-self: stretch;
-  margin-top: 50px;
+export const Title = styled.Text`
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 24px 0 74px;
 `;
 
 export const FormInput = styled(Input)`
@@ -30,7 +32,7 @@ export const SignLink = styled.TouchableOpacity`
 `;
 
 export const SignLinkText = styled.Text`
-  color: #fff;
+  color: #ff9000;
   font-weight: bold;
   font-size: 16px;
   margin-left: 10px;

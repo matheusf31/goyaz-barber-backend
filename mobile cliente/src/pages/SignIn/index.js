@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Image, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { Image, ScrollView, KeyboardAvoidingView, View } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/Feather';
@@ -12,7 +12,7 @@ import logo from '~/assets/images/logo3.png';
 
 import {
   Container,
-  Form,
+  Title,
   FormInput,
   SubmitButton,
   SignLink,
@@ -49,36 +49,38 @@ export default function SingIn({ navigation }) {
               }}
             />
 
-            <Form>
-              <FormInput
-                name="email"
-                icon="mail-outline"
-                keyboardType="email-address"
-                autoCorrect={false}
-                autoCapitalize="none"
-                placeholder="E-mail"
-                returnKeyType="next"
-                onSubmitEditing={() => passwordRef.current.focus()}
-                value={email}
-                onChangeText={setEmail}
-              />
+            <View>
+              <Title>Faça seu logon</Title>
+            </View>
 
-              <FormInput
-                name="password"
-                icon="lock-outline"
-                secureTextEntry
-                placeholder="Senha"
-                ref={passwordRef}
-                returnKeyType="send"
-                onSubmitEditing={handleSubmit}
-                value={password}
-                onChangeText={setpassword}
-              />
+            <FormInput
+              name="email"
+              icon="mail-outline"
+              keyboardType="email-address"
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="E-mail"
+              returnKeyType="next"
+              onSubmitEditing={() => passwordRef.current.focus()}
+              value={email}
+              onChangeText={setEmail}
+            />
 
-              <SubmitButton loading={loading} onPress={handleSubmit}>
-                Acessar
-              </SubmitButton>
-            </Form>
+            <FormInput
+              name="password"
+              icon="lock-outline"
+              secureTextEntry
+              placeholder="Senha"
+              ref={passwordRef}
+              returnKeyType="send"
+              onSubmitEditing={handleSubmit}
+              value={password}
+              onChangeText={setpassword}
+            />
+
+            <SubmitButton loading={loading} onPress={handleSubmit}>
+              Acessar
+            </SubmitButton>
 
             <SignLink
               onPress={() => {
