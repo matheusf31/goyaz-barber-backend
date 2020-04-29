@@ -161,7 +161,6 @@
 				A61EA423BE53529CC19AFF52 /* Pods-goyazbarbermobileTests.debug.xcconfig */,
 				02780A62F257BD1B22BAAA66 /* Pods-goyazbarbermobileTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -309,6 +308,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);

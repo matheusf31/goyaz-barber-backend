@@ -14,7 +14,7 @@ export const Title = styled.Text`
   color: #fff;
   font-size: 24px;
   font-weight: bold;
-  margin: 24px 0 74px;
+  margin: 24px 0 44px;
 `;
 
 export const FormInput = styled(Input)`
@@ -36,4 +36,5 @@ export const SignLinkText = styled.Text`
   font-weight: bold;
   font-size: 16px;
   margin-left: 10px;
+  margin-bottom: 50px;
 `;

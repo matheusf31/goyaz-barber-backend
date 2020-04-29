@@ -1,15 +1,30 @@
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 
 export const Container = styled.View`
-  padding: 0 15px;
-  height: 46px;
+  width: 100%;
+  height: 60px;
+  padding: 0 16px;
 
-  border-radius: 8px;
-  border-bottom-width: 1px;
-  border-bottom-color: #fff;
+  background: #18171d;
 
+  border-radius: 10px;
+  border-width: 2px;
+  /* border-bottom-width: 2px; */
+  border-color: #18171d;
   flex-direction: row;
   align-items: center;
+
+  ${props =>
+    props.isErrored &&
+    css`
+      border-color: #c53030;
+    `}
+
+  ${props =>
+    props.isFocused &&
+    css`
+      border-color: #ff9000;
+    `}
 `;
 
 export const TInput = styled.TextInput.attrs({
@@ -17,6 +32,6 @@ export const TInput = styled.TextInput.attrs({
 })`
   flex: 1;
   font-size: 15px;
-  margin-left: 10px;
+  margin-left: 16px;
   color: #fff;
 `;

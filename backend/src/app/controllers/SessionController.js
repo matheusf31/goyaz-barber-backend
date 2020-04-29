@@ -1,11 +1,4 @@
-/*
-  Novo controler pois estamos criando uma sessão
-  Pensar sempre na entidade que estamos tratando no momento
-  Só podemos ter 1 dos 5 métodos (index, store, show, delete, update)
-*/
-
 import jwt from 'jsonwebtoken';
-import * as Yup from 'yup';
 
 import User from '../models/User';
 import File from '../models/File';
@@ -13,15 +6,6 @@ import authConfig from '../../config/auth';
 
 class SessionController {
   async store(req, res) {
-    const schema = Yup.object().shape({
-      email: Yup.string().email(),
-      password: Yup.string(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Erro no formato dos dados.' });
-    }
-
     const { email, password } = req.body;
 
     if (!email && !password) {

@@ -5,12 +5,13 @@ import Button from '~/components/Button';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
+  align-items: center;
 `;
 
 export const Separator = styled.View`
   height: 1px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 30px 0 30px;
+  background: rgba(255, 255, 255, 0.8);
+  margin: 20px 0 20px;
 `;
 
 export const Title = styled.Text`
@@ -19,23 +20,22 @@ export const Title = styled.Text`
   font-weight: bold;
   align-self: center;
   margin-top: 30px;
+  margin-bottom: 40px;
 `;
 
-export const Form = styled.ScrollView.attrs({
-  showsVerticalScrollIndicator: false,
-  contentContainerStyle: { padding: 30 },
-})`
-  align-self: stretch;
+export const FormInput = styled(Input)`
+  width: 85%;
+  margin: 5px;
 `;
-
-export const FormInput = styled(Input)``;
 
 export const SubmitButton = styled(Button)`
+  width: 85%;
   margin-top: 30px;
 `;
 
 export const LogoutButton = styled(Button)`
+  width: 85%;
   margin-top: 10px;
-  margin-bottom: 60px;
+  margin-bottom: 100px;
   background: #f64c45;
 `;

@@ -1,10 +1,21 @@
-import React, { useRef, useState } from 'react';
-import { Image, ScrollView, KeyboardAvoidingView, View } from 'react-native';
+import React, { useRef, useCallback } from 'react';
+import {
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  View,
+  Alert,
+  Platform,
+} from 'react-native';
 import PropTypes from 'prop-types';
+import { Form } from '@unform/mobile';
+import * as Yup from 'yup';
 
 import Icon from 'react-native-vector-icons/Feather';
 
 import { useDispatch, useSelector } from 'react-redux';
+
+import getValidationErrors from '../../util/getValidationErrors';
 
 import logo from '~/assets/images/logo3.png';
 
@@ -24,27 +35,70 @@ import {
 export default function SingUp({ navigation }) {
   const dispatch = useDispatch();
 
+  const formRef = useRef(null);
   const emailRef = useRef();
   const passwordRef = useRef();
   const phoneRef = useRef();
 
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   const loading = useSelector(state => state.auth.loading);
 
-  function handleSubmit() {
-    dispatch(signUpRequest(name, phone, email, password));
-  }
+  const handleSubmit = useCallback(
+    async data => {
+      try {
+        if (formRef.current) {
+          formRef.current.setErrors({});
+        }
+
+        const { name, phone, email, password } = data;
+
+        const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome obrigatório.'),
+          email: Yup.string()
+            .email('Digite um e-mail válido.')
+            .required('E-mail obrigatório.'),
+          password: Yup.string().min(6, 'No mínimo 6 dígitos'),
+          phone: Yup.string()
+            .required('Número de celular obrigatório')
+            .matches(phoneRegExp, 'Número de telefone inválido'),
+        });
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        dispatch(signUpRequest(name, phone, email, password));
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          if (formRef.current) {
+            formRef.current.setErrors(errors);
+          }
+
+          return;
+        }
+
+        Alert.alert('Erro no castro', 'Verifique seus dados.');
+      }
+    },
+    [dispatch]
+  );
 
   return (
     <Background>
-      <KeyboardAvoidingView enabled style={{ flex: 1 }} behavior="padding">
+      <KeyboardAvoidingView
+        enabled
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <ScrollView
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1 }}
+          style={{ flex: 1 }}
+          contentContainerStyle={
+            Platform.OS === 'ios' ? { flex: 1 } : undefined
+          }
         >
           <Container>
             <Image
@@ -59,63 +113,68 @@ export default function SingUp({ navigation }) {
             <View>
               <Title>Crie sua conta</Title>
             </View>
+            <Form ref={formRef} onSubmit={handleSubmit}>
+              <FormInput
+                name="name"
+                icon="person-outline"
+                placeholder="Nome"
+                autoCorrect={false}
+                autoCapitalize="words"
+                returnKeyType="next"
+                onSubmitEditing={() => phoneRef.current.focus()}
+              />
 
-            <FormInput
-              name="name"
-              icon="person-outline"
-              autoCorrect={false}
-              autoCapitalize="words"
-              placeholder="Nome"
-              returnKeyType="next"
-              onSubmitEditing={() => phoneRef.current.focus()}
-              value={name}
-              onChangeText={setName}
-            />
+              <FormInput
+                name="phone"
+                icon="call"
+                placeholder="telefone"
+                autoCorrect={false}
+                autoCapitalize="none"
+                keyboardType="numeric"
+                returnKeyType="next"
+                ref={phoneRef}
+                onSubmitEditing={() => emailRef.current.focus()}
+              />
 
-            <FormInput
-              name="phone"
-              icon="call"
-              autoCorrect={false}
-              autoCapitalize="none"
-              placeholder="telefone"
-              keyboardType="numeric"
-              ref={phoneRef}
-              returnKeyType="next"
-              onSubmitEditing={() => emailRef.current.focus()}
-              value={phone}
-              onChangeText={setPhone}
-            />
+              <FormInput
+                name="email"
+                icon="mail-outline"
+                keyboardType="email-address"
+                autoCorrect={false}
+                autoCapitalize="none"
+                placeholder="E-mail"
+                returnKeyType="next"
+                ref={emailRef}
+                onSubmitEditing={() => passwordRef.current.focus()}
+              />
 
-            <FormInput
-              name="email"
-              icon="mail-outline"
-              keyboardType="email-address"
-              autoCorrect={false}
-              autoCapitalize="none"
-              placeholder="E-mail"
-              ref={emailRef}
-              returnKeyType="next"
-              onSubmitEditing={() => passwordRef.current.focus()}
-              value={email}
-              onChangeText={setEmail}
-            />
+              <FormInput
+                name="password"
+                icon="lock-outline"
+                secureTextEntry
+                autoCapitalize="none"
+                placeholder="Senha"
+                returnKeyType="send"
+                textContentType="newPassword"
+                ref={passwordRef}
+                onSubmitEditing={() => {
+                  if (formRef.current) {
+                    formRef.current.submitForm();
+                  }
+                }}
+              />
 
-            <FormInput
-              name="password"
-              icon="lock-outline"
-              secureTextEntry
-              autoCapitalize="none"
-              placeholder="Senha"
-              ref={passwordRef}
-              returnKeyType="send"
-              onSubmitEditing={handleSubmit}
-              value={password}
-              onChangeText={setPassword}
-            />
-
-            <SubmitButton loading={loading} onPress={handleSubmit}>
-              Criar conta
-            </SubmitButton>
+              <SubmitButton
+                loading={loading}
+                onPress={() => {
+                  if (formRef.current) {
+                    formRef.current.submitForm();
+                  }
+                }}
+              >
+                Criar conta
+              </SubmitButton>
+            </Form>
 
             <SignLink
               onPress={() => {

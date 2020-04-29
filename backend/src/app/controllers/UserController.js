@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+
 import User from '../models/User';
 import Concluded from '../models/Concluded';
 import File from '../models/File';
@@ -35,26 +36,6 @@ class UserController {
   }
 
   async store(req, res) {
-    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      email: Yup.string()
-        .email()
-        .required(),
-      password: Yup.string()
-        .required()
-        .min(6),
-      phone: Yup.string()
-        .required()
-        .matches(phoneRegExp, 'Número de telefone inválido'),
-    });
-
-    // Se retornar false é pq o body não está valido e entra no if
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Verifique seus dados.' });
-    }
-
     const userExists = await User.findOne({
       where: {
         email: req.body.email,
@@ -72,14 +53,7 @@ class UserController {
   }
 
   async update(req, res) {
-    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
     const schema = Yup.object().shape({
-      name: Yup.string(),
-      email: Yup.string()
-        .email()
-        .required(),
-      phone: Yup.string().matches(phoneRegExp, 'Número de telefone inválido.'),
       oldPassword: Yup.string().min(6),
       password: Yup.string()
         .min(6)
