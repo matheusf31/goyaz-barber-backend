@@ -4,7 +4,7 @@ export const Container = styled.View`
   margin-bottom: 15px;
   padding: 20px;
   border-radius: 4px;
-  background: ${props => (props.banned ? '#f64c45' : '#fff')};
+  background: ${props => (props.banned ? '#c53030' : '#fff')};
 
   display: flex;
   flex-direction: row;

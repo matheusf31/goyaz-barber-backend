@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const tabBarOptions = {
   keyboardHidesTabBar: true,
-  activeTintColor: '#FFF',
+  activeTintColor: '#ff9000',
   inactiveTintColor: 'rgba(255,255,255,0.4)',
   style: {
     backgroundColor: '#000',
@@ -15,20 +15,44 @@ export const tabBarOptions = {
 
 export const tabDashboardOptions = {
   tabBarLabel: 'Agendamentos',
-  tabBarIcon: () => <Icon name="event" size={20} color="#FFF" />,
+  tabBarIcon: ({ focused }) => (
+    <Icon
+      name="event"
+      size={20}
+      color={focused ? '#ff9000' : 'rgba(255,255,255,0.4)'}
+    />
+  ),
 };
 
 export const tabProfileOptions = {
   tabBarLabel: 'Meu perfil',
-  tabBarIcon: () => <Icon name="person" size={20} color="#FFF" />,
+  tabBarIcon: ({ focused }) => (
+    <Icon
+      name="person"
+      size={20}
+      color={focused ? '#ff9000' : 'rgba(255,255,255,0.4)'}
+    />
+  ),
 };
 
 export const tabGraphicOptions = {
   tabBarLabel: 'Gráficos',
-  tabBarIcon: () => <Icon name="timeline" size={20} color="#FFF" />,
+  tabBarIcon: ({ focused }) => (
+    <Icon
+      name="timeline"
+      size={20}
+      color={focused ? '#ff9000' : 'rgba(255,255,255,0.4)'}
+    />
+  ),
 };
 
 export const tabUserOptions = {
   tabBarLabel: 'Clientes',
-  tabBarIcon: () => <Icon name="group" size={20} color="#FFF" />,
+  tabBarIcon: ({ focused }) => (
+    <Icon
+      name="group"
+      size={20}
+      color={focused ? '#ff9000' : 'rgba(255,255,255,0.4)'}
+    />
+  ),
 };

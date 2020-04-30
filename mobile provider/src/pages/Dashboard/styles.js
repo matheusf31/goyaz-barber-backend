@@ -26,27 +26,13 @@ export const HourList = styled(SwipeListView).attrs({
   margin-top: -20px;
 `;
 
-export const BusyButton = styled(TouchableHighlight)`
-  right: 0;
-  background-color: #f64c45;
-
-  align-items: center;
-  bottom: 0;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  width: 75px;
-  height: 75px;
-  border-radius: 5px;
-`;
-
 export const CancelDayButton = styled(Button)`
   width: 100%;
   height: 75px;
   margin-bottom: 20px;
   border-radius: 4px;
 
-  background: #f64c45;
+  background: #c53030;
 `;
 
 export const FreeDayButton = styled(Button)`

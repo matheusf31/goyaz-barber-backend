@@ -22,7 +22,7 @@ export const DateText = styled.Text`
 `;
 
 export const Picker = styled.View`
-  background: #fff;
+  background: #000;
   padding: 15px 20px;
   margin: 20px;
 

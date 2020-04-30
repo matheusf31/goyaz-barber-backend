@@ -3,14 +3,13 @@ import styled from 'styled-components/native';
 import Input from '~/components/Input';
 import Button from '~/components/Button';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.View`
   flex: 1;
   align-items: center;
+  margin-top: 50px;
 `;
 
 export const Separator = styled.View`
-  height: 1px;
-  background: rgba(255, 255, 255, 0.8);
   margin: 20px 0 20px;
 `;
 
@@ -37,5 +36,5 @@ export const LogoutButton = styled(Button)`
   width: 85%;
   margin-top: 10px;
   margin-bottom: 100px;
-  background: #f64c45;
+  background: #c53030;
 `;

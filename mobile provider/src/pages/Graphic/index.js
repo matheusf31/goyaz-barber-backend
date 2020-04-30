@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Dimensions } from 'react-native';
-import { LineChart, PieChart } from 'react-native-chart-kit';
+import { LineChart } from 'react-native-chart-kit';
 import { withNavigationFocus } from '@react-navigation/compat';
 
 import { getWeekOfMonth, parseISO } from 'date-fns';
@@ -29,7 +29,7 @@ function Graphic({ isFocused }) {
   const [profitWeekInfo, setProfitWeekInfo] = useState({});
   const [customersWeekInfo, setCustomersWeekInfo] = useState({});
 
-  async function loadData() {
+  const loadData = useCallback(async () => {
     const response = await api.get('concluded', {
       params: {
         date: date.getTime(),
@@ -37,78 +37,86 @@ function Graphic({ isFocused }) {
     });
 
     setData(response.data);
-  }
+  }, [date]);
 
-  async function loadAppointments() {
+  const loadAppointments = useCallback(async () => {
     const response = await api.get('schedule', {
       params: { date },
     });
 
     setSchedules(response.data.length);
-  }
+  }, [date]);
 
   useEffect(() => {
     if (isFocused) {
       loadAppointments();
       loadData();
     }
-  }, [date, isFocused]);
+  }, [date, isFocused, loadAppointments, loadData]);
 
-  function calculaCusto(semana) {
-    const valor = data.reduce(
-      (total, elemento) =>
-        getWeekOfMonth(parseISO(elemento.date), {
-          locale: pt,
-        }) === semana
-          ? total + parseFloat(elemento.cost)
-          : total,
-      0
-    );
+  const calculaCusto = useCallback(
+    semana => {
+      const valor = data.reduce(
+        (total, elemento) =>
+          getWeekOfMonth(parseISO(elemento.date), {
+            locale: pt,
+          }) === semana
+            ? total + parseFloat(elemento.cost)
+            : total,
+        0
+      );
 
-    return valor;
-  }
+      return valor;
+    },
+    [data]
+  );
 
-  function calculaCliente(semana) {
-    const valor = data.filter(
-      e =>
-        getWeekOfMonth(parseISO(e.date), {
-          locale: pt,
-        }) === semana
-    );
+  const calculaCliente = useCallback(
+    semana => {
+      const valor = data.filter(
+        e =>
+          getWeekOfMonth(parseISO(e.date), {
+            locale: pt,
+          }) === semana
+      );
 
-    return valor;
-  }
+      return valor;
+    },
+    [data]
+  );
 
-  const weeks = [
-    {
-      profit: useMemo(() => calculaCusto(1), [data]),
-      customers: useMemo(() => calculaCliente(1), [data]),
-    },
-    {
-      profit: useMemo(() => calculaCusto(2), [data]),
-      customers: useMemo(() => calculaCliente(2), [data]),
-    },
-    {
-      profit: useMemo(() => calculaCusto(3), [data]),
-      customers: useMemo(() => calculaCliente(3), [data]),
-    },
-    {
-      profit: useMemo(() => calculaCusto(4), [data]),
-      customers: useMemo(() => calculaCliente(4), [data]),
-    },
-    {
-      profit: useMemo(() => calculaCusto(5), [data]),
-      customers: useMemo(() => calculaCliente(5), [data]),
-    },
-    {
-      profit: useMemo(() => calculaCusto(6), [data]),
-      customers: useMemo(() => calculaCliente(6), [data]),
-    },
-    {
-      profit: useMemo(() => calculaCusto(7), [data]),
-      customers: useMemo(() => calculaCliente(7), [data]),
-    },
-  ];
+  const weeks = useMemo(() => {
+    return [
+      {
+        profit: calculaCusto(1),
+        customers: calculaCliente(1),
+      },
+      {
+        profit: calculaCusto(2),
+        customers: calculaCliente(2),
+      },
+      {
+        profit: calculaCusto(3),
+        customers: calculaCliente(3),
+      },
+      {
+        profit: calculaCusto(4),
+        customers: calculaCliente(4),
+      },
+      {
+        profit: calculaCusto(5),
+        customers: calculaCliente(5),
+      },
+      {
+        profit: calculaCusto(6),
+        customers: calculaCliente(6),
+      },
+      {
+        profit: calculaCusto(7),
+        customers: calculaCliente(7),
+      },
+    ];
+  }, [data]);
 
   // tentar colocar um useMemo aqui
   const profitChartData = useMemo(() => {
@@ -158,23 +166,6 @@ function Graphic({ isFocused }) {
   const customersChartTotal = useMemo(() => {
     return weeks.reduce((total, e) => total + e.customers.length, 0);
   }, [weeks]);
-
-  const pieChartData = [
-    {
-      name: 'Agen totais',
-      population: schedules,
-      color: 'rgba(255, 255, 255, 1)',
-      legendFontColor: '#FFF',
-      legendFontSize: 12,
-    },
-    {
-      name: 'Agen concluidos',
-      population: customersChartTotal,
-      color: 'rgba(35, 56, 136, 0.8)',
-      legendFontColor: '#FFF',
-      legendFontSize: 12,
-    },
-  ];
 
   return (
     <Background>
@@ -293,21 +284,6 @@ function Graphic({ isFocused }) {
                   Total de clientes do mês de março: {customersChartTotal}
                 </LineChartTotal>
               </LineChartInfo>
-            </ChartView>
-
-            <ChartView>
-              <PieChart
-                data={pieChartData}
-                width={Dimensions.get('window').width / 1.05} // from react-native
-                height={200}
-                chartConfig={{
-                  color: () => `rgba(35, 56, 136, 0.1)`, // cor das linhas e do preenchimento delas
-                }}
-                accessor="population"
-                backgroundColor="transparent"
-                paddingLeft="15"
-                absolute
-              />
             </ChartView>
           </Charts>
         )}

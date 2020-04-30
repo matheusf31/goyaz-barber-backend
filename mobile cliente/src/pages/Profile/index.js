@@ -103,7 +103,13 @@ export default function Profile() {
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          style={{ flex: 1 }}
+          contentContainerStyle={
+            Platform.OS === 'ios' ? { flex: 1 } : undefined
+          }
+        >
           <Container>
             <Title>Meu perfil</Title>
 
