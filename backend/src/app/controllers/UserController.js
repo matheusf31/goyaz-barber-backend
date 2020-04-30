@@ -42,14 +42,56 @@ class UserController {
       },
     });
 
-    // Interrompe o fluxo se já existir um usuário
     if (userExists) {
       return res.status(400).json({ error: 'Usuário já existe.' });
     }
 
-    const { id, name, email, provider, phone } = await User.create(req.body);
+    const { name, phone, email, password } = req.body;
 
-    return res.json({ id, name, email, provider, phone });
+    /**
+     * Números válidos: 06299999-9999 // 0629999-9999 // 62999999-9999 // 629999-9999 // 062999999999 // 06299999999 // 62999999999 // 6299999999
+     */
+    // eslint-disable-next-line no-useless-escape
+    const reg = /^(62|062)(\d{4,5}\-?\d{4})$/;
+
+    // Para verificar se há o hífen entre os números
+    // eslint-disable-next-line no-useless-escape
+    const reg2 = /\-/;
+
+    const match = phone.match(reg);
+    const match2 = phone.match(reg2);
+
+    if (match2 && phone.length > 13) {
+      return res.status(400).json({ error: 'Número de telefone inválido' });
+    }
+
+    if (!match2 && phone.length > 12) {
+      return res.status(400).json({ error: 'Número de telefone inválido' });
+    }
+
+    if (!match) {
+      return res.status(400).json({ error: 'Número de telefone inválido' });
+    }
+
+    let phoneFormatted = '';
+
+    // formatar o phone para salvar com hífen no banco de dados
+    if (match2) {
+      phoneFormatted = phone;
+    } else {
+      phoneFormatted = `${phone.substr(0, phone.length - 4)}-${phone.substr(
+        phone.length - 4
+      )}`;
+    }
+
+    const { id, provider } = await User.create({
+      name,
+      email,
+      password,
+      phone: phoneFormatted,
+    });
+
+    return res.json({ id, name, email, provider, phoneFormatted });
   }
 
   async update(req, res) {
@@ -70,7 +112,45 @@ class UserController {
       return res.status(400).json({ error: 'Erro no formato dos dados.' });
     }
 
-    const { email, oldPassword, avatar_id } = req.body;
+    let phoneFormatted = '';
+
+    const { name, phone, email, password, oldPassword, avatar_id } = req.body;
+
+    /**
+     * Números válidos: 06299999-9999 // 0629999-9999 // 62999999-9999 // 629999-9999 // 062999999999 // 06299999999 // 62999999999 // 6299999999
+     */
+    // eslint-disable-next-line no-useless-escape
+    const reg = /^(62|062)(\d{4,5}\-?\d{4})$/;
+
+    // Para verificar se há o hífen entre os números
+    // eslint-disable-next-line no-useless-escape
+    const reg2 = /\-/;
+
+    if (phone) {
+      const match = phone.match(reg);
+      const match2 = phone.match(reg2);
+
+      if (match2 && phone.length > 13) {
+        return res.status(400).json({ error: 'Número de telefone inválido' });
+      }
+
+      if (!match2 && phone.length > 12) {
+        return res.status(400).json({ error: 'Número de telefone inválido' });
+      }
+
+      if (!match) {
+        return res.status(400).json({ error: 'Número de telefone inválido' });
+      }
+
+      // formatar o phone para salvar com hífen no banco de dados
+      if (match2) {
+        phoneFormatted = phone;
+      } else {
+        phoneFormatted = `${phone.substr(0, phone.length - 4)}-${phone.substr(
+          phone.length - 4
+        )}`;
+      }
+    }
 
     // colocamos o id do user no middleware de auth para que possamos extrair ele a partir do req
     const user = await User.findByPk(req.userId);
@@ -100,9 +180,14 @@ class UserController {
       }
     }
 
-    await user.update(req.body);
+    await user.update({
+      name,
+      email,
+      phone: phoneFormatted || undefined,
+      password,
+    });
 
-    const { id, name, avatar, phone } = await User.findByPk(req.userId, {
+    const { id, avatar } = await User.findByPk(req.userId, {
       include: [
         {
           model: File,
@@ -112,7 +197,7 @@ class UserController {
       ],
     });
 
-    return res.json({ id, name, email, avatar, phone });
+    return res.json({ id, name, email, avatar, phoneFormatted });
   }
 }
 
