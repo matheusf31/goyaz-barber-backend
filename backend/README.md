@@ -1,6 +1,10 @@
 # Descrição
 
-### Funcionalidades utilizadas no backend
+Backend do app GoyazBarber, feito utilizando NodeJS, juntamente com o framework Express para o roteamento da aplicação. Além disso, utilizei o Docker para criar containeres e hospedar o banco de dados da aplicação;
+
+O backend da aplicação realiza atividades simples como listagem/criação/atualização/deleção de usuários, validação de login com token JWT, processamento de datas para realizar os agendamentos (tanto pro provedor quanto para o cliente) utilizando o date-fns, listagem/criação/atualização/deleção de agendamentos, entre outras funcionalidades;
+
+# Funcionalidades utilizadas no backend
 
 #### Organização e padronização de código
 
