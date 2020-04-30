@@ -100,10 +100,13 @@ export default function Profile() {
     <Background>
       <KeyboardAvoidingView
         enabled
-        style={{ flex: 1 }}
+        style={{ flex: 1, alignItems: 'center' }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flex: 1 }}
+        >
           <Container>
             <Title>Meu perfil</Title>
 

@@ -72,15 +72,12 @@ export default function SingIn() {
     <Background>
       <KeyboardAvoidingView
         enabled
-        style={{ flex: 1 }}
+        style={{ flex: 1, alignItems: 'center' }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
           keyboardShouldPersistTaps="handled"
-          style={{ flex: 1 }}
-          contentContainerStyle={
-            Platform.OS === 'ios' ? { flex: 1 } : undefined
-          }
+          contentContainerStyle={{ flex: 1 }}
         >
           <Container>
             <Image
