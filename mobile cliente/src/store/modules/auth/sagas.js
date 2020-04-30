@@ -43,7 +43,7 @@ export function* signUp({ payload }) {
     RootNavigation.navigate('SignIn');
     Alert.alert('Conta criada com sucesso!', 'Faça seu login por gentileza.');
   } catch (err) {
-    Alert.alert('Falha no cadastro, verifique seus dados!');
+    Alert.alert('Falha no cadastro', `${err.response.data.error}`);
     yield put(signFailure());
   }
 }

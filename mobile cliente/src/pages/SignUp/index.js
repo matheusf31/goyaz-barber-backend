@@ -51,17 +51,13 @@ export default function SingUp({ navigation }) {
 
         const { name, phone, email, password } = data;
 
-        const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório.'),
           email: Yup.string()
             .email('Digite um e-mail válido.')
             .required('E-mail obrigatório.'),
           password: Yup.string().min(6, 'No mínimo 6 dígitos'),
-          phone: Yup.string()
-            .required('Número de celular obrigatório')
-            .matches(phoneRegExp, 'Número de telefone inválido'),
+          phone: Yup.string().required('Número de celular obrigatório'),
         });
 
         await schema.validate(data, {
