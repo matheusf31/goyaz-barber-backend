@@ -6,10 +6,15 @@ import File from '../models/File';
 
 class UserController {
   async index(req, res) {
+    const { page } = req.query;
+
     const users = await User.findAll({
       where: {
         provider: false,
       },
+      order: [['id', 'ASC']],
+      limit: 10,
+      offset: (page - 1) * 10,
       attributes: [
         'id',
         'name',
