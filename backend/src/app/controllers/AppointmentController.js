@@ -24,10 +24,16 @@ class AppointmentController {
 
     // Usuário que fez o agendamento
     const appointments = await Appointment.findAll({
-      where: { user_id: req.userId, canceled_at: null },
-      order: [['date', 'DESC']],
-      limit: 20,
-      offset: (page - 1) * 20, // pular (ou não) 20 registros para listar apenas 20
+      where: {
+        user_id: req.userId,
+        canceled_at: null,
+      },
+      order: [
+        ['id', 'ASC'],
+        ['date', 'DESC'],
+      ],
+      limit: 10,
+      offset: (page - 1) * 10, // pular (ou não) 20 registros para listar apenas 20
       attributes: ['id', 'date', 'cut_type', 'past', 'cancelable', 'cost'],
       include: [
         {
