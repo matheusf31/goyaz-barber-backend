@@ -16,6 +16,8 @@ export default function SelectDateTime({ route }) {
   const navigation = useNavigation();
 
   const { provider } = route.params;
+
+  // é ele que faz executar a requisição de novo
   const prevDate = usePrevious(date);
 
   if (isSunday(date) && !prevDate) {
@@ -45,7 +47,7 @@ export default function SelectDateTime({ route }) {
     }
 
     loadAvailable();
-  }, [date, provider.id, prevDate]);
+  }, [date, prevDate, provider.id]);
 
   function usePrevious(value) {
     const ref = useRef();
