@@ -20,7 +20,6 @@ class SessionController {
       return res.status(400).json({ error: 'Insira a senha.' });
     }
 
-    // busca usuário com o email inserido
     const user = await User.findOne({
       where: { email },
       include: [
@@ -36,7 +35,6 @@ class SessionController {
       return res.status(401).json({ error: 'Usuário não encontrado.' });
     }
 
-    // se a senha não bater entra no if
     if (!(await user.checkPassword(password))) {
       return res.status(401).json({ error: 'Senha incorreta.' });
     }
