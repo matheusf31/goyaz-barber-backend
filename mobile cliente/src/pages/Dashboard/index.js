@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Alert } from 'react-native';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { Alert, ActivityIndicator, View, Text } from 'react-native';
 import { withNavigationFocus } from '@react-navigation/compat';
 
 import api from '~/services/api';
@@ -11,12 +11,28 @@ import { Container, Title, List } from './styles';
 
 function Dashboard({ isFocused }) {
   const [appointments, setAppointments] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState(1);
+  const [ended, setEnded] = useState(false);
+  const [callOnEndReached, setCallOnEndReached] = useState(false);
 
-  const loadAppointments = useCallback(async () => {
+  const loadAppointments = useCallback(async (inPage = 1) => {
     try {
-      const response = await api.get('appointments');
-      setAppointments(response.data);
+      const response = await api.get('appointments', {
+        params: {
+          page: inPage,
+        },
+      });
+
+      setAppointments(prevAppointments => {
+        if (response.data.length > 0) {
+          return [...prevAppointments, ...response.data];
+        }
+        setEnded(true);
+        return prevAppointments;
+      });
+
+      setPage(inPage);
     } catch (err) {
       Alert.alert('Erro', err.response.data.error);
     }
@@ -24,55 +40,81 @@ function Dashboard({ isFocused }) {
 
   useEffect(() => {
     if (isFocused) {
-      loadAppointments();
+      // reset state
+      setAppointments([]);
+      setPage(1);
+      setEnded(false);
+
+      loadAppointments(1);
     }
-  }, [isFocused, loadAppointments]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused]);
 
-  const handleAppointmentsRefresh = useCallback(
-    async Fetching => {
-      if (Fetching) {
-        setIsFetching(true);
-      }
+  // carregar ao arrastar para cima
+  const handleAppointmentsRefresh = useCallback(() => {
+    setRefreshing(true);
 
-      await loadAppointments();
+    // reset state
+    setAppointments([]);
+    setPage(1);
+    setEnded(false);
+    setCallOnEndReached(false);
 
-      if (Fetching) {
-        setIsFetching(false);
-      }
-    },
-    [loadAppointments]
-  );
+    loadAppointments();
+
+    setRefreshing(false);
+  }, [loadAppointments]);
 
   const handleCancel = useCallback(
     async id => {
-      const response = await api.delete(`appointments/${id}`);
+      try {
+        const response = await api.delete(`appointments/${id}`);
 
-      setAppointments(
-        appointments.map(appointment =>
-          appointment.id === id
-            ? {
-                ...appointment,
-                canceled_at: response.data.canceled_at,
-              }
-            : appointment
-        )
-      );
+        setAppointments(
+          appointments.map(appointment =>
+            appointment.id === id
+              ? {
+                  ...appointment,
+                  canceled_at: response.data.canceled_at,
+                }
+              : appointment
+          )
+        );
 
-      handleAppointmentsRefresh(false);
+        handleAppointmentsRefresh(false);
+      } catch (err) {
+        Alert.alert(err.response.data.error);
+      }
     },
+
     [appointments, handleAppointmentsRefresh]
   );
+
+  const renderFooter = () => {
+    if (ended)
+      return (
+        <Text style={{ color: '#fff', alignSelf: 'center' }}>
+          Não há mais agendamentos
+        </Text>
+      );
+
+    if (!refreshing) {
+      return <ActivityIndicator style={{ color: '#fff' }} />;
+    }
+    return null;
+  };
+
+  const nextPage = useMemo(() => page + 1, [page]);
 
   return (
     <Container>
       <Background />
 
       <Title>Agendamentos</Title>
-
       <List
         data={appointments}
-        onRefresh={() => handleAppointmentsRefresh(true)}
-        refreshing={isFetching}
+        onRefresh={() => handleAppointmentsRefresh()}
+        refreshing={refreshing}
         keyExtractor={item => String(item.id)}
         renderItem={({ item }) => (
           <Appointment
@@ -80,6 +122,20 @@ function Dashboard({ isFocused }) {
             onCancel={() => handleCancel(item.id)}
           />
         )}
+        ListFooterComponent={renderFooter}
+        onEndReachedThreshold={0.01}
+        onEndReached={({ distanceFromEnd }) => {
+          if (distanceFromEnd > -100) {
+            setCallOnEndReached(true);
+          }
+        }}
+        onMomentumScrollEnd={() => {
+          if (callOnEndReached && !ended) {
+            loadAppointments(nextPage);
+          }
+
+          return setCallOnEndReached(false);
+        }}
       />
     </Container>
   );
