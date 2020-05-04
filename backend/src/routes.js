@@ -27,6 +27,8 @@ routes.post('/sessions', SessionController.store);
 routes.use(authMiddleware);
 routes.use(bannedMiddleware);
 
+routes.put('/sessions', SessionController.update);
+
 routes.get('/users', UserController.index);
 routes.put('/users', UserController.update);
 
