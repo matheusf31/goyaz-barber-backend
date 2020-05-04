@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import { all, takeLatest, call, put } from 'redux-saga/effects';
-import { signInSuccess, signFailure } from './actions';
+import { signInSuccess, signFailure, updateSuccess } from './actions';
 
 import * as RootNavigation from '~/services/RootNavigation';
 
@@ -48,13 +48,31 @@ export function* signUp({ payload }) {
   }
 }
 
-export function setToken({ payload }) {
+export function* setToken({ payload }) {
   if (!payload) return;
 
-  const { token } = payload.auth;
+  const { token } = payload.auth; // token antigo
 
   if (token) {
     api.defaults.headers.Authorization = `Bearer ${token}`;
+  } else {
+    return;
+  }
+
+  // tentar atualizar o token utilizando o token antigo
+  try {
+    const response = yield call(api.put, 'sessions');
+
+    const newToken = response.data.token;
+
+    if (newToken) {
+      api.defaults.headers.Authorization = `Bearer ${newToken}`;
+    }
+
+    yield put(updateSuccess(newToken));
+  } catch (err) {
+    Alert.alert('Erro', `${err.response.data.error}`);
+    yield put(signFailure());
   }
 }
 

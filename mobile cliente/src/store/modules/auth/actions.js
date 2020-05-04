@@ -30,3 +30,10 @@ export function signOut() {
     type: '@auth/SIGN_OUT',
   };
 }
+
+export function updateSuccess(token) {
+  return {
+    type: '@auth/UPDATE_SUCCESS',
+    payload: { token },
+  };
+}
