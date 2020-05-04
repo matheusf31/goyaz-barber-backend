@@ -13,13 +13,12 @@ export default async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({ error: 'Token not provided' });
+    return res.status(401).json({ error: 'Token inválido.', tokenError: true });
   }
 
   // Retorna um array com duas posições e o segundo elemento é o que interessa (o primeiro é o bearer)
   const [, token] = authHeader.split(' ');
 
-  // O procedimento pode retornar erro, por isso o try/catch
   try {
     /*
       Usamos o método verify para tentar descriptografar
@@ -28,10 +27,18 @@ export default async (req, res, next) => {
     */
     const decoded = await promisify(jwt.verify)(token, authConfig.secret);
 
+    // // verificar quanto tempo falta para ele expirar
+    // const current_time = Date.now().valueOf() / 1000;
+
+    // if (decoded.exp > current_time) {
+    //   // não expirou
+    //   console.log('não expirou');
+    // }
+
     req.userId = decoded.id;
 
     return next();
   } catch (err) {
-    return res.status(401).json({ error: 'Token invalido' });
+    return res.status(401).json({ error: 'Token inválido.', tokenError: true });
   }
 };
