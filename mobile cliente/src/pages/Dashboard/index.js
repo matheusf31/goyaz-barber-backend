@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { Alert, ActivityIndicator, View, Text } from 'react-native';
+import { Alert, ActivityIndicator, Text } from 'react-native';
 import { withNavigationFocus } from '@react-navigation/compat';
 
 import api from '~/services/api';
