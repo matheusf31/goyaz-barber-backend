@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { ScrollView, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useSelector, useDispatch, Alert } from 'react-redux';
 import { Form } from '@unform/mobile';
 import * as Yup from 'yup';
@@ -49,17 +49,12 @@ export default function Profile() {
           confirmPassword,
         } = data;
 
-        const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
         const schema = Yup.object().shape({
           name: Yup.string(),
           email: Yup.string()
             .email()
             .required(),
-          phone: Yup.string().matches(
-            phoneRegExp,
-            'Número de telefone inválido.'
-          ),
+          phone: Yup.string(),
         });
 
         await schema.validate(data, {
@@ -100,15 +95,18 @@ export default function Profile() {
     <Background>
       <KeyboardAvoidingView
         enabled
-        style={{ flex: 1, alignItems: 'center' }}
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1 }}
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flex: Platform.OS === 'ios' ? 1 : 0 }} // se for android remove
         >
           <Container>
-            <Title>Meu perfil</Title>
+            <View>
+              <Title>Meu perfil</Title>
+            </View>
 
             <Form
               ref={formRef}
@@ -202,11 +200,11 @@ export default function Profile() {
                 Atualizar perfil
               </SubmitButton>
             </Form>
-
-            <LogoutButton onPress={handleLogout}>Deslogar</LogoutButton>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <LogoutButton onPress={handleLogout}>Deslogar</LogoutButton>
     </Background>
   );
 }
