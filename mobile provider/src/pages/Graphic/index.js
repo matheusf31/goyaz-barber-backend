@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { withNavigationFocus } from '@react-navigation/compat';
 
-import { getWeekOfMonth, parseISO } from 'date-fns';
+import { getWeekOfMonth, parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 
 import api from '~/services/api';
@@ -17,17 +17,20 @@ import {
   Charts,
   ChartView,
   Title,
-  LineChartInfo,
-  LineChartWeekTotal,
-  LineChartTotal,
+  TableContainer,
+  TableTitle,
+  TableContent,
+  TableContentTotal,
+  TableFirstColumn,
+  TableTotalColumn,
+  TableFooter,
+  TableFooterTotal,
 } from './styles';
 
 function Graphic({ isFocused }) {
   const [date, setDate] = useState(new Date());
-  const [data, setData] = useState([]);
-  const [schedules, setSchedules] = useState(0);
-  const [profitWeekInfo, setProfitWeekInfo] = useState({});
-  const [customersWeekInfo, setCustomersWeekInfo] = useState({});
+  const [concludedAppointments, setConcludedAppointments] = useState([]);
+  const [monthAppointments, setMonthAppointments] = useState(0);
 
   const loadData = useCallback(async () => {
     const response = await api.get('concluded', {
@@ -36,7 +39,8 @@ function Graphic({ isFocused }) {
       },
     });
 
-    setData(response.data);
+    // agendamentos concluidos
+    setConcludedAppointments(response.data);
   }, [date]);
 
   const loadAppointments = useCallback(async () => {
@@ -44,7 +48,8 @@ function Graphic({ isFocused }) {
       params: { date },
     });
 
-    setSchedules(response.data.length);
+    // total de agendamentos no mês (concluidos e não concluidos)
+    setMonthAppointments(response.data.length);
   }, [date]);
 
   useEffect(() => {
@@ -54,71 +59,70 @@ function Graphic({ isFocused }) {
     }
   }, [date, isFocused, loadAppointments, loadData]);
 
-  const calculaCusto = useCallback(
-    semana => {
-      const valor = data.reduce(
-        (total, elemento) =>
-          getWeekOfMonth(parseISO(elemento.date), {
+  const calcProfit = useCallback(
+    week => {
+      const value = concludedAppointments.reduce(
+        (total, element) =>
+          getWeekOfMonth(parseISO(element.date), {
             locale: pt,
-          }) === semana
-            ? total + parseFloat(elemento.cost)
-            : total,
+          }) === week
+            ? parseFloat(total) + parseFloat(element.cost)
+            : parseFloat(total),
         0
       );
 
-      return valor;
+      return value;
     },
-    [data]
+    [concludedAppointments]
   );
 
-  const calculaCliente = useCallback(
-    semana => {
-      const valor = data.filter(
+  const calcCustumers = useCallback(
+    week => {
+      const value = concludedAppointments.filter(
         e =>
           getWeekOfMonth(parseISO(e.date), {
             locale: pt,
-          }) === semana
+          }) === week
       );
 
-      return valor;
+      return value;
     },
-    [data]
+    [concludedAppointments]
   );
 
   const weeks = useMemo(() => {
     return [
       {
-        profit: calculaCusto(1),
-        customers: calculaCliente(1),
+        profit: calcProfit(1),
+        customers: calcCustumers(1),
       },
       {
-        profit: calculaCusto(2),
-        customers: calculaCliente(2),
+        profit: calcProfit(2),
+        customers: calcCustumers(2),
       },
       {
-        profit: calculaCusto(3),
-        customers: calculaCliente(3),
+        profit: calcProfit(3),
+        customers: calcCustumers(3),
       },
       {
-        profit: calculaCusto(4),
-        customers: calculaCliente(4),
+        profit: calcProfit(4),
+        customers: calcCustumers(4),
       },
       {
-        profit: calculaCusto(5),
-        customers: calculaCliente(5),
+        profit: calcProfit(5),
+        customers: calcCustumers(5),
       },
       {
-        profit: calculaCusto(6),
-        customers: calculaCliente(6),
+        profit: calcProfit(6),
+        customers: calcCustumers(6),
       },
       {
-        profit: calculaCusto(7),
-        customers: calculaCliente(7),
+        profit: calcProfit(7),
+        customers: calcCustumers(7),
       },
     ];
-  }, [data]);
+  }, [concludedAppointments]);
 
-  // tentar colocar um useMemo aqui
   const profitChartData = useMemo(() => {
     return {
       labels: ['sem 1', 'sem 2', 'sem 3', 'sem 4', 'sem 5', 'sem 6', 'sem 7'],
@@ -142,27 +146,6 @@ function Graphic({ isFocused }) {
 
   const profitChartTotal = weeks.reduce((total, e) => total + e.profit, 0);
 
-  const customersChartData = useMemo(() => {
-    return {
-      labels: ['sem 1', 'sem 2', 'sem 3', 'sem 4', 'sem 5', 'sem 6', 'sem 7'],
-      datasets: [
-        {
-          data: [
-            weeks[0].customers.length,
-            weeks[1].customers.length,
-            weeks[2].customers.length,
-            weeks[3].customers.length,
-            weeks[4].customers.length,
-            weeks[5].customers.length,
-            weeks[6].customers.length,
-          ],
-          color: () => `rgba(35, 56, 136, 0.7)`, // muda a cor da linha
-        },
-      ],
-      legend: ['Clientes por semana'],
-    };
-  }, [weeks]);
-
   const customersChartTotal = useMemo(() => {
     return weeks.reduce((total, e) => total + e.customers.length, 0);
   }, [weeks]);
@@ -170,11 +153,11 @@ function Graphic({ isFocused }) {
   return (
     <Background>
       <Container>
-        <Title>Gráficos</Title>
+        <Title>Controle de caixa</Title>
 
         <DateInput date={date} onChange={setDate} graphic />
 
-        {data.length > 0 && (
+        {concludedAppointments.length > 0 && (
           <Charts>
             <ChartView>
               <LineChart
@@ -199,7 +182,6 @@ function Graphic({ isFocused }) {
                   fillShadowGradient: '#60BEF3',
                   decimalPlaces: 0,
                 }}
-                onDataPointClick={value => setProfitWeekInfo(value)}
                 bezier
                 style={{
                   // edita a view do gráfico
@@ -210,80 +192,93 @@ function Graphic({ isFocused }) {
                 segments={4}
               />
 
-              <LineChartInfo>
-                {profitWeekInfo.value ? (
-                  <LineChartWeekTotal>
-                    {`Renda da semana ${profitWeekInfo.index + 1}: R$ ${
-                      profitWeekInfo.value
-                    }`}
-                  </LineChartWeekTotal>
-                ) : (
-                  profitWeekInfo.index >= 0 && (
-                    <LineChartWeekTotal>
-                      {`Semana ${profitWeekInfo.index + 1} não teve renda`}
-                    </LineChartWeekTotal>
-                  )
-                )}
+              <TableContainer>
+                <TableTitle>
+                  Lucro de {format(date, 'MMMM', { locale: pt })}
+                </TableTitle>
 
-                <LineChartTotal>
-                  Lucro total do mês de março: R$ {profitChartTotal}
-                </LineChartTotal>
-              </LineChartInfo>
-            </ChartView>
+                {weeks.map((week, index) => (
+                  <TableContent key={index.toString()}>
+                    {week.profit ? (
+                      <>
+                        <TableFirstColumn>Semana {index + 1}</TableFirstColumn>
+                        <TableContentTotal>
+                          <TableTotalColumn>R$</TableTotalColumn>
+                          <TableTotalColumn>
+                            {week.profit.toFixed(2)}
+                          </TableTotalColumn>
+                        </TableContentTotal>
+                      </>
+                    ) : (
+                      <>
+                        <TableFirstColumn>Semana {index + 1}</TableFirstColumn>
+                        <TableContentTotal>
+                          <TableTotalColumn>R$</TableTotalColumn>
+                          <TableTotalColumn>
+                            {week.profit.toFixed(2)}
+                          </TableTotalColumn>
+                        </TableContentTotal>
+                      </>
+                    )}
+                  </TableContent>
+                ))}
 
-            <ChartView>
-              <LineChart
-                data={customersChartData}
-                width={Dimensions.get('window').width / 1.05} // from react-native
-                height={200}
-                yAxisInterval={1} // optional, defaults to 1
-                chartConfig={{
-                  backgroundGradientFrom: '#fff',
-                  backgroundGradientTo: '#fff',
-                  backgroundGradientFromOpacity: 1,
-                  backgroundGradientToOpacity: 1,
-                  color: () => `rgba(35, 56, 136, 0.1)`, // cor das linhas e do preenchimento delas
-                  labelColor: (opacity = 1) => `rgba(84, 84, 84, ${opacity})`, // cor do chartData
-                  propsForDots: {
-                    r: '3',
-                    strokeWidth: '1',
-                    stroke: '#fff',
-                  },
-                  strokeWidth: 2, // optional, default 3
-                  fillShadowGradient: '#60BEF3',
-                  decimalPlaces: 0,
-                }}
-                onDataPointClick={value => setCustomersWeekInfo(value)}
-                style={{
-                  // edita a view do gráfico
-                  borderRadius: 16,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                bezier
-                segments={4}
-              />
+                <TableFooter>
+                  <TableFooterTotal>Total</TableFooterTotal>
+                  <TableFooterTotal>
+                    R$ {profitChartTotal.toFixed(2)}
+                  </TableFooterTotal>
+                </TableFooter>
+              </TableContainer>
 
-              <LineChartInfo>
-                {customersWeekInfo.value ? (
-                  <LineChartWeekTotal>
-                    {`Clientes da semana ${customersWeekInfo.index + 1}: ${
-                      customersWeekInfo.value
-                    }`}
-                  </LineChartWeekTotal>
-                ) : (
-                  customersWeekInfo.index >= 0 && (
-                    <LineChartWeekTotal>
-                      {`Semana ${customersWeekInfo.index +
-                        1} não teve clientes`}
-                    </LineChartWeekTotal>
-                  )
-                )}
+              <TableContainer>
+                <TableTitle>
+                  Clientes de {format(date, 'MMMM', { locale: pt })}
+                </TableTitle>
 
-                <LineChartTotal>
-                  Total de clientes do mês de março: {customersChartTotal}
-                </LineChartTotal>
-              </LineChartInfo>
+                {weeks.map((week, index) => (
+                  <TableContent key={index.toString()}>
+                    {week.customers ? (
+                      <>
+                        <TableFirstColumn>Semana {index + 1}</TableFirstColumn>
+                        <TableTotalColumn>
+                          {week.customers.length}
+                        </TableTotalColumn>
+                      </>
+                    ) : (
+                      <>
+                        <TableFirstColumn>Semana {index + 1}</TableFirstColumn>
+                        <TableTotalColumn>R$ 0</TableTotalColumn>
+                      </>
+                    )}
+                  </TableContent>
+                ))}
+
+                <TableFooter>
+                  <TableFooterTotal>Total</TableFooterTotal>
+                  <TableFooterTotal>{customersChartTotal}</TableFooterTotal>
+                </TableFooter>
+              </TableContainer>
+
+              <TableContainer
+                style={{ justifyContent: 'flex-start', height: 130 }}
+              >
+                <TableTitle>
+                  Agendamentos de {format(date, 'MMMM', { locale: pt })}
+                </TableTitle>
+
+                <TableFooter>
+                  <TableFooterTotal>Marcados</TableFooterTotal>
+                  <TableFooterTotal>{monthAppointments}</TableFooterTotal>
+                </TableFooter>
+
+                <TableFooter style={{ marginTop: 5 }}>
+                  <TableFooterTotal>Concluidos</TableFooterTotal>
+                  <TableFooterTotal>
+                    {concludedAppointments.length}
+                  </TableFooterTotal>
+                </TableFooter>
+              </TableContainer>
             </ChartView>
           </Charts>
         )}

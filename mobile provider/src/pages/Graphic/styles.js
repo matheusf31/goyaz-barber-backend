@@ -22,21 +22,61 @@ export const ChartView = styled.View`
   margin-bottom: 50px;
 `;
 
-export const LineChartInfo = styled.View`
-  flex-direction: row;
+export const TableContainer = styled.View`
   margin: 10px 10px 0 10px;
-  justify-content: flex-end;
+  padding: 10px 20px;
+
+  background: #fff;
+  height: 200px;
+  border-radius: 16px;
+
+  justify-content: space-around;
 `;
 
-export const LineChartWeekTotal = styled.Text`
-  flex: 1;
-  font-size: 12px;
-  color: #fff;
+export const TableTitle = styled.Text`
+  font-size: 20px;
+  color: rgba(35, 56, 136, 0.7);
   font-weight: bold;
+  align-self: center;
 `;
 
-export const LineChartTotal = styled.Text`
+export const TableContent = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 0 20px;
+`;
+
+export const TableContentTotal = styled.View`
+  flex-direction: row;
+
+  justify-content: space-between;
+
+  width: 70px;
+`;
+
+export const TableFirstColumn = styled.Text`
   font-size: 12px;
-  color: #fff;
+  color: #000;
+`;
+
+export const TableTotalColumn = styled.Text`
+  font-size: 12px;
+  color: #000;
   font-weight: bold;
+  /* margin-left: 12px; */
+`;
+
+export const TableFooter = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 20px 20px 0;
+`;
+
+export const TableFooterTotal = styled.Text`
+  font-size: 20px;
+  color: #000;
+  font-weight: bold;
+  align-self: center;
 `;
