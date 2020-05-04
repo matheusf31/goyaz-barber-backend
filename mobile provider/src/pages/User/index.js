@@ -1,10 +1,20 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { ActivityIndicator, Text, Alert } from 'react-native';
+import { Alert } from 'react-native';
 import { withNavigationFocus } from '@react-navigation/compat';
+
+import Icon from 'react-native-vector-icons/Feather';
 
 import api from '~/services/api';
 
-import { Container, Title, List } from './styles';
+import {
+  Container,
+  Title,
+  List,
+  HeaderContainer,
+  HeaderLeftButton,
+  HeaderRightButton,
+  HeaderTitle,
+} from './styles';
 
 import Background from '~/components/Background';
 import Customers from '~/components/Customers';
@@ -13,24 +23,22 @@ function User({ isFocused }) {
   const [clients, setClients] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
-  const [ended, setEnded] = useState(false);
-  const [callOnEndReached, setCallOnEndReached] = useState(false);
+
+  const maxPages = useMemo(() => {
+    const total = clients.length;
+
+    if (total % 5 === 0) {
+      return total / 5;
+    }
+
+    return Math.trunc(total / 5) + 1;
+  }, [clients]);
 
   const loadClients = useCallback(async (inPage = 1) => {
     try {
-      const response = await api.get('users', {
-        params: {
-          page: inPage,
-        },
-      });
+      const response = await api.get('users');
 
-      setClients(prevClients => {
-        if (response.data.length > 0) {
-          return [...prevClients, ...response.data];
-        }
-        setEnded(true);
-        return prevClients;
-      });
+      setClients(response.data);
 
       setPage(inPage);
     } catch (err) {
@@ -42,7 +50,6 @@ function User({ isFocused }) {
     if (isFocused) {
       setClients([]);
       setPage(1);
-      setEnded(false);
 
       loadClients();
     }
@@ -50,32 +57,41 @@ function User({ isFocused }) {
 
   const handleClientRefresh = useCallback(() => {
     setRefreshing(true);
-
-    setClients([]);
     setPage(1);
-    setEnded(false);
-    setCallOnEndReached(false);
-
     loadClients();
-
     setRefreshing(false);
   }, [loadClients]);
 
-  const renderFooter = () => {
-    if (ended)
-      return (
-        <Text style={{ color: '#fff', alignSelf: 'center' }}>
-          Não há mais usuários
-        </Text>
-      );
-
-    if (!refreshing) {
-      return <ActivityIndicator style={{ color: '#fff' }} />;
+  const renderItem = ({ item, index }) => {
+    // paginação
+    if (index >= 0 + (page - 1) * 5 && index <= 4 + (page - 1) * 5) {
+      return <Customers data={item} reload={loadClients} />;
     }
+
     return null;
   };
 
-  const nextPage = useMemo(() => page + 1, [page]);
+  const renderHeader = () => {
+    return (
+      <HeaderContainer>
+        {page > 1 && (
+          <HeaderLeftButton onPress={() => setPage(page - 1)}>
+            <Icon name="chevron-left" size={26} color="#FFF" />
+          </HeaderLeftButton>
+        )}
+        <HeaderTitle>
+          {1 + (page - 1) * 5} -{' '}
+          {page === maxPages ? clients.length : 5 + (page - 1) * 5} de{' '}
+          {clients.length}
+        </HeaderTitle>
+        {page < maxPages && (
+          <HeaderRightButton onPress={() => setPage(page + 1)}>
+            <Icon name="chevron-right" size={26} color="#FFF" />
+          </HeaderRightButton>
+        )}
+      </HeaderContainer>
+    );
+  };
 
   return (
     <Background>
@@ -87,23 +103,8 @@ function User({ isFocused }) {
           onRefresh={() => handleClientRefresh(true)}
           refreshing={refreshing}
           keyExtractor={item => String(item.id)}
-          renderItem={({ item }) => (
-            <Customers data={item} reload={loadClients} />
-          )}
-          ListFooterComponent={renderFooter}
-          onEndReachedThreshold={0.01}
-          onEndReached={({ distanceFromEnd }) => {
-            if (distanceFromEnd > -100) {
-              setCallOnEndReached(true);
-            }
-          }}
-          onMomentumScrollEnd={() => {
-            if (callOnEndReached && !ended) {
-              loadClients(nextPage);
-            }
-
-            return setCallOnEndReached(false);
-          }}
+          renderItem={renderItem}
+          ListHeaderComponent={renderHeader}
         />
       </Container>
     </Background>
