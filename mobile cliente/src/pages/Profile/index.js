@@ -1,6 +1,12 @@
 import React, { useRef, useCallback } from 'react';
-import { ScrollView, KeyboardAvoidingView, Platform, View } from 'react-native';
-import { useSelector, useDispatch, Alert } from 'react-redux';
+import {
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+  Alert,
+} from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import { Form } from '@unform/mobile';
 import * as Yup from 'yup';
 
