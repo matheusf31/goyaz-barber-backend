@@ -20,21 +20,22 @@ import Queue from '../../lib/Queue';
 
 class AppointmentController {
   async index(req, res) {
-    const { page = 1 } = req.query;
-
     // Usuário que fez o agendamento
-    const appointments = await Appointment.findAll({
+    let appointments = await Appointment.findAll({
       where: {
         user_id: req.userId,
         canceled_at: null,
       },
-      order: [
-        ['id', 'ASC'],
-        ['date', 'DESC'],
+      order: [['id', 'DESC']],
+      attributes: [
+        'id',
+        'date',
+        'cut_type',
+        'past',
+        'cancelable',
+        'cost',
+        'concluded',
       ],
-      limit: 10,
-      offset: (page - 1) * 10, // pular (ou não) 20 registros para listar apenas 20
-      attributes: ['id', 'date', 'cut_type', 'past', 'cancelable', 'cost'],
       include: [
         {
           model: User, // para retornar os dados do relacionamento
@@ -50,6 +51,10 @@ class AppointmentController {
         },
       ],
     });
+
+    appointments = appointments.filter(
+      e => e.past === false || e.concluded === true
+    );
 
     return res.json(appointments);
   }
@@ -81,8 +86,8 @@ class AppointmentController {
       });
     }
 
-    // checar se existe um agendamento 6 dias depois da data escolhida
-    hasAppointment = await Appointment.findOne({
+    // checar se existe um agendamento 6 dias antes da data escolhida
+    hasAppointment = await Appointment.findAll({
       where: {
         user_id: req.userId,
         date: {
@@ -97,9 +102,21 @@ class AppointmentController {
           attributes: ['name', 'phone'],
         },
       ],
+      attributes: [
+        'id',
+        'date',
+        'cut_type',
+        'cost',
+        'past',
+        'cancelable',
+        'concluded',
+        'past',
+      ],
     });
 
-    if (hasAppointment) {
+    const hasOneAppointment = hasAppointment.find(e => e.past === false);
+
+    if (hasOneAppointment) {
       return res.status(400).json({
         error: `Você já possui um agendamento marcado com o provedor ${hasAppointment.provider.name} em menos de 7 dias.`,
       });
