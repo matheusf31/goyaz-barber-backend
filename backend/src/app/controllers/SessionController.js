@@ -67,6 +67,22 @@ class SessionController {
       ),
     });
   }
+
+  async update(req, res) {
+    const id = req.userId;
+
+    return res.json({
+      token: jwt.sign(
+        {
+          id, // payload
+        },
+        authConfig.secret, // gerar texto no md5 online
+        {
+          expiresIn: authConfig.expiresIn,
+        } // data de expiração
+      ),
+    });
+  }
 }
 
 export default new SessionController();
