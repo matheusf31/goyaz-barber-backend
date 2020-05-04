@@ -8,6 +8,7 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default styled.ImageBackground.attrs({
   defaultSource: background,
+  source: background,
 })`
   position: absolute;
   height: ${screenHeight}px;
