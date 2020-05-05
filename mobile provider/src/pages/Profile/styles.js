@@ -7,6 +7,7 @@ export const Container = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
+  margin-top: 30px;
 `;
 
 export const Separator = styled.View`
@@ -34,7 +35,7 @@ export const SubmitButton = styled(Button)`
 
 export const LogoutButton = styled(Button)`
   width: 85%;
-  margin-top: -30px;
+  margin-top: 10px;
   margin-bottom: 160px;
   background: #c53030;
   align-self: center;

@@ -1,10 +1,11 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import { ScrollView, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useSelector, useDispatch, Alert } from 'react-redux';
 import { Form } from '@unform/mobile';
 import * as Yup from 'yup';
 
 import Background from '~/components/Background';
+import AvatarImage from './AvatarImage';
 
 import getValidationErrors from '../../util/getValidationErrors';
 
@@ -21,6 +22,8 @@ import {
 } from './styles';
 
 export default function Profile() {
+  const [avatarId, setAvatarId] = useState(null);
+
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
 
@@ -37,8 +40,6 @@ export default function Profile() {
         if (formRef.current) {
           formRef.current.setErrors({});
         }
-
-        console.tron.log(data);
 
         const {
           name,
@@ -61,11 +62,14 @@ export default function Profile() {
           abortEarly: false,
         });
 
+        console.tron.log(avatarId);
+
         dispatch(
           updateProfileRequest({
             name,
             email,
             phone,
+            avatar_id: avatarId,
             oldPassword,
             password,
             confirmPassword,
@@ -84,7 +88,7 @@ export default function Profile() {
         Alert.alert('Erro ao atualizar perfil.', 'Verifique seus dados.');
       }
     },
-    [dispatch]
+    [dispatch, avatarId]
   );
 
   const handleLogout = useCallback(() => {
@@ -99,14 +103,15 @@ export default function Profile() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
+          showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          style={{ flex: 1 }}
-          contentContainerStyle={{ flex: Platform.OS === 'ios' ? 1 : 0 }} // se for android remove
         >
           <Container>
             <View>
               <Title>Meu perfil</Title>
             </View>
+
+            <AvatarImage onChangeAvatar={setAvatarId} />
 
             <Form
               ref={formRef}
@@ -200,11 +205,11 @@ export default function Profile() {
                 Atualizar perfil
               </SubmitButton>
             </Form>
+
+            <LogoutButton onPress={handleLogout}>Deslogar</LogoutButton>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
-
-      <LogoutButton onPress={handleLogout}>Deslogar</LogoutButton>
     </Background>
   );
 }
