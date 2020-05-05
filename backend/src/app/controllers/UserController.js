@@ -184,6 +184,7 @@ class UserController {
     await user.update({
       name,
       email,
+      avatar_id,
       phone: phoneFormatted || undefined,
       password,
     });

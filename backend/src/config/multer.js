@@ -4,7 +4,7 @@
 
 import multer from 'multer';
 
-// Biblioteca para gerar caracteres aleatórios, etc
+// para gerar caracteres aleatórios, etc
 import crypto from 'crypto';
 
 // extname: retorna a extensão do arquivo
@@ -15,7 +15,7 @@ export default {
   storage: multer.diskStorage({
     destination: resolve(__dirname, '..', '..', 'tmp', 'uploads'),
     filename: (req, file, cb) => {
-      // como vamos formatar o nome de arq da imagem
+      // formatando o nome de arq da imagem
       crypto.randomBytes(16, (err, res) => {
         if (err) return cb(err);
 
