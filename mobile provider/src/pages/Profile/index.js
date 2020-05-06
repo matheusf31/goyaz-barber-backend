@@ -35,6 +35,8 @@ export default function Profile() {
     profile.avatar ? profile.avatar.url : null
   );
 
+  // const [clearIconColorOnSubmit, setClearIconColorOnSubmit] = useState(false);
+
   const dispatch = useDispatch();
 
   const formRef = useRef(null);
@@ -46,31 +48,32 @@ export default function Profile() {
 
   const handleSubmit = useCallback(
     async data => {
-      const file = new FormData();
-
-      file.append('file', {
-        name: 'avatarImage',
-        uri: avatar.uri,
-        type: avatar.type,
-      });
-
       try {
-        const response = await api.post('/files', file);
+        let id;
 
-        const { id } = response.data;
+        if (avatar && avatar.uri) {
+          const file = new FormData();
+
+          file.append('file', {
+            name: 'avatarImage',
+            uri: avatar.uri,
+            type: avatar.type,
+          });
+
+          const response = await api.post('/files', file);
+
+          id = response.data.id;
+        }
 
         if (formRef.current) {
           formRef.current.setErrors({});
         }
 
-        const {
-          name,
-          email,
-          phone,
-          oldPassword,
-          password,
-          confirmPassword,
-        } = data;
+        let { name, phone } = data;
+        name = name === '' ? profile.name : name;
+        phone = phone === '' ? profile.phone : phone;
+
+        const { email, oldPassword, password, confirmPassword } = data;
 
         const schema = Yup.object().shape({
           name: Yup.string(),
@@ -95,9 +98,16 @@ export default function Profile() {
             confirmPassword,
           })
         );
+
+        formRef.current.setFieldValue('password', '');
+        formRef.current.setFieldValue('oldPassword', '');
+        formRef.current.setFieldValue('confirmPassword', '');
+
+        // setClearIconColorOnSubmit(!clearIconColorOnSubmit);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
+
           if (formRef.current) {
             formRef.current.setErrors(errors);
           }
@@ -105,10 +115,16 @@ export default function Profile() {
           return;
         }
 
+        formRef.current.setFieldValue('password', '');
+        formRef.current.setFieldValue('oldPassword', '');
+        formRef.current.setFieldValue('confirmPassword', '');
+
+        // setClearIconColorOnSubmit(!clearIconColorOnSubmit);
+
         Alert.alert('Erro ao atualizar perfil.', err.response.data.error);
       }
     },
-    [avatar, dispatch]
+    [avatar, dispatch, profile]
   );
 
   const handleLogout = useCallback(() => {
@@ -138,7 +154,7 @@ export default function Profile() {
               onSubmit={handleSubmit}
               initialData={{
                 name: profile.name,
-                phone: profile.phoneFormatted,
+                phone: profile.phone,
                 email: profile.email,
               }}
             >
@@ -184,8 +200,10 @@ export default function Profile() {
                 secureTextEntry
                 autoCapitalize="none"
                 placeholder="Sua senha atual"
+                textContentType="newPassword"
                 ref={oldPasswordRef}
                 returnKeyType="next"
+                blurOnSubmit={false}
                 onSubmitEditing={() => passwordRef.current.focus()}
               />
 
@@ -195,7 +213,9 @@ export default function Profile() {
                 secureTextEntry
                 autoCapitalize="none"
                 placeholder="Sua nova senha"
+                textContentType="newPassword"
                 ref={passwordRef}
+                blurOnSubmit={false}
                 returnKeyType="next"
                 onSubmitEditing={() => confirmPasswordRef.current.focus()}
               />
@@ -205,13 +225,12 @@ export default function Profile() {
                 icon="lock-outline"
                 secureTextEntry
                 autoCapitalize="none"
+                textContentType="newPassword"
                 placeholder="Confirmação de senha"
                 ref={confirmPasswordRef}
                 returnKeyType="send"
                 onSubmitEditing={() => {
-                  if (formRef.current) {
-                    formRef.current.submitForm();
-                  }
+                  formRef.current.submitForm();
                 }}
               />
 
