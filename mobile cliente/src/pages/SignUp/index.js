@@ -86,12 +86,12 @@ export default function SingUp({ navigation }) {
     <Background>
       <KeyboardAvoidingView
         enabled
-        style={{ flex: 1, alignItems: 'center' }}
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1 }}
+          contentContainerStyle={{ flex: Platform.OS === 'ios' ? 1 : 0 }}
         >
           <Container>
             <Image

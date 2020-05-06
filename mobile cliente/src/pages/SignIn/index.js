@@ -84,14 +84,13 @@ export default function SingIn({ navigation }) {
         enabled
         style={{
           flex: 1,
-          alignItems: 'center',
         }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
-            flex: 1,
+            flex: Platform.OS === 'ios' ? 1 : 0,
           }}
         >
           <Container>
