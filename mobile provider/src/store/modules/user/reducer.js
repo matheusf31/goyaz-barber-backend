@@ -26,5 +26,3 @@ export default function user(state = INITIAL_STATE, action) {
     }
   });
 }
-
-// um reducer pode ouvir uma action de outros módulos
