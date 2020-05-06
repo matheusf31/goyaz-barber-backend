@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import {
   ScrollView,
   KeyboardAvoidingView,
@@ -10,7 +10,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form } from '@unform/mobile';
 import * as Yup from 'yup';
 
+import api from '~/services/api';
+
 import Background from '~/components/Background';
+import AvatarImage from './AvatarImage';
 
 import getValidationErrors from '../../util/getValidationErrors';
 
@@ -27,8 +30,14 @@ import {
 } from './styles';
 
 export default function Profile() {
-  const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
+  const [avatar, setAvatar] = useState(() =>
+    profile.avatar ? profile.avatar.url : null
+  );
+
+  // const [clearIconColorOnSubmit, setClearIconColorOnSubmit] = useState(false);
+
+  const dispatch = useDispatch();
 
   const formRef = useRef(null);
   const phoneRef = useRef();
@@ -40,20 +49,31 @@ export default function Profile() {
   const handleSubmit = useCallback(
     async data => {
       try {
+        let id;
+
+        if (avatar && avatar.uri) {
+          const file = new FormData();
+
+          file.append('file', {
+            name: 'avatarImage',
+            uri: avatar.uri,
+            type: avatar.type,
+          });
+
+          const response = await api.post('/files', file);
+
+          id = response.data.id;
+        }
+
         if (formRef.current) {
           formRef.current.setErrors({});
         }
 
-        console.tron.log(data);
+        let { name, phone } = data;
+        name = name === '' ? profile.name : name;
+        phone = phone === '' ? profile.phone : phone;
 
-        const {
-          name,
-          email,
-          phone,
-          oldPassword,
-          password,
-          confirmPassword,
-        } = data;
+        const { email, oldPassword, password, confirmPassword } = data;
 
         const schema = Yup.object().shape({
           name: Yup.string(),
@@ -72,14 +92,22 @@ export default function Profile() {
             name,
             email,
             phone,
+            avatar_id: id,
             oldPassword,
             password,
             confirmPassword,
           })
         );
+
+        formRef.current.setFieldValue('password', '');
+        formRef.current.setFieldValue('oldPassword', '');
+        formRef.current.setFieldValue('confirmPassword', '');
+
+        // setClearIconColorOnSubmit(!clearIconColorOnSubmit);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
+
           if (formRef.current) {
             formRef.current.setErrors(errors);
           }
@@ -87,10 +115,16 @@ export default function Profile() {
           return;
         }
 
-        Alert.alert('Erro ao atualizar perfil.', 'Verifique seus dados.');
+        formRef.current.setFieldValue('password', '');
+        formRef.current.setFieldValue('oldPassword', '');
+        formRef.current.setFieldValue('confirmPassword', '');
+
+        // setClearIconColorOnSubmit(!clearIconColorOnSubmit);
+
+        Alert.alert('Erro ao atualizar perfil.', err.response.data.error);
       }
     },
-    [dispatch]
+    [avatar, dispatch, profile]
   );
 
   const handleLogout = useCallback(() => {
@@ -105,14 +139,15 @@ export default function Profile() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
+          showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          style={{ flex: 1 }}
-          contentContainerStyle={Platform.OS === 'ios' ? { flex: 1 } : 0}
         >
           <Container>
             <View>
               <Title>Meu perfil</Title>
             </View>
+
+            <AvatarImage avatar={avatar} onChangeAvatar={setAvatar} />
 
             <Form
               ref={formRef}
@@ -165,8 +200,10 @@ export default function Profile() {
                 secureTextEntry
                 autoCapitalize="none"
                 placeholder="Sua senha atual"
+                textContentType="newPassword"
                 ref={oldPasswordRef}
                 returnKeyType="next"
+                blurOnSubmit={false}
                 onSubmitEditing={() => passwordRef.current.focus()}
               />
 
@@ -176,7 +213,9 @@ export default function Profile() {
                 secureTextEntry
                 autoCapitalize="none"
                 placeholder="Sua nova senha"
+                textContentType="newPassword"
                 ref={passwordRef}
+                blurOnSubmit={false}
                 returnKeyType="next"
                 onSubmitEditing={() => confirmPasswordRef.current.focus()}
               />
@@ -186,13 +225,12 @@ export default function Profile() {
                 icon="lock-outline"
                 secureTextEntry
                 autoCapitalize="none"
+                textContentType="newPassword"
                 placeholder="Confirmação de senha"
                 ref={confirmPasswordRef}
                 returnKeyType="send"
                 onSubmitEditing={() => {
-                  if (formRef.current) {
-                    formRef.current.submitForm();
-                  }
+                  formRef.current.submitForm();
                 }}
               />
 
@@ -206,11 +244,11 @@ export default function Profile() {
                 Atualizar perfil
               </SubmitButton>
             </Form>
+
+            <LogoutButton onPress={handleLogout}>Deslogar</LogoutButton>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
-
-      <LogoutButton onPress={handleLogout}>Deslogar</LogoutButton>
     </Background>
   );
 }
