@@ -92,7 +92,7 @@ class UserController {
       phone: phoneFormatted,
     });
 
-    return res.json({ id, name, email, provider, phoneFormatted });
+    return res.json({ id, name, email, provider, phone: phoneFormatted });
   }
 
   async update(req, res) {
@@ -199,7 +199,7 @@ class UserController {
       ],
     });
 
-    return res.json({ id, name, email, avatar, phoneFormatted });
+    return res.json({ id, name, email, avatar, phone: phoneFormatted });
   }
 }
 
