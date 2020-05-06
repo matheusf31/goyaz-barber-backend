@@ -1,8 +1,16 @@
 import React, { useRef, useCallback, useState } from 'react';
-import { ScrollView, KeyboardAvoidingView, Platform, View } from 'react-native';
-import { useSelector, useDispatch, Alert } from 'react-redux';
+import {
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+  Alert,
+} from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import { Form } from '@unform/mobile';
 import * as Yup from 'yup';
+
+import api from '~/services/api';
 
 import Background from '~/components/Background';
 import AvatarImage from './AvatarImage';
@@ -22,10 +30,12 @@ import {
 } from './styles';
 
 export default function Profile() {
-  const [avatarId, setAvatarId] = useState(null);
+  const profile = useSelector(state => state.user.profile);
+  const [avatar, setAvatar] = useState(() =>
+    profile.avatar ? profile.avatar.url : null
+  );
 
   const dispatch = useDispatch();
-  const profile = useSelector(state => state.user.profile);
 
   const formRef = useRef(null);
   const phoneRef = useRef();
@@ -36,7 +46,19 @@ export default function Profile() {
 
   const handleSubmit = useCallback(
     async data => {
+      const file = new FormData();
+
+      file.append('file', {
+        name: 'avatarImage',
+        uri: avatar.uri,
+        type: avatar.type,
+      });
+
       try {
+        const response = await api.post('/files', file);
+
+        const { id } = response.data;
+
         if (formRef.current) {
           formRef.current.setErrors({});
         }
@@ -62,14 +84,12 @@ export default function Profile() {
           abortEarly: false,
         });
 
-        console.tron.log(avatarId);
-
         dispatch(
           updateProfileRequest({
             name,
             email,
             phone,
-            avatar_id: avatarId,
+            avatar_id: id,
             oldPassword,
             password,
             confirmPassword,
@@ -85,10 +105,10 @@ export default function Profile() {
           return;
         }
 
-        Alert.alert('Erro ao atualizar perfil.', 'Verifique seus dados.');
+        Alert.alert('Erro ao atualizar perfil.', err.response.data.error);
       }
     },
-    [dispatch, avatarId]
+    [avatar, dispatch]
   );
 
   const handleLogout = useCallback(() => {
@@ -111,14 +131,14 @@ export default function Profile() {
               <Title>Meu perfil</Title>
             </View>
 
-            <AvatarImage onChangeAvatar={setAvatarId} />
+            <AvatarImage avatar={avatar} onChangeAvatar={setAvatar} />
 
             <Form
               ref={formRef}
               onSubmit={handleSubmit}
               initialData={{
                 name: profile.name,
-                phone: profile.phone,
+                phone: profile.phoneFormatted,
                 email: profile.email,
               }}
             >

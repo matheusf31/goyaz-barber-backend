@@ -14,14 +14,7 @@ export const Image = styled.Image`
 `;
 
 export const ImageButton = styled.TouchableOpacity`
-  width: 150px;
-  height: 30px;
-  border-radius: 3px;
-  background-color: #ff9000;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const ImageText = styled.Text`
-  color: #000;
+  position: absolute;
+  right: 5px;
+  bottom: 10px;
 `;
