@@ -44,14 +44,11 @@ function Dashboard({ isFocused }) {
   }, []);
 
   useEffect(() => {
-    if (isFocused) {
-      setAppointments([]);
-      setPage(1);
+    setAppointments([]);
+    setPage(1);
 
-      loadAppointments();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused]);
+    loadAppointments();
+  }, [isFocused, loadAppointments]);
 
   // carregar ao arrastar para cima
   const handleAppointmentsRefresh = useCallback(() => {
