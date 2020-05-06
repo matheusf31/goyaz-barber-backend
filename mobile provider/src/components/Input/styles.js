@@ -9,7 +9,7 @@ export const Container = styled.View`
 
   border-radius: 10px;
   border-width: 2px;
-  /* border-bottom-width: 2px; */
+
   border-color: #18171d;
   flex-direction: row;
   align-items: center;
@@ -30,6 +30,7 @@ export const Container = styled.View`
 export const TInput = styled.TextInput.attrs({
   placeholderTextColor: 'rgba(255, 255, 255, 0.8)',
 })`
+  height: 100%;
   flex: 1;
   font-size: 15px;
   margin-left: 16px;
