@@ -11,14 +11,14 @@ import { useField } from '@unform/core';
 
 import { Container, TInput } from './styles';
 
-function Input({ style, name, icon, ...rest }, ref) {
+function Input({ style, name, icon, clearIconColorOnSubmit, ...rest }, ref) {
   const inputElementRef = useRef(null);
 
   const { registerField, defaultValue = '', fieldName, error } = useField(name);
   const inputValueRef = useRef({ value: defaultValue });
 
   const [isFocused, setIsFocused] = useState(false);
-  const [isFilled, setIsFilled] = useState(false);
+  const [isFilled, setIsFilled] = useState(() => inputValueRef.current.value);
 
   const handleInputFocus = useCallback(() => {
     setIsFocused(true);
@@ -41,11 +41,14 @@ function Input({ style, name, icon, ...rest }, ref) {
   }));
 
   useEffect(() => {
+    handleInputBlur();
+  }, [clearIconColorOnSubmit, handleInputBlur]);
+
+  useEffect(() => {
     registerField({
       name: fieldName,
       ref: inputValueRef.current,
       path: 'value',
-      // para o Form alterar o valor de um campo automaticamente
       setValue(ref, value) {
         inputValueRef.current.value = value;
         inputElementRef.current.setNativeProps({ text: value });
@@ -63,9 +66,10 @@ function Input({ style, name, icon, ...rest }, ref) {
         <Icon
           name={icon}
           size={20}
-          color={isFocused || isFilled ? '#ff9000' : '#FFF'}
+          color={isFocused || isFilled ? '#ff9000' : '#fff'}
         />
       )}
+
       <TInput
         ref={inputElementRef}
         keyboardAppearance="dark"
