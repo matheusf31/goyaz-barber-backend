@@ -14,7 +14,7 @@ export const tabBarOptions = {
 };
 
 export const tabDashboardOptions = {
-  tabBarLabel: 'Agendamentos',
+  tabBarLabel: 'Appointments',
   tabBarIcon: ({ focused }) => (
     <Icon
       name="event"
@@ -24,19 +24,8 @@ export const tabDashboardOptions = {
   ),
 };
 
-export const tabProfileOptions = {
-  tabBarLabel: 'Meu perfil',
-  tabBarIcon: ({ focused }) => (
-    <Icon
-      name="person"
-      size={20}
-      color={focused ? '#ff9000' : 'rgba(255,255,255,0.4)'}
-    />
-  ),
-};
-
 export const tabGraphicOptions = {
-  tabBarLabel: 'Gráficos',
+  tabBarLabel: 'Graphs',
   tabBarIcon: ({ focused }) => (
     <Icon
       name="timeline"
@@ -47,10 +36,32 @@ export const tabGraphicOptions = {
 };
 
 export const tabUserOptions = {
-  tabBarLabel: 'Clientes',
+  tabBarLabel: 'Clients',
   tabBarIcon: ({ focused }) => (
     <Icon
       name="group"
+      size={20}
+      color={focused ? '#ff9000' : 'rgba(255,255,255,0.4)'}
+    />
+  ),
+};
+
+export const tabNewBarberOptions = {
+  tabBarLabel: 'New Barber',
+  tabBarIcon: ({ focused }) => (
+    <Icon
+      name="person-add"
+      size={20}
+      color={focused ? '#ff9000' : 'rgba(255,255,255,0.4)'}
+    />
+  ),
+};
+
+export const tabProfileOptions = {
+  tabBarLabel: 'Profile',
+  tabBarIcon: ({ focused }) => (
+    <Icon
+      name="person"
       size={20}
       color={focused ? '#ff9000' : 'rgba(255,255,255,0.4)'}
     />
