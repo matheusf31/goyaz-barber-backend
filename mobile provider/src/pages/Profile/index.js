@@ -35,7 +35,7 @@ export default function Profile() {
     profile.avatar ? profile.avatar.url : null
   );
 
-  // const [clearIconColorOnSubmit, setClearIconColorOnSubmit] = useState(false);
+  const [clearIconColorOnSubmit, setClearIconColorOnSubmit] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -103,7 +103,7 @@ export default function Profile() {
         formRef.current.setFieldValue('oldPassword', '');
         formRef.current.setFieldValue('confirmPassword', '');
 
-        // setClearIconColorOnSubmit(!clearIconColorOnSubmit);
+        setClearIconColorOnSubmit(prevState => !prevState);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -119,7 +119,7 @@ export default function Profile() {
         formRef.current.setFieldValue('oldPassword', '');
         formRef.current.setFieldValue('confirmPassword', '');
 
-        // setClearIconColorOnSubmit(!clearIconColorOnSubmit);
+        setClearIconColorOnSubmit(prevState => !prevState);
 
         Alert.alert('Erro ao atualizar perfil.', err.response.data.error);
       }
@@ -205,6 +205,7 @@ export default function Profile() {
                 returnKeyType="next"
                 blurOnSubmit={false}
                 onSubmitEditing={() => passwordRef.current.focus()}
+                clearIconColorOnSubmit={clearIconColorOnSubmit}
               />
 
               <FormInput
@@ -218,6 +219,7 @@ export default function Profile() {
                 blurOnSubmit={false}
                 returnKeyType="next"
                 onSubmitEditing={() => confirmPasswordRef.current.focus()}
+                clearIconColorOnSubmit={clearIconColorOnSubmit}
               />
 
               <FormInput
@@ -232,6 +234,7 @@ export default function Profile() {
                 onSubmitEditing={() => {
                   formRef.current.submitForm();
                 }}
+                clearIconColorOnSubmit={clearIconColorOnSubmit}
               />
 
               <SubmitButton
