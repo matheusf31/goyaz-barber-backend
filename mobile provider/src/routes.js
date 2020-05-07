@@ -10,13 +10,15 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Graphic from './pages/Graphic';
 import User from './pages/User';
+import NewBarber from './pages/NewBarber';
 
 import {
   tabBarOptions,
   tabDashboardOptions,
-  tabProfileOptions,
   tabGraphicOptions,
   tabUserOptions,
+  tabNewBarberOptions,
+  tabProfileOptions,
 } from '~/util/routesOptions';
 
 import { navigationRef } from './services/RootNavigation';
@@ -25,6 +27,8 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function App() {
+  const profile = useSelector(state => state.user.profile);
+
   return (
     <Tab.Navigator tabBarOptions={tabBarOptions}>
       <Tab.Screen
@@ -38,6 +42,13 @@ function App() {
         options={tabGraphicOptions}
       />
       <Tab.Screen name="User" component={User} options={tabUserOptions} />
+      {profile.admin && (
+        <Tab.Screen
+          name="NewBarber"
+          component={NewBarber}
+          options={tabNewBarberOptions}
+        />
+      )}
       <Tab.Screen
         name="Profile"
         component={Profile}
