@@ -117,8 +117,6 @@ export default function SingIn({ navigation }) {
                 autoCapitalize="none"
                 returnKeyType="next"
                 onSubmitEditing={() => passwordRef.current.focus()}
-                // value={email}
-                // onChangeText={setEmail}
               />
 
               <FormInput
