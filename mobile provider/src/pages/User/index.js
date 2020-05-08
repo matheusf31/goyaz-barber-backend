@@ -38,7 +38,9 @@ function User({ isFocused }) {
     try {
       const response = await api.get('users');
 
-      setClients(response.data);
+      setClients(prevState =>
+        prevState !== response.data ? response.data : prevState
+      );
 
       setPage(inPage);
     } catch (err) {
@@ -48,12 +50,11 @@ function User({ isFocused }) {
 
   useEffect(() => {
     if (isFocused) {
-      setClients([]);
       setPage(1);
 
       loadClients();
     }
-  }, [isFocused]);
+  }, [isFocused, loadClients]);
 
   const handleClientRefresh = useCallback(() => {
     setRefreshing(true);
