@@ -11,6 +11,8 @@ import pt from 'date-fns/locale/pt';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import WppIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import defaultavatar from '~/assets/images/defaultavatar.png';
+
 import {
   Container,
   Avatar,
@@ -39,13 +41,17 @@ export default function Appointment({ appointment, onCancel }) {
     <Container past={appointment.past}>
       {!confirm ? (
         <>
-          <Avatar
-            source={{
-              uri: appointment.provider.avatar
-                ? appointment.provider.avatar.url
-                : `https://api.adorable.io/avatar/50/${appointment.provider.name}.png`,
-            }}
-          />
+          {appointment.provider.avatar ? (
+            <Avatar
+              source={{
+                uri: appointment.provider.avatar
+                  ? appointment.provider.avatar.url
+                  : undefined,
+              }}
+            />
+          ) : (
+            <Avatar source={defaultavatar} />
+          )}
 
           <Info>
             <Name>{appointment.provider.name}</Name>
