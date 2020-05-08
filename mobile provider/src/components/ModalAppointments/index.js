@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { Alert } from 'react-native';
 import Modal from 'react-native-modal';
 
@@ -32,12 +32,12 @@ export default function ModalAppointments({
 
   const nameRef = useRef();
 
-  function handleButtonPress(cut_type) {
+  const handleButtonPress = useCallback(cut_type => {
     setCutType(cut_type);
-    setActive(!active);
-  }
+    setActive(prevState => !prevState);
+  }, []);
 
-  async function handleSubmit() {
+  const handleSubmit = useCallback(async () => {
     try {
       await api.post('schedule', {
         date: data.value,
@@ -46,11 +46,11 @@ export default function ModalAppointments({
         client_name: name,
       });
 
-      onModalChange(!modalVisible);
+      onModalChange(prevState => !prevState);
     } catch (err) {
       Alert.alert('Erro!', `${err.response ? err.response.data.error : err}`);
     }
-  }
+  }, [cutType, data.value, name, email, onModalChange]);
 
   return (
     <Modal
@@ -77,6 +77,7 @@ export default function ModalAppointments({
               autoCapitalize="none"
               autoCompleteType="email"
               placeholder="E-mail"
+              placeholderTextColor="#999"
               returnKeyType="next"
               onSubmitEditing={() => {
                 nameRef.current.focus();
@@ -94,6 +95,7 @@ export default function ModalAppointments({
               autoCapitalize="words"
               autoCompleteType="name"
               placeholder="Nome"
+              placeholderTextColor="#999"
               returnKeyType="next"
               value={name}
               onChangeText={setName}
