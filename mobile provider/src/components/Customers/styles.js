@@ -6,35 +6,52 @@ export const Container = styled.View`
   border-radius: 4px;
   background: ${props => (props.banned ? '#c53030' : '#fff')};
 
-  display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
 `;
 
 export const Box = styled.View`
-  flex: 1;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 `;
 
+export const Avatar = styled.Image`
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+`;
+
 export const Info = styled.View`
   flex: 1;
-  margin-left: 15px;
-  max-width: 65%;
+  margin-left: 10px;
+  max-width: 75%;
 `;
 
 export const Name = styled.Text`
   font-weight: bold;
-  font-size: 15px;
+  font-size: 18px;
   color: #000;
 `;
 
-export const Contact = styled.Text`
+export const Phone = styled.Text`
   font-size: 15px;
   margin-top: 4px;
   color: #000;
+`;
+
+export const Email = styled.Text`
+  font-size: 15px;
+  margin-top: 4px;
+  color: #000;
+`;
+
+export const TotalCut = styled.Text`
+  font-size: 15px;
+  margin-top: 10px;
+  color: #000;
+
+  align-self: flex-start;
 `;
 
 export const Buttons = styled.View`

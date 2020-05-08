@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import defaultavatar from '~/assets/images/defaultavatar.png';
+
 import api from '~/services/api';
 
 import {
   Container,
   Box,
+  Avatar,
   Info,
   Name,
-  Contact,
+  Email,
+  Phone,
+  TotalCut,
   Buttons,
   Cancel,
   InfoBan,
@@ -17,11 +22,13 @@ import {
   ConfirmBan,
 } from './styles';
 
-export default function Customers({ data, reload }) {
+export default function Customers({ data: user, reload }) {
   const [confirm, setConfirm] = useState(false);
 
+  console.tron.log(user);
+
   async function handleBan(id) {
-    if (data.banned) {
+    if (user.banned) {
       await api.delete(`/ban/${id}`);
       setConfirm(false);
       reload();
@@ -33,45 +40,28 @@ export default function Customers({ data, reload }) {
   }
 
   return (
-    <Container banned={data.banned}>
+    <Container banned={user.banned}>
       <Box>
-        {confirm ? (
+        {!confirm ? (
           <>
-            <InfoBan>
-              <TextBan>Deseja mesmo banir este cliente?</TextBan>
-            </InfoBan>
+            {user.avatar ? (
+              <Avatar
+                source={{
+                  uri: user.avatar ? user.avatar.url : undefined,
+                }}
+              />
+            ) : (
+              <Avatar source={defaultavatar} />
+            )}
 
-            <Buttons>
-              <CancelBan onPress={() => setConfirm(false)}>
-                <Icon
-                  name="clear"
-                  size={25}
-                  color={data.banned ? 'black' : '#f64c75'}
-                />
-              </CancelBan>
-
-              <ConfirmBan onPress={() => handleBan(data.id)}>
-                <Icon
-                  name="check"
-                  size={25}
-                  color={data.banned ? 'black' : '#54F64C'}
-                />
-              </ConfirmBan>
-            </Buttons>
-          </>
-        ) : (
-          <>
             <Info>
-              <Name>{data.name}</Name>
-              <Contact>Telefone: {data.phone}</Contact>
-              <Contact>Email: {data.email}</Contact>
-              <Contact>
-                Cortes realizados: {data.concluded_appointments}
-              </Contact>
+              <Name>{user.name}</Name>
+              <Phone>{user.phone}</Phone>
+              <Email>{user.email}</Email>
             </Info>
 
             <Buttons>
-              {data.banned ? (
+              {user.banned ? (
                 <Cancel onPress={() => setConfirm(true)}>
                   <Icon name="check-circle" size={25} color="black" />
                 </Cancel>
@@ -82,8 +72,40 @@ export default function Customers({ data, reload }) {
               )}
             </Buttons>
           </>
+        ) : (
+          <>
+            <InfoBan>
+              <TextBan>Deseja mesmo banir este cliente?</TextBan>
+            </InfoBan>
+
+            <Buttons>
+              <CancelBan onPress={() => setConfirm(false)}>
+                <Icon
+                  name="clear"
+                  size={25}
+                  color={user.banned ? 'black' : '#f64c75'}
+                />
+              </CancelBan>
+
+              <ConfirmBan onPress={() => handleBan(user.id)}>
+                <Icon
+                  name="check"
+                  size={25}
+                  color={user.banned ? 'black' : '#54F64C'}
+                />
+              </ConfirmBan>
+            </Buttons>
+          </>
         )}
       </Box>
+      {!confirm && (
+        <TotalCut>
+          Cortes realizados:{' '}
+          <TotalCut style={{ fontWeight: 'bold' }}>
+            {user.concluded_appointments}
+          </TotalCut>
+        </TotalCut>
+      )}
     </Container>
   );
 }
