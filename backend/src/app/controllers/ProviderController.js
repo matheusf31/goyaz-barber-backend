@@ -34,16 +34,14 @@ class ProviderController {
         .required(),
       phone: Yup.string()
         .required()
-        .matches(phoneRegExp, 'Número de telefone inválido'),
+        .matches(phoneRegExp, 'Número de telefone inválido.'),
       password: Yup.string()
-        .required()
+        .required('Insira uma senha.')
         .min(6),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res
-        .status(400)
-        .json({ error: 'Erro de validação. Verifique seus dados.' });
+      return res.status(400).json({ error: 'Verifique os dados inseridos.' });
     }
 
     const { name, email, password, phone } = req.body;
