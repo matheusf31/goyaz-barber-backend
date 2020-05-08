@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { TouchableHighlight, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Button from '~/components/Button';
 
