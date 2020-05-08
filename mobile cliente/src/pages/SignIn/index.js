@@ -28,6 +28,8 @@ import {
   SubmitButton,
   SignLink,
   SignLinkText,
+  ForgotButton,
+  ForgotText,
 } from './styles';
 
 export default function SingIn({ navigation }) {
@@ -153,6 +155,12 @@ export default function SingIn({ navigation }) {
               <SignLinkText>Criar conta</SignLinkText>
               <Icon name="log-in" size={20} color="#ff9000" />
             </SignLink>
+
+            <ForgotButton>
+              <ForgotText onPress={() => navigation.navigate('SendToken')}>
+                Esqueci minha senha
+              </ForgotText>
+            </ForgotButton>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>

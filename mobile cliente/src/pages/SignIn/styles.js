@@ -37,3 +37,16 @@ export const SignLinkText = styled.Text`
   font-size: 16px;
   margin-right: 10px;
 `;
+
+export const ForgotButton = styled.TouchableOpacity`
+  margin-top: 20px;
+  margin-bottom: -20px;
+  /* border-bottom-width: 1px;
+  border-bottom-color: rgba(255, 255, 255, 0.5); */
+`;
+
+export const ForgotText = styled.Text`
+  color: #ff9000;
+  font-weight: bold;
+  font-size: 16px;
+`;
