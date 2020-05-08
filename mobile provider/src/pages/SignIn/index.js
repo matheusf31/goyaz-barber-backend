@@ -18,9 +18,16 @@ import getValidationErrors from '../../util/getValidationErrors';
 import Background from '~/components/Background';
 import logo from '~/assets/images/logo3.png';
 
-import { Container, Title, FormInput, SubmitButton } from './styles';
+import {
+  Container,
+  Title,
+  FormInput,
+  SubmitButton,
+  ForgotButton,
+  ForgotText,
+} from './styles';
 
-export default function SingIn() {
+export default function SingIn({ navigation }) {
   const dispatch = useDispatch();
   const passwordRef = useRef(null);
   const formRef = useRef(null);
@@ -133,6 +140,12 @@ export default function SingIn() {
                 Acessar
               </SubmitButton>
             </Form>
+
+            <ForgotButton>
+              <ForgotText onPress={() => navigation.navigate('SendToken')}>
+                Esqueci minha senha
+              </ForgotText>
+            </ForgotButton>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>

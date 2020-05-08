@@ -31,9 +31,15 @@ export const SignLink = styled.TouchableOpacity`
   flex-direction: row;
 `;
 
-export const SignLinkText = styled.Text`
-  color: #ff9000;
+export const ForgotButton = styled.TouchableOpacity`
+  margin-top: 20px;
+  margin-bottom: -20px;
+  /* border-bottom-width: 1px;
+  border-bottom-color: rgba(255, 255, 255, 0.5); */
+`;
+
+export const ForgotText = styled.Text`
+  color: #fff;
   font-weight: bold;
   font-size: 16px;
-  margin-right: 10px;
 `;
