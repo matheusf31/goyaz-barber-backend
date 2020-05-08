@@ -6,6 +6,8 @@ import ptBR from 'date-fns/locale/pt-BR';
 
 import api from '~/services/api';
 
+import defaultavatar from '~/assets/images/defaultavatar.png';
+
 import Background from '~/components/Background';
 
 import { Container, Avatar, Name, Time, SubmitButton } from './styles';
@@ -47,13 +49,15 @@ export default function Confirm({ navigation, route }) {
   return (
     <Background>
       <Container>
-        <Avatar
-          source={{
-            uri: provider.avatar
-              ? provider.avatar.url
-              : `https://api.adorable.io/avatar/50/${provider.name}.png`,
-          }}
-        />
+        {provider.avatar ? (
+          <Avatar
+            source={{
+              uri: provider.avatar.url,
+            }}
+          />
+        ) : (
+          <Avatar source={defaultavatar} />
+        )}
 
         <Name>{provider.name}</Name>
         <Time>{cut_type}</Time>
