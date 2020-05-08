@@ -14,6 +14,7 @@ import ConcludedController from './app/controllers/ConcludedController';
 import BanController from './app/controllers/BanController';
 import UnavailableController from './app/controllers/UnavailableController';
 import DayUnavailableController from './app/controllers/DayUnavailableController';
+import PasswordResetController from './app/controllers/PasswordResetController';
 
 import authMiddleware from './app/middlewares/auth';
 import bannedMiddleware from './app/middlewares/banned';
@@ -23,6 +24,9 @@ const upload = multer(multerConfig);
 
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
+
+routes.post('/passwordreset', PasswordResetController.store);
+routes.patch('/passwordreset', PasswordResetController.update);
 
 routes.use(authMiddleware);
 routes.use(bannedMiddleware);
