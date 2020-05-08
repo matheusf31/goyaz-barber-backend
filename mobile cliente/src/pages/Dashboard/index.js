@@ -37,14 +37,15 @@ function Dashboard({ isFocused }) {
     try {
       const response = await api.get('appointments');
 
-      setAppointments(response.data);
+      setAppointments(prevState =>
+        prevState === response.data ? prevState : response.data
+      );
     } catch (err) {
       Alert.alert('Erro', err.response.data.error);
     }
   }, []);
 
   useEffect(() => {
-    setAppointments([]);
     setPage(1);
 
     loadAppointments();
