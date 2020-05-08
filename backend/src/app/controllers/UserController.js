@@ -16,8 +16,16 @@ class UserController {
         'name',
         'email',
         'phone',
+        'avatar_id',
         'concluded_appointments',
         'banned',
+      ],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path', 'url'],
+        },
       ],
     });
 
@@ -199,7 +207,18 @@ class UserController {
       ],
     });
 
-    return res.json({ id, name, email, avatar, phone: phoneFormatted });
+    const { provider, admin, banned } = user;
+
+    return res.json({
+      id,
+      name,
+      email,
+      avatar,
+      phone: phoneFormatted,
+      provider,
+      admin,
+      banned,
+    });
   }
 }
 
