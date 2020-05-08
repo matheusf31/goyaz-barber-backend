@@ -51,6 +51,7 @@ export default function Profile() {
       try {
         let id;
 
+        // se não há um novo avatar, avatar: undefined será enviado
         if (avatar && avatar.uri) {
           const file = new FormData();
 
