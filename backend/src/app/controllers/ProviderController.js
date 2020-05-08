@@ -1,8 +1,3 @@
-/*
-  Novo controller pois quero listar apenas um tipo de usuário (os providers)
-  No controller de usuário é listado todo tipo de usuário
-*/
-
 import * as Yup from 'yup';
 import User from '../models/User';
 import File from '../models/File';
