@@ -1,4 +1,5 @@
-import styled from 'styled-components/native';
+import { Platform } from 'react-native';
+import styled, { css } from 'styled-components/native';
 
 import Input from '~/components/Input';
 import Button from '~/components/Button';
@@ -14,7 +15,14 @@ export const Title = styled.Text`
   color: #fff;
   font-size: 24px;
   font-weight: bold;
-  margin: -104px 0 0;
+
+  ${Platform.OS === 'ios'
+    ? css`
+        margin: -104px 0 0;
+      `
+    : css`
+        margin: 20px 0 40px;
+      `}
 `;
 
 export const FormInput = styled(Input)`

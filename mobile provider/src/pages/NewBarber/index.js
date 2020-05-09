@@ -22,8 +22,6 @@ function NewBarber({ isFocused }) {
 
   const handleSubmit = useCallback(async data => {
     try {
-      console.tron.log(data);
-
       if (formRef.current) {
         formRef.current.setErrors({});
       }
