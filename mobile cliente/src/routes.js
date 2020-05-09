@@ -7,6 +7,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import ResetPassword from './pages/ResetPassword';
+import SendToken from './pages/SendToken';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 
@@ -89,6 +91,8 @@ export default function Routes() {
           <>
             <Stack.Screen name="SignIn" component={SignIn} />
             <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="SendToken" component={SendToken} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} />
           </>
         )}
       </Stack.Navigator>
