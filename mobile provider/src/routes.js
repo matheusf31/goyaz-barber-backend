@@ -11,6 +11,8 @@ import Profile from './pages/Profile';
 import Graphic from './pages/Graphic';
 import User from './pages/User';
 import NewBarber from './pages/NewBarber';
+import ResetPassword from './pages/ResetPassword';
+import SendToken from './pages/SendToken';
 
 import {
   tabBarOptions,
@@ -68,7 +70,11 @@ export default function Routes() {
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {(!signed || banned) && (
-          <Stack.Screen name="SignIn" component={SignIn} />
+          <>
+            <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="SendToken" component={SendToken} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} />
+          </>
         )}
         {signed && !banned && <Stack.Screen name="App" component={App} />}
       </Stack.Navigator>
