@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Calendar } from 'react-native-calendars';
 
 export const Container = styled.View`
   margin: 60px 0 30px;
@@ -21,9 +22,6 @@ export const DateText = styled.Text`
   margin-left: 15px;
 `;
 
-export const Picker = styled.View`
-  background: #666;
-  padding: 15px 20px;
+export const CalendarInput = styled(Calendar)`
   margin: 20px;
-  border-radius: 16px;
 `;
