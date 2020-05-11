@@ -17,6 +17,16 @@ export default function SelectDateTime({ route }) {
 
   const { provider } = route.params;
 
+  function usePrevious(value) {
+    const ref = useRef();
+
+    useEffect(() => {
+      ref.current = value;
+    }, [value]);
+
+    return ref.current;
+  }
+
   // é ele que faz executar a requisição de novo
   const prevDate = usePrevious(date);
 
@@ -48,16 +58,6 @@ export default function SelectDateTime({ route }) {
 
     loadAvailable();
   }, [date, prevDate, provider.id]);
-
-  function usePrevious(value) {
-    const ref = useRef();
-
-    useEffect(() => {
-      ref.current = value;
-    }, [value]);
-
-    return ref.current;
-  }
 
   const handleSelectHour = useCallback(
     time => {
