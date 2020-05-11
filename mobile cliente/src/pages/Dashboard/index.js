@@ -47,7 +47,6 @@ function Dashboard({ isFocused }) {
 
   useEffect(() => {
     setPage(1);
-
     loadAppointments();
   }, [isFocused, loadAppointments]);
 
@@ -64,8 +63,8 @@ function Dashboard({ isFocused }) {
       try {
         const response = await api.delete(`appointments/${id}`);
 
-        setAppointments(
-          appointments.map(appointment =>
+        setAppointments(prevState =>
+          prevState.map(appointment =>
             appointment.id === id
               ? {
                   ...appointment,
@@ -81,7 +80,7 @@ function Dashboard({ isFocused }) {
       }
     },
 
-    [appointments, handleAppointmentsRefresh]
+    [handleAppointmentsRefresh]
   );
 
   const renderItem = ({ item, index }) => {
@@ -123,7 +122,9 @@ function Dashboard({ isFocused }) {
   return (
     <Container>
       <Background />
+
       <Title>Agendamentos</Title>
+
       <List
         data={appointments}
         onRefresh={() => handleAppointmentsRefresh()}
