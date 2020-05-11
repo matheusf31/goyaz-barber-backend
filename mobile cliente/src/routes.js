@@ -14,8 +14,7 @@ import Profile from './pages/Profile';
 
 import SelectProvider from './pages/New/SelectProvider';
 import SelectDateTime from './pages/New/SelectDateTime';
-import SelectCutType from './pages/New/SelectCutType';
-import Confirm from './pages/New/Confirm';
+import ConfirmService from './pages/New/ConfirmService';
 
 import {
   tabBarOptions,
@@ -25,8 +24,7 @@ import {
   stackNewOptions,
   stackSelectDateOptions,
   stackSelectProviderOptions,
-  stackConfirmOptions,
-  stackSelectCutTypeOptions,
+  stackConfirmServiceOptions,
 } from '~/util/routesOptions';
 
 import { navigationRef } from './services/RootNavigation';
@@ -36,7 +34,10 @@ const Tab = createBottomTabNavigator();
 
 function New() {
   return (
-    <Stack.Navigator screenOptions={stackNewOptions}>
+    <Stack.Navigator
+      screenOptions={stackNewOptions}
+      initialRouteName="SelectProvider"
+    >
       <Stack.Screen
         name="SelectProvider"
         component={SelectProvider}
@@ -48,14 +49,9 @@ function New() {
         options={stackSelectDateOptions}
       />
       <Stack.Screen
-        name="SelectCutType"
-        component={SelectCutType}
-        options={stackSelectCutTypeOptions}
-      />
-      <Stack.Screen
-        name="Confirm"
-        component={Confirm}
-        options={stackConfirmOptions}
+        name="ConfirmService"
+        component={ConfirmService}
+        options={stackConfirmServiceOptions}
       />
     </Stack.Navigator>
   );

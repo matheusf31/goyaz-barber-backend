@@ -53,7 +53,7 @@ export const stackNewOptions = {
   cardStyle: {
     backgroundColor: 'black',
   },
-  animationEnabled: false,
+  // animationEnabled: false,
 };
 
 export const stackSelectProviderOptions = {
@@ -84,22 +84,8 @@ export const stackSelectDateOptions = {
   ),
 };
 
-export const stackSelectCutTypeOptions = {
+export const stackConfirmServiceOptions = {
   title: 'Selecione o tipo de corte',
-  headerTitleAlign: 'center',
-  headerLeft: () => (
-    <TouchableOpacity
-      onPress={() => {
-        RootNavigation.goBack();
-      }}
-    >
-      <Icon name="chevron-left" size={20} color="#fff" />
-    </TouchableOpacity>
-  ),
-};
-
-export const stackConfirmOptions = {
-  title: 'Confirmar agendamento',
   headerTitleAlign: 'center',
   headerLeft: () => (
     <TouchableOpacity
