@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { Alert } from 'react-native';
 
 import api from '~/services/api';
 import Background from '~/components/Background';
@@ -8,14 +8,17 @@ import defaultavatar from '~/assets/images/defaultavatar.png';
 
 import { Container, ProvidersList, Provider, Avatar, Name } from './styles';
 
-export default function SelectProvider() {
+export default function SelectProvider({ navigation }) {
   const [providers, setProviders] = useState([]);
-  const navigation = useNavigation();
 
   useEffect(() => {
     async function loadProviders() {
-      const response = await api.get('providers');
-      setProviders(response.data);
+      try {
+        const response = await api.get('providers');
+        setProviders(response.data);
+      } catch (err) {
+        Alert.alert('Erro', err.response.data.error);
+      }
     }
 
     loadProviders();

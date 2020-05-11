@@ -1,4 +1,5 @@
-import styled from 'styled-components/native';
+import { Platform } from 'react-native';
+import styled, { css } from 'styled-components/native';
 
 import Input from '~/components/Input';
 import Button from '~/components/Button';
@@ -41,8 +42,12 @@ export const SignLinkText = styled.Text`
 export const ForgotButton = styled.TouchableOpacity`
   margin-top: 20px;
   margin-bottom: -20px;
-  /* border-bottom-width: 1px;
-  border-bottom-color: rgba(255, 255, 255, 0.5); */
+
+  ${Platform.OS === 'android' &&
+    css`
+      margin-bottom: 0;
+      margin-top: 5px;
+    `}
 `;
 
 export const ForgotText = styled.Text`

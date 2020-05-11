@@ -7,7 +7,7 @@ import { isSunday, addDays } from 'date-fns';
 import api from '~/services/api';
 
 import Background from '~/components/Background';
-import DateInput from '~/components/DateInput/index.ios';
+import DateInput from '~/components/DateInput';
 import { Container, HourList, Hour, Title } from './styles';
 
 export default function SelectDateTime({ route }) {
@@ -61,7 +61,7 @@ export default function SelectDateTime({ route }) {
 
   const handleSelectHour = useCallback(
     time => {
-      navigation.navigate('SelectCutType', {
+      navigation.navigate('ConfirmService', {
         provider,
         time,
       });
@@ -77,16 +77,18 @@ export default function SelectDateTime({ route }) {
         <HourList
           data={hours}
           keyExtractor={item => item.time}
-          renderItem={({ item }) => (
-            <Hour
-              onPress={() => {
-                handleSelectHour(item.value);
-              }}
-              enabled={item.available}
-            >
-              <Title enabled={item.available}>{item.time}</Title>
-            </Hour>
-          )}
+          renderItem={({ item }) =>
+            !item.past && (
+              <Hour
+                onPress={() => {
+                  handleSelectHour(item.value);
+                }}
+                enabled={item.available}
+              >
+                <Title enabled={item.available}>{item.time}</Title>
+              </Hour>
+            )
+          }
         />
       </Container>
     </Background>
