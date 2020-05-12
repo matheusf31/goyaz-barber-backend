@@ -46,8 +46,10 @@ function Dashboard({ isFocused }) {
   }, []);
 
   useEffect(() => {
-    setPage(1);
-    loadAppointments();
+    if (isFocused) {
+      setPage(1);
+      loadAppointments();
+    }
   }, [isFocused, loadAppointments]);
 
   // carregar ao arrastar para cima
