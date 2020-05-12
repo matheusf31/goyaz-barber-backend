@@ -32,6 +32,7 @@ class PasswordReset {
 
     if (tokenExist) {
       await tokenExist.destroy();
+      await tokenExist.save();
     }
 
     const token = await ResetPassword.create({
@@ -78,6 +79,7 @@ class PasswordReset {
     });
 
     await tokenExist.destroy();
+    await tokenExist.save();
 
     return res.json(user);
   }
