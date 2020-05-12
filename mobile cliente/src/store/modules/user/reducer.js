@@ -12,12 +12,17 @@ export default function user(state = INITIAL_STATE, action) {
         break;
       }
 
+      case '@auth/UPDATE_SUCCESS': {
+        draft.profile = action.payload.profile;
+        break;
+      }
+
       case '@user/UPDATE_PROFILE_SUCCESS': {
         draft.profile = action.payload.profile;
         break;
       }
 
-      // case '@auth/SIGN_OUT': {
+      // case '@user/SIGN_OUT': {
       //   draft.profile = null;
       //   break;
       // }
@@ -26,5 +31,3 @@ export default function user(state = INITIAL_STATE, action) {
     }
   });
 }
-
-// um reducer pode ouvir uma action de outros módulos

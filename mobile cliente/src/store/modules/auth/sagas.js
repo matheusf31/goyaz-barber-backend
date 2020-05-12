@@ -14,8 +14,8 @@ export function* signIn({ payload }) {
 
     const { token, user } = response.data;
 
-    if (user.provider) {
-      Alert.alert('Usuário é um prestador de serviço');
+    if (!user.provider) {
+      Alert.alert('Usuário não é um prestador de serviço!');
       yield put(signFailure());
     } else {
       // settar informações que serão utilizadas em todas as requisições
@@ -24,7 +24,7 @@ export function* signIn({ payload }) {
       yield put(signInSuccess(token, user));
     }
   } catch (err) {
-    Alert.alert('Falha na autenticação', `${err.response.data.error}`);
+    Alert.alert('Erro no login!', err.response.data.error);
     yield put(signFailure());
   }
 }
@@ -43,7 +43,7 @@ export function* signUp({ payload }) {
     RootNavigation.navigate('SignIn');
     Alert.alert('Conta criada com sucesso!', 'Faça seu login por gentileza.');
   } catch (err) {
-    Alert.alert('Falha no cadastro', `${err.response.data.error}`);
+    Alert.alert('Falha no cadastro!', err.response.data.error);
     yield put(signFailure());
   }
 }
@@ -64,20 +64,27 @@ export function* setToken({ payload }) {
     const response = yield call(api.put, 'sessions');
 
     const newToken = response.data.token;
+    const { profile } = response.data;
 
     if (newToken) {
       api.defaults.headers.Authorization = `Bearer ${newToken}`;
     }
 
-    yield put(updateSuccess(newToken));
+    yield put(updateSuccess(newToken, profile));
   } catch (err) {
     Alert.alert('Erro', `${err.response.data.error}`);
     yield put(signFailure());
   }
 }
 
+export function signOut() {
+  // deslogar usuário
+  console.tron.log('Deslogar');
+}
+
 export default all([
   takeLatest('persist/REHYDRATE', setToken),
   takeLatest('@auth/SIGN_IN_REQUEST', signIn),
   takeLatest('@auth/SIGN_UP_REQUEST', signUp),
+  takeLatest('@auth/SIGN_OUT', signOut),
 ]);
