@@ -45,8 +45,10 @@ export default function SelectDateTime({ route }) {
 
         const filterHours = response.data.filter(hour => {
           if (!hour.past && hour.available) {
-            return hour;
+            return true;
           }
+
+          return false;
         });
 
         setHours(filterHours);
