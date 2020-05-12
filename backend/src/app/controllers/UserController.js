@@ -194,7 +194,6 @@ class UserController {
         where: { id: avatar_id },
       });
 
-      // Verifica o avatar escolhido
       if (!(await checkAvatar)) {
         return res.status(400).json({ error: 'Avatar não encontrado!' });
       }
