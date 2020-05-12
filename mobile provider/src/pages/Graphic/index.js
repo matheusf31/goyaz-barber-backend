@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, Alert } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { withNavigationFocus } from '@react-navigation/compat';
 
@@ -33,23 +33,31 @@ function Graphic({ isFocused }) {
   const [monthAppointments, setMonthAppointments] = useState(0);
 
   const loadData = useCallback(async () => {
-    const response = await api.get('concluded', {
-      params: {
-        date: date.getTime(),
-      },
-    });
+    try {
+      const response = await api.get('concluded', {
+        params: {
+          date: date.getTime(),
+        },
+      });
 
-    // agendamentos concluidos
-    setConcludedAppointments(response.data);
+      // agendamentos concluidos
+      setConcludedAppointments(response.data);
+    } catch (err) {
+      Alert.alert('Erro!', err.response.data.error);
+    }
   }, [date]);
 
   const loadAppointments = useCallback(async () => {
-    const response = await api.get('schedule', {
-      params: { date },
-    });
+    try {
+      const response = await api.get('schedule', {
+        params: { date },
+      });
 
-    // total de agendamentos no mês (concluidos e não concluidos)
-    setMonthAppointments(response.data.length);
+      // total de agendamentos no mês (concluidos e não concluidos)
+      setMonthAppointments(response.data.length);
+    } catch (err) {
+      Alert.alert('Erro!', err.response.data.error);
+    }
   }, [date]);
 
   useEffect(() => {
@@ -121,7 +129,7 @@ function Graphic({ isFocused }) {
         customers: calcCustumers(7),
       },
     ];
-  }, [concludedAppointments]);
+  }, [calcCustumers, calcProfit]);
 
   const profitChartData = useMemo(() => {
     return {
@@ -144,11 +152,15 @@ function Graphic({ isFocused }) {
     };
   }, [weeks]);
 
-  const profitChartTotal = weeks.reduce((total, e) => total + e.profit, 0);
+  const profitChartTotal = useMemo(
+    () => weeks.reduce((total, e) => total + e.profit, 0),
+    [weeks]
+  );
 
-  const customersChartTotal = useMemo(() => {
-    return weeks.reduce((total, e) => total + e.customers.length, 0);
-  }, [weeks]);
+  const customersChartTotal = useMemo(
+    () => weeks.reduce((total, e) => total + e.customers.length, 0),
+    [weeks]
+  );
 
   return (
     <Background>

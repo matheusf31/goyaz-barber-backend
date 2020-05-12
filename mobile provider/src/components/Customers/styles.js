@@ -62,10 +62,12 @@ export const Buttons = styled.View`
 
 export const Cancel = styled.TouchableOpacity``;
 
-export const InfoBan = styled.View``;
+export const InfoBan = styled.View`
+  flex: 1;
+`;
 
 export const TextBan = styled.Text`
-  align-self: center;
+  align-self: flex-start;
   font-weight: bold;
   font-size: 14px;
   color: #111;

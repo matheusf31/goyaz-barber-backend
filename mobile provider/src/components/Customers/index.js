@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import { Alert } from 'react-native';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import defaultavatar from '~/assets/images/defaultavatar.png';
@@ -25,19 +27,28 @@ import {
 export default function Customers({ data: user, reload }) {
   const [confirm, setConfirm] = useState(false);
 
-  console.tron.log(user);
-
-  async function handleBan(id) {
-    if (user.banned) {
-      await api.delete(`/ban/${id}`);
-      setConfirm(false);
-      reload();
-    } else {
-      await api.post(`/ban/${id}`);
-      setConfirm(false);
-      reload();
-    }
-  }
+  const handleBan = useCallback(
+    async id => {
+      if (user.banned) {
+        try {
+          await api.delete(`/ban/${id}`);
+          setConfirm(false);
+          reload();
+        } catch (err) {
+          Alert.alert('Erro!', err.response.data.error);
+        }
+      } else {
+        try {
+          await api.post(`/ban/${id}`);
+          setConfirm(false);
+          reload();
+        } catch (err) {
+          Alert.alert('Erro!', err.response.data.error);
+        }
+      }
+    },
+    [reload, user.banned]
+  );
 
   return (
     <Container banned={user.banned}>

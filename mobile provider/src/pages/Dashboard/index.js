@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import { Alert, Dimensions } from 'react-native';
 import { isSunday, addDays } from 'date-fns';
 import { withNavigationFocus } from '@react-navigation/compat';
@@ -25,21 +31,37 @@ function Dashboard({ isFocused }) {
   const [isFetching, setIsFetching] = useState(false);
 
   const provider = useSelector(state => state.user.profile);
-  const prevDate = usePrevious(date);
 
   const dayBusy = useMemo(() => !data.find(e => e.available && true), [data]);
+
+  // hook próprio
+  function usePrevious(value) {
+    const ref = useRef();
+
+    useEffect(() => {
+      ref.current = value;
+    }, [value]);
+
+    return ref.current;
+  }
+
+  const prevDate = usePrevious(date);
 
   const lastHasPast = useMemo(() => {
     if (data.length) {
       return data[data.length - 1].past;
     }
+
+    return null;
   }, [data]);
 
-  if (isSunday(date) && !prevDate) {
-    setDate(addDays(date, 1));
-  }
+  useEffect(() => {
+    if (isSunday(date) && !prevDate) {
+      setDate(addDays(date, 1));
+    }
+  }, [date, prevDate]);
 
-  async function loadAvailable() {
+  const loadAvailable = useCallback(async () => {
     try {
       const response = await api.get(`/providers/${provider.id}/available`, {
         params: {
@@ -55,35 +77,30 @@ function Dashboard({ isFocused }) {
 
       Alert.alert('Erro', err.response.data.error);
     }
-  }
+    // prevDate não precisa entrar aqui
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date, provider]);
 
   useEffect(() => {
     if (isFocused) {
       loadAvailable();
     }
-  }, [date, isFocused]);
+  }, [date, isFocused, loadAvailable]);
 
-  function usePrevious(value) {
-    const ref = useRef();
+  const handleHoursRefresh = useCallback(
+    Fetching => {
+      if (Fetching) {
+        setIsFetching(true);
+      }
 
-    useEffect(() => {
-      ref.current = value;
-    }, [value]);
+      loadAvailable();
 
-    return ref.current;
-  }
-
-  function handleHoursRefresh(Fetching) {
-    if (Fetching) {
-      setIsFetching(true);
-    }
-
-    loadAvailable();
-
-    if (Fetching) {
-      setIsFetching(false);
-    }
-  }
+      if (Fetching) {
+        setIsFetching(false);
+      }
+    },
+    [loadAvailable]
+  );
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -91,42 +108,64 @@ function Dashboard({ isFocused }) {
     }
   };
 
-  async function handleSwipeBusy(item, rowMap) {
-    const newItem = data.find(e => e.time === item);
+  const handleSwipeBusy = useCallback(
+    async (item, rowMap) => {
+      const newItem = data.find(e => e.time === item);
 
-    if (newItem.providerBusy) {
-      await api.delete('unavailable', {
-        params: {
-          date: newItem.value,
-        },
-      });
-    } else {
-      await api.post('unavailable', {
-        date: newItem.value,
-      });
-    }
+      if (newItem.providerBusy) {
+        try {
+          await api.delete('unavailable', {
+            params: {
+              date: newItem.value,
+            },
+          });
+        } catch (err) {
+          Alert.alert('Erro!', err.response.data.value);
+        }
+      } else {
+        try {
+          await api.post('unavailable', {
+            date: newItem.value,
+          });
+        } catch (err) {
+          Alert.alert('Erro!', err.response.data.value);
+        }
+      }
 
-    loadAvailable();
-    closeRow(rowMap, newItem.time);
-  }
+      loadAvailable();
+      closeRow(rowMap, newItem.time);
+    },
+    [data, loadAvailable]
+  );
 
-  async function handleDayAvailable(isDayBusy) {
-    if (isDayBusy) {
-      await api.delete('/daybusy', {
-        params: {
-          date: date.getTime(),
-        },
-      });
-    } else {
-      await api.post('/daybusy', null, {
-        params: {
-          date: date.getTime(),
-        },
-      });
-    }
+  const handleDayAvailable = useCallback(
+    async isDayBusy => {
+      if (isDayBusy) {
+        try {
+          await api.delete('/daybusy', {
+            params: {
+              date: date.getTime(),
+            },
+          });
+        } catch (err) {
+          Alert.alert('Erro!', err.response.data.value);
+        }
+      } else {
+        try {
+          await api.post('/daybusy', null, {
+            params: {
+              date: date.getTime(),
+            },
+          });
+        } catch (err) {
+          Alert.alert('Erro!', err.response.data.value);
+        }
+      }
 
-    loadAvailable();
-  }
+      loadAvailable();
+    },
+    [date, loadAvailable]
+  );
 
   const onRowOpen = (rowKey, rowMap) => {
     handleSwipeBusy(rowKey, rowMap);

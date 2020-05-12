@@ -1,4 +1,5 @@
-import React, { useState, forwardRef } from 'react';
+import React, { useState, useEffect, forwardRef, useCallback } from 'react';
+import { Alert } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -25,26 +26,41 @@ const Appointmets = forwardRef(({ data, reload, past }, ref) => {
   const [confirm, setConfirm] = useState(false);
   const [doneConfirm, setDoneConfirm] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [hasAppointment, setHasAppointment] = useState(false);
+  const [hasPast, setHasPast] = useState(false);
 
-  let hasAppointment = false;
-  let hasPast = false;
+  useEffect(() => {
+    if (data.appointment) {
+      setHasAppointment(true);
+      setHasPast(data.appointment.past);
+    }
+  }, [data.appointment]);
 
-  if (data.appointment) {
-    hasAppointment = true;
-    hasPast = data.appointment.past;
-  }
+  const handleCancel = useCallback(
+    async id => {
+      try {
+        await api.delete(`appointments/${id}`);
+        setConfirm(false);
+        reload();
+      } catch (err) {
+        Alert.alert('Erro!', err.response.data.error);
+      }
+    },
+    [reload]
+  );
 
-  async function handleCancel(id) {
-    await api.delete(`appointments/${id}`);
-    setConfirm(false);
-    reload();
-  }
-
-  async function handleConclude(id) {
-    await api.post(`concluded/${id}`);
-    setDoneConfirm(false);
-    reload();
-  }
+  const handleConclude = useCallback(
+    async id => {
+      try {
+        await api.post(`concluded/${id}`);
+        setDoneConfirm(false);
+        reload();
+      } catch (err) {
+        Alert.alert('Erro!', err.response.data.error);
+      }
+    },
+    [reload]
+  );
 
   return (
     <>
