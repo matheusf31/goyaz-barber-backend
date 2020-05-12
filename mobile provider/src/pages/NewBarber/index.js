@@ -67,14 +67,16 @@ function NewBarber({ isFocused }) {
   }, []);
 
   useEffect(() => {
-    formRef.current.setData({
-      name: '',
-      phone: '',
-      email: '',
-      password: '',
-    });
+    if (isFocused) {
+      formRef.current.setData({
+        name: '',
+        phone: '',
+        email: '',
+        password: '',
+      });
 
-    setClearIconColorOnSubmit(prevState => !prevState);
+      setClearIconColorOnSubmit(prevState => !prevState);
+    }
   }, [isFocused]);
 
   return (
