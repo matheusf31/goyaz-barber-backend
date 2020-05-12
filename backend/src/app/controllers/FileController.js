@@ -18,6 +18,12 @@ class FileController {
       path,
     });
 
+    if (!file) {
+      return res
+        .status(400)
+        .json({ error: 'Erro ao salvar o arquivo no banco de dados' });
+    }
+
     return res.json(file);
   }
 }
