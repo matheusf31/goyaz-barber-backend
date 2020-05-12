@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { Dimensions } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
 export const Container = styled.SafeAreaView`
@@ -17,6 +18,7 @@ export const Hour = styled(RectButton)`
   background: #fff;
   border-radius: 4px;
   padding: 20px;
+  /* width: ${Dimensions.get('screen').width / 2.4}px; */
   flex: 1;
 
   opacity: ${props => (props.enabled ? 1 : 0.5)};

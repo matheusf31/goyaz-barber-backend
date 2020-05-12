@@ -43,7 +43,13 @@ export default function SelectDateTime({ route }) {
           },
         });
 
-        setHours(response.data);
+        const filterHours = response.data.filter(hour => {
+          if (!hour.past && hour.available) {
+            return hour;
+          }
+        });
+
+        setHours(filterHours);
       } catch (err) {
         if (prevDate) {
           setDate(prevDate);
@@ -77,18 +83,16 @@ export default function SelectDateTime({ route }) {
         <HourList
           data={hours}
           keyExtractor={item => item.time}
-          renderItem={({ item }) =>
-            !item.past && (
-              <Hour
-                onPress={() => {
-                  handleSelectHour(item.value);
-                }}
-                enabled={item.available}
-              >
-                <Title enabled={item.available}>{item.time}</Title>
-              </Hour>
-            )
-          }
+          renderItem={({ item }) => (
+            <Hour
+              onPress={() => {
+                handleSelectHour(item.value);
+              }}
+              enabled={item.available}
+            >
+              <Title enabled={item.available}>{item.time}</Title>
+            </Hour>
+          )}
         />
       </Container>
     </Background>
