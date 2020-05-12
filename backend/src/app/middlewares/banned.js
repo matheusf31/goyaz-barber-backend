@@ -4,9 +4,9 @@ export default async (req, res, next) => {
   if (!req.userId) {
     const { email } = req.body;
 
-    // if (!email) {
-    //   return res.status(400).json({ error: 'Insira um email.' });
-    // }
+    if (!email) {
+      return res.status(400).json({ error: 'Insira um email.' });
+    }
 
     const user = await User.findOne({
       where: {
@@ -20,7 +20,7 @@ export default async (req, res, next) => {
   } else {
     const user = await User.findByPk(req.userId);
 
-    if (user.banned) {
+    if (user && user.banned) {
       return res.status(401).json({ error: 'Você foi banido da aplicação!' });
     }
   }
