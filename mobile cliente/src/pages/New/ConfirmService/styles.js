@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { Dimensions } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import Button from '~/components/Button';
 
@@ -15,12 +16,13 @@ export const CutTypeButtons = styled.View`
 
 export const Cut = styled(RectButton)`
   background: ${props => (props.isActive ? '#ff9000' : '#ffffff')};
-  flex: 1;
   align-items: center;
   justify-content: center;
   padding: 25px;
   margin: 10px;
   border-radius: 4px;
+
+  width: ${Dimensions.get('screen').width / 2.4}px;
 `;
 
 export const ButtonText = styled.Text`
@@ -50,12 +52,12 @@ export const ButtonTimeText = styled.Text`
 // ---- Confirm
 
 export const ConfirmContainer = styled.View`
-  flex: 4;
   width: 85%;
   align-items: center;
 
   margin-top: 70px;
   border-radius: 4px;
+  padding: 20px;
 
   background: rgba(0, 0, 0, 0.7);
 `;

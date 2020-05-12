@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { Alert, ScrollView } from 'react-native';
+import { Alert } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
