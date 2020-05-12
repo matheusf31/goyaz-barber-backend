@@ -34,8 +34,7 @@ const AvatarImage = ({ avatar, onChangeAvatar }) => {
       {avatar ? (
         <Image
           source={{
-            // eslint-disable-next-line no-nested-ternary
-            uri: avatar ? (avatar.uri ? avatar.uri : avatar) : undefined,
+            uri: avatar.uri ? avatar.uri : avatar,
           }}
         />
       ) : (

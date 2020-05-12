@@ -48,33 +48,11 @@ export default function Profile() {
 
   const handleSubmit = useCallback(
     async data => {
+      if (formRef.current) {
+        formRef.current.setErrors({});
+      }
+
       try {
-        if (formRef.current) {
-          formRef.current.setErrors({});
-        }
-
-        let id;
-
-        // se não há um novo avatar, avatar: undefined será enviado
-        if (avatar && avatar.uri) {
-          const file = new FormData();
-
-          file.append('file', {
-            name: 'avatarImage',
-            uri: avatar.uri,
-            type: avatar.type,
-          });
-
-          // upload do avatar
-          const response = await api.post('/files', file);
-
-          id = response.data.id;
-        }
-
-        let { name, phone } = data;
-        name = name === '' ? profile.name : name;
-        phone = phone === '' ? profile.phone : phone;
-
         const { email, oldPassword, password, confirmPassword } = data;
 
         const schema = Yup.object().shape({
@@ -89,12 +67,34 @@ export default function Profile() {
           abortEarly: false,
         });
 
+        let avatar_id;
+
+        // se não há um novo avatar, avatar: undefined será enviado
+        if (avatar && avatar.uri) {
+          const file = new FormData();
+
+          file.append('file', {
+            name: 'avatarImage',
+            uri: avatar.uri,
+            type: avatar.type,
+          });
+
+          // upload do avatar
+          const response = await api.post('/files', file);
+
+          avatar_id = response.data.id;
+        }
+
+        let { name, phone } = data;
+        name = name === '' ? profile.name : name;
+        phone = phone === '' ? profile.phone : phone;
+
         dispatch(
           updateProfileRequest({
             name,
             email,
             phone,
-            avatar_id: id,
+            avatar_id,
             oldPassword,
             password,
             confirmPassword,
