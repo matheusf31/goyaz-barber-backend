@@ -49,6 +49,10 @@ export default function Profile() {
   const handleSubmit = useCallback(
     async data => {
       try {
+        if (formRef.current) {
+          formRef.current.setErrors({});
+        }
+
         let id;
 
         // se não há um novo avatar, avatar: undefined será enviado
@@ -61,13 +65,10 @@ export default function Profile() {
             type: avatar.type,
           });
 
+          // upload do avatar
           const response = await api.post('/files', file);
 
           id = response.data.id;
-        }
-
-        if (formRef.current) {
-          formRef.current.setErrors({});
         }
 
         let { name, phone } = data;
