@@ -71,6 +71,25 @@ class SessionController {
   async update(req, res) {
     const id = req.userId;
 
+    const profile = await User.findByPk(id, {
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+      attributes: [
+        'id',
+        'name',
+        'email',
+        'phone',
+        'provider',
+        'admin',
+        'banned',
+      ],
+    });
+
     return res.json({
       token: jwt.sign(
         {
@@ -81,6 +100,7 @@ class SessionController {
           expiresIn: authConfig.expiresIn,
         } // data de expiração
       ),
+      profile,
     });
   }
 }
