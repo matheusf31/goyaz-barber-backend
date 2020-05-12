@@ -31,9 +31,9 @@ export function signOut() {
   };
 }
 
-export function updateSuccess(token) {
+export function updateSuccess(token, profile) {
   return {
     type: '@auth/UPDATE_SUCCESS',
-    payload: { token },
+    payload: { token, profile },
   };
 }

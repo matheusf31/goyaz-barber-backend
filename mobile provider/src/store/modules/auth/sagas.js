@@ -64,12 +64,13 @@ export function* setToken({ payload }) {
     const response = yield call(api.put, 'sessions');
 
     const newToken = response.data.token;
+    const { profile } = response.data;
 
     if (newToken) {
       api.defaults.headers.Authorization = `Bearer ${newToken}`;
     }
 
-    yield put(updateSuccess(newToken));
+    yield put(updateSuccess(newToken, profile));
   } catch (err) {
     Alert.alert('Erro', `${err.response.data.error}`);
     yield put(signFailure());
