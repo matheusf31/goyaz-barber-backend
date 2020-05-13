@@ -229,11 +229,13 @@ class UserController {
       `${oldAvatar}`
     );
 
-    if (oldAvatar) {
+    if (oldAvatar && avatar_id) {
       try {
         fs.unlinkSync(avatarPath);
       } catch (err) {
-        return res.status(400).json({ error: 'Erro, contate o desenvolvedor' });
+        return res
+          .status(400)
+          .json({ error: 'Erro no fs.unlinkSync, contate o desenvolvedor' });
       }
     }
 
