@@ -143,7 +143,7 @@ class UserController {
     let phoneFormatted;
     const { name, phone, email, password, oldPassword, avatar_id } = req.body;
     const { provider, admin, banned } = user;
-    const oldAvatar = user.avatar?.path;
+    let oldAvatar;
 
     // Números válidos: 06299999-9999 // 0629999-9999 // 62999999-9999 // 629999-9999 // 062999999999 // 06299999999 // 62999999999 // 6299999999
     const reg = /^(62|062)(\d{4,5}\-?\d{4})$/;
@@ -202,7 +202,7 @@ class UserController {
 
       // Excluir o avatar antigo
       if (user.avatar) {
-        const oldAvatar = await File.findByPk(user.avatar.id);
+        oldAvatar = await File.findByPk(user.avatar.id);
 
         if (oldAvatar) {
           await oldAvatar.destroy();

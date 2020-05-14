@@ -28,6 +28,8 @@ routes.post('/sessions', SessionController.store);
 routes.post('/passwordreset', PasswordResetController.store);
 routes.patch('/passwordreset', PasswordResetController.update);
 
+routes.get('/', (req, res) => res.json({ ok: true }));
+
 routes.use(authMiddleware);
 routes.use(bannedMiddleware);
 
