@@ -146,9 +146,11 @@ class UserController {
     let oldAvatar;
 
     // Números válidos: 06299999-9999 // 0629999-9999 // 62999999-9999 // 629999-9999 // 062999999999 // 06299999999 // 62999999999 // 6299999999
+    // eslint-disable-next-line no-useless-escape
     const reg = /^(62|062)(\d{4,5}\-?\d{4})$/;
 
     // Para verificar se há o hífen entre os números
+    // eslint-disable-next-line no-useless-escape
     const reg2 = /\-/;
 
     if (phone) {
