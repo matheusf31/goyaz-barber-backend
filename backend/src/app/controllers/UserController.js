@@ -71,30 +71,32 @@ class UserController {
 
     let phoneFormatted = '';
 
-    if (phone) {
-      const match = phone.match(reg);
-      const match2 = phone.match(reg2);
+    if (!phone) {
+      return res.status(400).json({ error: 'Insira seu número de telefone.' });
+    }
 
-      if (match2 && phone.length > 13) {
-        return res.status(400).json({ error: 'Número de telefone inválido' });
-      }
+    const match = phone.match(reg);
+    const match2 = phone.match(reg2);
 
-      if (!match2 && phone.length > 12) {
-        return res.status(400).json({ error: 'Número de telefone inválido' });
-      }
+    if (match2 && phone.length > 13) {
+      return res.status(400).json({ error: 'Número de telefone inválido' });
+    }
 
-      if (!match) {
-        return res.status(400).json({ error: 'Número de telefone inválido' });
-      }
+    if (!match2 && phone.length > 12) {
+      return res.status(400).json({ error: 'Número de telefone inválido' });
+    }
 
-      // formatar o phone para salvar com hífen no banco de dados
-      if (match2) {
-        phoneFormatted = phone;
-      } else {
-        phoneFormatted = `${phone.substr(0, phone.length - 4)}-${phone.substr(
-          phone.length - 4
-        )}`;
-      }
+    if (!match) {
+      return res.status(400).json({ error: 'Número de telefone inválido' });
+    }
+
+    // formatar o phone para salvar com hífen no banco de dados
+    if (match2) {
+      phoneFormatted = phone;
+    } else {
+      phoneFormatted = `${phone.substr(0, phone.length - 4)}-${phone.substr(
+        phone.length - 4
+      )}`;
     }
 
     const { id, provider } = await User.create({
