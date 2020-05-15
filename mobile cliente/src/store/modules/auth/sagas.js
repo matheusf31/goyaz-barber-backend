@@ -14,11 +14,10 @@ export function* signIn({ payload }) {
 
     const { token, user } = response.data;
 
-    if (!user.provider) {
-      Alert.alert('Usuário não é um prestador de serviço!');
+    if (user.provider) {
+      Alert.alert('Usuário é um prestador de serviço!');
       yield put(signFailure());
     } else {
-      // settar informações que serão utilizadas em todas as requisições
       api.defaults.headers.Authorization = `Bearer ${token}`;
 
       yield put(signInSuccess(token, user));
