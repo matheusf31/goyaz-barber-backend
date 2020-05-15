@@ -1,5 +1,3 @@
-import * as Yup from 'yup';
-
 import User from '../models/User';
 import ResetPassword from '../models/ResetPassword';
 
@@ -49,7 +47,7 @@ class PasswordReset {
   }
 
   async update(req, res) {
-    const { token, newPassword, confirmPassword } = req.body;
+    const { token, newPassword } = req.body;
 
     const tokenExist = await ResetPassword.findOne({
       where: {
@@ -59,17 +57,6 @@ class PasswordReset {
 
     if (!tokenExist) {
       return res.status(401).json({ error: 'Token inválido' });
-    }
-
-    const schema = Yup.object().shape({
-      newPassword: Yup.string().min(6),
-      confirmPassword: Yup.string().when('newPassword', (newPassword, field) =>
-        newPassword ? field.required().oneOf([Yup.ref('newPassword')]) : field
-      ),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Erro na senha.' });
     }
 
     const user = await User.findByPk(tokenExist.user_id);

@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import User from '../models/User';
 import File from '../models/File';
 
@@ -20,26 +19,38 @@ class ProviderController {
   }
 
   async store(req, res) {
-    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+    const { name, email, password, phone } = req.body;
+    const reg = /^(62|062)(\d{4,5}\-?\d{4})$/;
+    const reg2 = /\-/;
 
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      email: Yup.string()
-        .email()
-        .required(),
-      phone: Yup.string()
-        .required()
-        .matches(phoneRegExp, 'Número de telefone inválido.'),
-      password: Yup.string()
-        .required('Insira uma senha.')
-        .min(6),
-    });
+    let phoneFormatted = '';
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Verifique os dados inseridos.' });
+    if (!phone) {
+      return res.status(400).json({ error: 'Insira seu número de telefone.' });
     }
 
-    const { name, email, password, phone } = req.body;
+    const match = phone.match(reg);
+    const match2 = phone.match(reg2);
+
+    if (match2 && phone.length > 13) {
+      return res.status(400).json({ error: 'Número de telefone inválido' });
+    }
+
+    if (!match2 && phone.length > 12) {
+      return res.status(400).json({ error: 'Número de telefone inválido' });
+    }
+
+    if (!match) {
+      return res.status(400).json({ error: 'Número de telefone inválido' });
+    }
+
+    if (match2) {
+      phoneFormatted = phone;
+    } else {
+      phoneFormatted = `${phone.substr(0, phone.length - 4)}-${phone.substr(
+        phone.length - 4
+      )}`;
+    }
 
     const userIsProvider = await User.findByPk(req.userId);
 
@@ -62,7 +73,7 @@ class ProviderController {
       email,
       password,
       provider: true,
-      phone,
+      phone: phoneFormatted,
     });
 
     return res.json(provider);

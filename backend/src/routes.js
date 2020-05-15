@@ -16,6 +16,10 @@ import UnavailableController from './app/controllers/UnavailableController';
 import DayUnavailableController from './app/controllers/DayUnavailableController';
 import PasswordResetController from './app/controllers/PasswordResetController';
 
+import validateUserUpdate from './app/validators/UserUpdate';
+import validatePasswordResetUpdate from './app/validators/PasswordResetUpdate';
+import validateProviderStore from './app/validators/ProviderStore';
+
 import authMiddleware from './app/middlewares/auth';
 import bannedMiddleware from './app/middlewares/banned';
 
@@ -26,7 +30,11 @@ routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
 routes.post('/passwordreset', PasswordResetController.store);
-routes.patch('/passwordreset', PasswordResetController.update);
+routes.patch(
+  '/passwordreset',
+  validatePasswordResetUpdate,
+  PasswordResetController.update
+);
 
 routes.get('/', (req, res) => res.json({ ok: true }));
 
@@ -36,10 +44,10 @@ routes.use(bannedMiddleware);
 routes.put('/sessions', SessionController.update);
 
 routes.get('/users', UserController.index);
-routes.put('/users', UserController.update);
+routes.put('/users', validateUserUpdate, UserController.update);
 
 routes.get('/providers', ProviderController.index);
-routes.post('/providers', ProviderController.store);
+routes.post('/providers', validateProviderStore, ProviderController.store);
 
 routes.get('/providers/:providerId/available', AvailableController.index);
 

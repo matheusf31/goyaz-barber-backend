@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { resolve } from 'path';
-import * as Yup from 'yup';
 
 import User from '../models/User';
 import Concluded from '../models/Concluded';
@@ -58,17 +57,8 @@ class UserController {
     }
 
     const { name, phone, email, password } = req.body;
-
-    /**
-     * Números válidos: 06299999-9999 // 0629999-9999 // 62999999-9999 // 629999-9999 // 062999999999 // 06299999999 // 62999999999 // 6299999999
-     */
-    // eslint-disable-next-line no-useless-escape
     const reg = /^(62|062)(\d{4,5}\-?\d{4})$/;
-
-    // Para verificar se há o hífen entre os números
-    // eslint-disable-next-line no-useless-escape
     const reg2 = /\-/;
-
     let phoneFormatted = '';
 
     if (!phone) {
@@ -110,22 +100,6 @@ class UserController {
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
-      oldPassword: Yup.string().min(6),
-      password: Yup.string()
-        .min(6)
-        .when('oldPassword', (oldPassword, field) =>
-          oldPassword ? field.required() : field
-        ),
-      confirmPassword: Yup.string().when('password', (password, field) =>
-        password ? field.required().oneOf([Yup.ref('password')]) : field
-      ),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Erro no formato dos dados.' });
-    }
-
     const user = await User.findByPk(req.userId, {
       include: [
         {

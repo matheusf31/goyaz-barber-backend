@@ -1,22 +1,13 @@
-import {
-  parseISO,
-  format,
-  isBefore,
-  subHours,
-  subMinutes,
-  subDays,
-  addDays,
-} from 'date-fns';
-import pt from 'date-fns/locale/pt';
-import { Op } from 'sequelize';
+import { isBefore, subHours } from 'date-fns';
 
 import Appointment from '../models/Appointment';
 import File from '../models/File';
 import User from '../models/User';
-import Notification from '../schemas/Notification';
 
 import CancellationMail from '../jobs/CancellationMail';
 import Queue from '../../lib/Queue';
+
+import CreateAppointmentService from '../services/CreateAppointmentService';
 
 class AppointmentController {
   async index(req, res) {
@@ -38,12 +29,12 @@ class AppointmentController {
       ],
       include: [
         {
-          model: User, // para retornar os dados do relacionamento
-          as: 'provider', // qual dos relacionamentos
-          attributes: ['id', 'name', 'phone'], // quais atributos que quero buscar
+          model: User,
+          as: 'provider',
+          attributes: ['id', 'name', 'phone'],
           include: [
             {
-              model: File, // para retornar o avatar do provedor
+              model: File,
               as: 'avatar',
               attributes: ['id', 'path', 'url'],
             },
@@ -60,154 +51,20 @@ class AppointmentController {
   }
 
   async store(req, res) {
-    const { provider_id, date, cut_type } = req.body;
+    try {
+      const { provider_id, date, cut_type } = req.body;
 
-    // Checando se existe um agendamento em menos de 6 dias do dia de hoje
-    let hasAppointment = await Appointment.findOne({
-      where: {
+      const appointment = await CreateAppointmentService.run({
         user_id: req.userId,
-        date: {
-          [Op.between]: [new Date(), addDays(new Date(), 6)],
-        },
-        canceled_at: null,
-      },
-      include: [
-        {
-          model: User,
-          as: 'provider',
-          attributes: ['name', 'phone'],
-        },
-      ],
-    });
-
-    if (hasAppointment) {
-      return res.status(400).json({
-        error: `Você já possui um agendamento marcado com o provedor ${hasAppointment.provider.name} em menos de 7 dias.`,
-      });
-    }
-
-    // checar se existe um agendamento 6 dias antes da data escolhida
-    hasAppointment = await Appointment.findAll({
-      where: {
-        user_id: req.userId,
-        date: {
-          [Op.between]: [subDays(parseISO(date), 6), parseISO(date)],
-        },
-        canceled_at: null,
-      },
-      include: [
-        {
-          model: User,
-          as: 'provider',
-          attributes: ['name', 'phone'],
-        },
-      ],
-      attributes: [
-        'id',
-        'date',
-        'cut_type',
-        'cost',
-        'past',
-        'cancelable',
-        'concluded',
-        'past',
-      ],
-    });
-
-    const hasOneAppointment = hasAppointment.find(e => e.past === false);
-
-    if (hasOneAppointment) {
-      return res.status(400).json({
-        error: `Você já possui um agendamento marcado com o provedor ${hasAppointment.provider.name} em menos de 7 dias.`,
-      });
-    }
-
-    // Checando se provider_id é um provedor
-    const checkIsProvider = await User.findOne({
-      where: { id: provider_id, provider: true },
-    });
-
-    if (!checkIsProvider) {
-      return res
-        .status(401)
-        .json({ error: 'Você só pode marcar com provedores.' });
-    }
-
-    // Checando se o provider não é o mesmo usuário
-    if (provider_id === req.userId) {
-      return res.status(401).json({
-        error: 'Você não pode marcar com você mesmo.',
-      });
-    }
-
-    // Checando se o cut type foi inserido
-    if (!cut_type) {
-      return res.status(400).json({ error: 'Insira o serviço.' });
-    }
-
-    // Checando se a data/hora escolhida está ANTES da data/hora atual
-    if (isBefore(parseISO(date), new Date())) {
-      return res
-        .status(400)
-        .json({ error: 'Horários que já passaram não são permitidos.' });
-    }
-
-    // Checando se o provedor já não tem um agendamento marcado pro mesmo horário
-    let checkAvailability = await Appointment.findOne({
-      where: { provider_id, canceled_at: null, date: parseISO(date) },
-    });
-
-    if (checkAvailability) {
-      return res
-        .status(400)
-        .json({ error: 'Data do agendamento não está disponível.' });
-    }
-
-    // Checar se o provedor não tem um 'corte e barba' 30 minutos antes desse horário
-    checkAvailability = await Appointment.findOne({
-      where: {
         provider_id,
-        canceled_at: null,
-        date: subMinutes(parseISO(date), 30),
-        cut_type: 'corte e barba',
-      },
-    });
+        date,
+        cut_type,
+      });
 
-    if (checkAvailability) {
-      return res
-        .status(400)
-        .json({ error: 'Data do agendamento não está disponível.' });
+      return res.json(appointment);
+    } catch (err) {
+      return res.status(err.statusCode).json({ error: err.message });
     }
-
-    // extrair o custo do serviço
-    const cost = cut_type === 'corte' ? '25.00' : '35.00';
-
-    const appointment = await Appointment.create({
-      user_id: req.userId,
-      provider_id,
-      date: parseISO(date),
-      cut_type,
-      cost,
-    });
-
-    /**
-     * Notify appointment provider
-     */
-    const user = await User.findByPk(req.userId);
-    const formatedDate = format(
-      parseISO(date),
-      "'dia' dd 'de' MMMM', às' H:mm'h'",
-      {
-        locale: pt,
-      }
-    );
-
-    await Notification.create({
-      content: `Novo agendamento de ${user.name} para ${formatedDate}`,
-      user: provider_id,
-    });
-
-    return res.json(appointment);
   }
 
   async delete(req, res) {
