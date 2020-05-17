@@ -18,7 +18,7 @@ export function* updateProfile({ payload }) {
 
     yield put(updateProfileSuccess(response.data));
 
-    Alert.alert('Sucesso!', 'Perfil atualizado com sucesso.');
+    Alert.alert('Perfil atualizado com sucesso.');
   } catch (err) {
     Alert.alert('Falha na atualização!', err.response.data.error);
     yield put(updateProfileFailure());
