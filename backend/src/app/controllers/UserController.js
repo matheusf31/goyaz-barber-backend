@@ -176,7 +176,7 @@ class UserController {
         return res.status(400).json({ error: 'Avatar não encontrado!' });
       }
 
-      // Excluir o avatar antigo
+      // Excluir o avatar antigo só se eu estiver adicionando um novo
       if (user.avatar) {
         oldAvatar = await File.findByPk(user.avatar.id);
 
@@ -197,17 +197,19 @@ class UserController {
 
     await user.save();
 
-    const avatarPath = resolve(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      'tmp',
-      'uploads',
-      `${oldAvatar}`
-    );
+    let avatarPath;
 
-    if (oldAvatar && avatar_id) {
+    if (oldAvatar && avatar_id && oldAvatar.path) {
+      avatarPath = resolve(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'tmp',
+        'uploads',
+        `${oldAvatar.path}`
+      );
+
       try {
         fs.unlinkSync(avatarPath);
       } catch (err) {
