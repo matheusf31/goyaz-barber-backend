@@ -24,4 +24,5 @@ export const DateText = styled.Text`
 
 export const CalendarInput = styled(Calendar)`
   margin: 20px;
+  display: ${props => (props.opened ? 'flex' : 'none')};
 `;
