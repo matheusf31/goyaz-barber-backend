@@ -77,9 +77,7 @@ function Dashboard({ isFocused }) {
 
       Alert.alert('Erro', err.response.data.error);
     }
-    // prevDate não precisa entrar aqui
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date, provider]);
+  }, [date, provider.id]);
 
   useEffect(() => {
     if (isFocused) {
@@ -87,20 +85,11 @@ function Dashboard({ isFocused }) {
     }
   }, [date, isFocused, loadAvailable]);
 
-  const handleHoursRefresh = useCallback(
-    Fetching => {
-      if (Fetching) {
-        setIsFetching(true);
-      }
-
-      loadAvailable();
-
-      if (Fetching) {
-        setIsFetching(false);
-      }
-    },
-    [loadAvailable]
-  );
+  const handleHoursRefresh = useCallback(() => {
+    setIsFetching(true);
+    loadAvailable();
+    setIsFetching(false);
+  }, [loadAvailable]);
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -114,10 +103,8 @@ function Dashboard({ isFocused }) {
 
       if (newItem.providerBusy) {
         try {
-          await api.delete('unavailable', {
-            params: {
-              date: newItem.value,
-            },
+          await api.patch('unavailable', {
+            date: newItem.value,
           });
         } catch (err) {
           Alert.alert('Erro!', err.response.data.value);
@@ -171,10 +158,8 @@ function Dashboard({ isFocused }) {
     handleSwipeBusy(rowKey, rowMap);
   };
 
-  const renderHiddenItem = ({ item }) => {
-    if (item.available || (!item.appointment && !item.past)) {
-      return <></>;
-    }
+  const renderHiddenItem = () => {
+    return <></>;
   };
 
   const listFooter = () => {
@@ -201,11 +186,10 @@ function Dashboard({ isFocused }) {
         <DateInput date={date} onChange={setDate} />
 
         <HourList
-          onRefresh={() => handleHoursRefresh(true)}
+          data={data}
+          onRefresh={handleHoursRefresh}
           refreshing={isFetching}
           keyExtractor={item => item.time}
-          data={data}
-          disableRightSwipe
           renderItem={({ item }) => (
             <Appointments data={item} reload={loadAvailable} past={item.past} />
           )}
