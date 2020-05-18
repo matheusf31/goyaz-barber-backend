@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        maven { url 'https://plugins.gradle.org/m2/' } // Gradle Plugin Portal 
+    }
+    dependencies {
+        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.6, 0.99.99]'
+    }
+}
+
+apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+
 apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
@@ -81,6 +92,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -126,7 +138,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     defaultConfig {
         applicationId "com.goyazbarbermobileprovider"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -152,14 +163,24 @@ android {
     }
     buildTypes {
         debug {
+            buildConfigField "String", "CODEPUSH_KEY", '"3Eh-gweQXTxDkhHXeFLcHWTr_jS0Oll9Defoh"'
             signingConfig signingConfigs.debug
         }
+
+        releaseStaging {
+            buildConfigField "String", "CODEPUSH_KEY", '"N662AlkziA9h6Nr6NsT7_Y7AWcVfkm7AHqk-e"'
+        
+            matchingFallbacks = ['debug', 'release']
+        }
+
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+
+            buildConfigField "String", "CODEPUSH_KEY", '""'
         }
     }
     // applicationVariants are e.g. debug, release
