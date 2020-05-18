@@ -15,7 +15,7 @@ export const Title = styled.Text`
 `;
 
 export const Charts = styled.ScrollView`
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `;
 
 export const ChartView = styled.View`
@@ -28,7 +28,7 @@ export const TableContainer = styled.View`
 
   background: #fff;
   height: 200px;
-  border-radius: 16px;
+  border-radius: 5px;
 
   justify-content: space-around;
 `;

@@ -10,7 +10,7 @@ import api from '~/services/api';
 
 import Background from '~/components/Background';
 
-import DateInput from '~/components/DateInput';
+import GraphsDateInput from '~/components/GraphsDateInput';
 
 import {
   Container,
@@ -166,8 +166,7 @@ function Graphic({ isFocused }) {
     <Background>
       <Container>
         <Title>Controle de caixa</Title>
-
-        <DateInput date={date} onChange={setDate} graphic />
+        <GraphsDateInput date={date} onChange={setDate} graphic />
 
         {concludedAppointments.length > 0 && (
           <Charts>
@@ -197,7 +196,7 @@ function Graphic({ isFocused }) {
                 bezier
                 style={{
                   // edita a view do gráfico
-                  borderRadius: 16,
+                  borderRadius: 5,
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
