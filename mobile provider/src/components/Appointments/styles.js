@@ -6,7 +6,7 @@ export const Container = styled(TouchableHighlight)`
   margin-bottom: 15px;
   border-radius: 4px;
 
-  background: ${(props) => {
+  background: ${props => {
     if (props.hasAppointment) {
       return '#8FD684';
     }
@@ -21,7 +21,7 @@ export const Container = styled(TouchableHighlight)`
   align-items: center;
   justify-content: center;
 
-  opacity: ${(props) => {
+  opacity: ${props => {
     if (props.appointmentConcluded) {
       return '0.8';
     }
@@ -41,7 +41,7 @@ export const Box = styled.View`
 
   flex-direction: row;
   align-items: center;
-  justify-content: ${(props) => (props.concluded ? 'center' : 'space-around')};
+  justify-content: ${props => (props.concluded ? 'center' : 'space-around')};
 `;
 
 export const Avatar = styled.Image`
