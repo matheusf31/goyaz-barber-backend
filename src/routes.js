@@ -36,7 +36,7 @@ routes.patch(
   PasswordResetController.update
 );
 
-routes.get('/', (req, res) => res.json({ ok: true }));
+routes.get('/', (req, res) => res.json({ ok: 'asasasasasas' }));
 
 routes.use(authMiddleware);
 routes.use(bannedMiddleware);
