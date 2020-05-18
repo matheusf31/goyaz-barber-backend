@@ -1,9 +1,6 @@
 import Available from '../models/Available';
 
 class Unavailable {
-  /**
-   * Cria um campo na tabela Available que mostra os horários onde o provedor não está disponível
-   */
   async store(req, res) {
     const { date } = req.body;
     const provider_id = req.userId;
@@ -15,10 +12,9 @@ class Unavailable {
       },
     });
 
-    // se ele já existir eu coloco apenas unavailable como true
-    if (checkExistUnavailable && !checkExistUnavailable.unavailable) {
+    if (checkExistUnavailable) {
       checkExistUnavailable.unavailable = true;
-      checkExistUnavailable.save();
+      await checkExistUnavailable.save();
 
       return res.json({ ok: true });
     }
@@ -32,8 +28,8 @@ class Unavailable {
     return res.json(response);
   }
 
-  async delete(req, res) {
-    const { date } = req.query;
+  async update(req, res) {
+    const { date } = req.body;
     const provider_id = req.userId;
 
     const available = await Available.findOne({
@@ -45,7 +41,7 @@ class Unavailable {
 
     if (available) {
       available.unavailable = false;
-      available.save();
+      await available.save();
     } else {
       await Available.create({
         date,
