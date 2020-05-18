@@ -33,9 +33,11 @@ export const HeaderContainer = styled.View`
 
 export const HeaderTitle = styled.Text`
   color: #fff;
-  font-size: 20px;
   margin: 0 20px;
   align-self: center;
+
+  font-size: 16px;
+  font-weight: bold;
 `;
 
 export const HeaderLeftButton = styled.TouchableOpacity``;

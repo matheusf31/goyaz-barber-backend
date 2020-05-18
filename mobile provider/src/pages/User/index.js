@@ -77,7 +77,7 @@ function User({ isFocused }) {
       <HeaderContainer>
         {page > 1 && (
           <HeaderLeftButton onPress={() => setPage(page - 1)}>
-            <Icon name="chevron-left" size={26} color="#FFF" />
+            <Icon name="chevron-left" size={26} color="#ff9000" />
           </HeaderLeftButton>
         )}
         <HeaderTitle>
@@ -87,7 +87,7 @@ function User({ isFocused }) {
         </HeaderTitle>
         {page < maxPages && (
           <HeaderRightButton onPress={() => setPage(page + 1)}>
-            <Icon name="chevron-right" size={26} color="#FFF" />
+            <Icon name="chevron-right" size={26} color="#ff9000" />
           </HeaderRightButton>
         )}
       </HeaderContainer>
