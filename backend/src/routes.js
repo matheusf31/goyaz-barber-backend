@@ -70,7 +70,7 @@ routes.post('/ban/:id', BanController.store);
 routes.delete('/ban/:id', BanController.delete);
 
 routes.post('/unavailable', UnavailableController.store);
-routes.delete('/unavailable', UnavailableController.delete);
+routes.patch('/unavailable', UnavailableController.update);
 
 routes.post('/daybusy', DayUnavailableController.store);
 routes.delete('/daybusy', DayUnavailableController.delete);
