@@ -47,7 +47,7 @@ class DayUnavailableController {
 
     if (checkDayUnavailable) {
       checkDayUnavailable.day_busy = true;
-      checkDayUnavailable.save();
+      await checkDayUnavailable.save();
 
       return res.json({ ok: true });
     }
@@ -101,7 +101,7 @@ class DayUnavailableController {
 
     if (checkDayUnavailable) {
       checkDayUnavailable.day_busy = false;
-      checkDayUnavailable.save();
+      await checkDayUnavailable.save();
 
       return res.json({ ok: true });
     }

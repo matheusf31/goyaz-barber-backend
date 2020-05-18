@@ -45,7 +45,7 @@ class ConcludedController {
 
     appointment.concluded = true;
 
-    appointment.save();
+    await appointment.save();
 
     const concluded = await Concluded.create({
       appointment_id: id,

@@ -24,7 +24,7 @@ class BanController {
 
     user.banned = true;
 
-    user.save();
+    await user.save();
 
     const { name, email, provider, banned } = user;
 
@@ -46,7 +46,7 @@ class BanController {
 
     user.banned = false;
 
-    user.save();
+    await user.save();
 
     const { name, email, provider, banned } = user;
 
