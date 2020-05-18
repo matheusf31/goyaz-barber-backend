@@ -1,40 +1,55 @@
 # Descrição
 
-App da barbearia GoyazBarber, localizada em Anápolis-GO. O app foi feito com NodeJS no backend e React-Native na parte mobile. O app mobile está dividido em dois, onde um é para os clientes e o outro para o provedor de serviços;
+Backend do app GoyazBarber, feito utilizando NodeJS, juntamente com o framework Express para o roteamento da aplicação. Além disso, utilizei o Docker para criar containeres e hospedar o banco de dados da aplicação;
 
-# Ferramentas
+O backend da aplicação realiza atividades simples como listagem/criação/atualização/deleção de usuários, validação de login com token JWT, processamento de datas para realizar os agendamentos (tanto pro provedor quanto para o cliente) utilizando o date-fns, listagem/criação/atualização/deleção de agendamentos, entre outras funcionalidades;
 
-As ferramentas utilizadas serão colocadas em cada parte do app (backend, cliente e provedor). No momento apenas as ferramentas do backend estão listadas.
+# Funcionalidades utilizadas no backend
 
-# Como executar o projeto
+#### Organização e padronização de código
 
-## Backend
+- Prettier: padronização e organização do código;
+- Eslint: padronização e organização do código.
 
-#### Para executar o backend do projeto siga os seguintes passos:
+#### Server
 
-- verifique se o [Yarn](https://classic.yarnpkg.com/pt-BR/docs/install/#windows-stable) está instalado na sua máquina;
-- verifique se o [NodeJS](https://nodejs.org/en/download/) está instalado na sua máquina;
-- instale em sua máquina o [Docker CE](https://docs.docker.com/engine/install/);
-  - Obs.: Para Windows e Mac o app desktop basta, no Ubuntu e outras distros linux é necessário fazer a [instalação pelo terminal](https://docs.docker.com/engine/install/ubuntu/);
+- Arquitetura MVC: padrão de arquitetura de software utilizado para separar responsabilidades;
+- Express: para criação de rotas e serviços da aplicação;
+- Nodemon: para manter o server rodando mesmo depois de fazer alterações no código;
+- Sucrase: para utilizar a sintaxe import/export dentro do node.
 
-#### Agora baixe o projeto:
+#### Banco de dados
 
-- clone ou faça download do repositório em uma pasta no seu pc;
-- entre na pasta backend, abra um terminal e rode `$ yarn`;
+- Docker: utilizado para criar uma instância da data base da aplicação em um container com uma imagem do postgres;
+- Postgres: banco de dados utilizado na aplicação;
+- MongoDB: banco não relacional utilizado para dados que não são estruturados e são performáticos;
+- Sequelize: ORM para fazer as querys na data base postgres;
+- Mogoose: ORM para o mongoDB;
+- Postbird: visualizar os dados que estão no banco de dados postgres;
+- MongoDB Compass: visualizar os dados que estão no banco de dados mongo;
+- Redis: banco de dados não relacional que salva apenas chave e valor, utilizado para tarefas em segundo plano.
 
-#### Configure os bancos de dados:
+#### Validações
 
-- certifique que o docker está rodando executando `$ docker ps` ou `$ sudo docker ps`;
-- depois rode os seguintes comandos para criar os containeres (o nome pode ser qualquer um, o password também):
-  - `$ docker run --name database -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres:11`
-  - `$ docker run --name mongobase -p 27017:27017 -d -t mongo`
-  - `$ docker run --name redisbase -p 6379:6379 -d -t redis:alpine`
-- ainda dentro do projeto, no terminal, rode `$ yarn sequelize db:migrate`
+- Bcryptjs: utilizado para criar um hash do password do usuário;
+- JWT: forma de fazer autenticação em API REST; - jsonwebtoken: gera o token JWT.
+- Yup: biblioteca de validação de dados de entrada.
 
-#### Agora configure o arquivo .env:
+#### Data e arquivos
 
-- dentro do projeto existe um arquivo chamado .env.example, crie um arquivo .env no mesmo lugar e copie e cole tudo que tem em .env.example no novo arquivo;
-- feito isso, preecha as variáveis faltando, por exemplo, para os comandos rodados a cima, o arquivo .env ficou da seguinte forma: [.env]
-- agora, certifique que os containeres estão rodando `$ docker ps` e rode no terminal `$ yarn dev`
+- Multer: para uploads de arquivos (diferente do formato JSON);
+- Date-fns: para lidar com datas dentro do node.
 
+#### Email (provavelmente será removido)
 
+- Nodemailer: utilizado para envio de emails;
+- Mailtrap: uma caixa de entrada online e gratuita para testar o envio de email em ambiente de desenvolvimento;
+- TemplateEngine: arquivos html que podem receber variáveis do node (alem de outras); - Handlebars: templateengine utilizado.
+
+#### Outros
+
+- Sentry: ferramenta de monitaramento de erros;
+- Youch: tratar as mensagens de erro.
+- Dotenv: configurar as variáveis ambiente da aplicação.
+
+# Como rodar
