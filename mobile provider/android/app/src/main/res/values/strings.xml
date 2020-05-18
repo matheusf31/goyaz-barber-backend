@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Goyaz Barber Provedor</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">3Eh-gweQXTxDkhHXeFLcHWTr_jS0Oll9Defoh</string>
 </resources>
