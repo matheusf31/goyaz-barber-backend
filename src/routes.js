@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import bodyParser from 'body-parser';
 import multer from 'multer';
 import multerConfig from './config/multer';
 
@@ -25,6 +26,9 @@ import bannedMiddleware from './app/middlewares/banned';
 
 const routes = new Router();
 const upload = multer(multerConfig);
+
+routes.use(bodyParser.json({ limit: '50mb' }));
+routes.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
