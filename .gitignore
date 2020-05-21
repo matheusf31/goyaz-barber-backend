@@ -4,3 +4,6 @@ node_modules
 __tests__
 tmp/uploads
 dist
+
+server.cert
+server.key
